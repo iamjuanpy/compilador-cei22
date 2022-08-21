@@ -25,7 +25,6 @@ public enum TokenType {
     r_var,
     r_true,
     r_false,
-    nullT,
 
     intT,
     charT,
