@@ -1,0 +1,62 @@
+package minijavaCompiler.lexical;
+
+public enum TokenType {
+    classID,
+    mvID,
+
+    r_class,
+    r_public,
+    r_void,
+    r_if,
+    r_this,
+    r_new,
+    r_else,
+    r_boolean,
+    r_private,
+    r_interface,
+    r_extends,
+    r_static,
+    r_char,
+    r_while,
+    r_null,
+    r_implements,
+    r_int,
+    r_return,
+    r_var,
+    r_true,
+    r_false,
+    nullT,
+
+    intT,
+    charT,
+    stringT,
+
+    openBr,
+    closeBr,
+    openCurly,
+    closeCurly,
+    semicolon,
+    comma,
+    dot,
+
+    greater,
+    less,
+    not,
+    equals,
+    greaterOrEquals,
+    lessOrEquals,
+    notEquals,
+    addOP,
+    subOP,
+    multOP,
+    divOP,
+    andOP,
+    orOP,
+    modOP,
+
+    assign,
+    addAssign,
+    subAssign,
+
+    eof
+}

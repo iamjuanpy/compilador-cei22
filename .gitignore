@@ -14,6 +14,6 @@
 # Ignore everything in the root except 
 /*
 !.gitignore
-!src/minijavaCompiler
-!out/artifacts/Compilador_jar/*.java
-!out/artifacts/Compilador_jar/*.txt
+!src
+
+
