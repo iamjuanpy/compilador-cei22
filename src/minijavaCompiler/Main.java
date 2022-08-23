@@ -27,12 +27,12 @@ public class Main {
                     System.out.println(token.toString());
                 } while (token.getTokenType() != TokenType.eof);
 
-                System.out.println("[SinErrores]");
+                System.out.println("\n[SinErrores]");
 
             }catch (SourceFileReaderException srException){
                 System.out.println(srException.getMessage());
             }catch (LexicalException lexException){
-                System.out.println("\nLexical error in ("+sourceFileReader.getLineNumber()+","+sourceFileReader.getColNumber()+")=> "+sourceFileReader.getCurrentLine());
+                //System.out.println("\nLexical error in ("+sourceFileReader.getLineNumber()+","+sourceFileReader.getColNumber()+")=> "+sourceFileReader.getCurrentLine());
                 System.out.println(lexException.getMessage());
             }
         } else System.out.println("Error: run the compiler with a java source file as parameter");

@@ -8,6 +8,7 @@ public class SourceFileReader {
     private final char EOL = '\n';
 
     private BufferedReader bufferedReader;
+    private String newLine;
     private String currentLine;
     private char currentChar;
     private int lineNumber;
@@ -18,17 +19,18 @@ public class SourceFileReader {
             bufferedReader = new BufferedReader(new FileReader(filePath));
             lineNumber = 0;
             colNumber = 0;
+            newLine = null; // VER
             currentLine = null;
         } catch (FileNotFoundException e){
             throw new SourceFileReaderException("Error: wrong file name");
         }
     }
 
-    public char readCharacter(){
+    public char readCharacter() {
         try {
-            if (currentLine == null || currentChar == EOL) { /*colNumber == currentLine.length()*/
-                if ((currentLine = bufferedReader.readLine()) != null) {
-                    currentLine = currentLine + EOL; // ver doc
+            if (currentLine == null || currentChar == EOL) {
+                if ((newLine = bufferedReader.readLine()) != null) { // VER
+                    currentLine = newLine + EOL;
                     lineNumber++;
                     colNumber = 0;
                 } else {
@@ -38,7 +40,9 @@ public class SourceFileReader {
             }
             currentChar = currentLine.charAt(colNumber);
             colNumber++;
-        } catch (IOException e){ } // ver que hacer con esta excep
+        } catch (IOException e){
+            //throw new SourceFileReaderException("Error reading file"); // VER
+        }
 
         return currentChar;
     }

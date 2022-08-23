@@ -25,7 +25,10 @@ public class LexicalAnalyzer {
         return s0();
     }
 
-    private void updateLexeme(){ lexeme = lexeme + currentChar;}
+    private void updateLexeme(){
+        //if (!fileReader.isEOF(currentChar) && !fileReader.isEOL(currentChar)) // Solucion 1
+            lexeme = lexeme + currentChar;
+    }
     private void readNextCharacter(){ currentChar = fileReader.readCharacter();}
 
     // AUTOMATA
@@ -166,11 +169,11 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s4();
-        } else {
-            updateLexeme();
+        } else if (!fileReader.isEOF(currentChar)){
+            if (!fileReader.isEOL(currentChar)) updateLexeme(); // Solucion 2
             readNextCharacter();
             return s3();
-        }
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
     }
 
     private Token s4() throws LexicalException {
@@ -178,15 +181,15 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return getNextToken();
-        } else {
-            updateLexeme();
+        } else if (!fileReader.isEOF(currentChar)){
+            if (!fileReader.isEOL(currentChar)) updateLexeme(); // Solucion 2
             readNextCharacter();
             return s3();
-        }
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
     }
 
     private Token s5() {
-        return new Token(eof,lexeme,fileReader.getLineNumber());
+        return new Token(eof,"eof",fileReader.getLineNumber());
     }
 
     private Token s6(){ return new Token(openBr, lexeme, fileReader.getLineNumber());}
