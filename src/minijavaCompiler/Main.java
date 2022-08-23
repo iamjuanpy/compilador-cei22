@@ -12,7 +12,7 @@ public class Main {
     public static void main(String [] args){
 
         String filePath;
-        SourceFileReader sourceFileReader;
+        SourceFileReader sourceFileReader = null;
         LexicalAnalyzer lexicalAnalyzer;
 
         if (args.length == 1){
@@ -24,14 +24,15 @@ public class Main {
                 Token token;
                 do {
                     token = lexicalAnalyzer.getNextToken();
-                    System.out.println( token.toString());
+                    System.out.println(token.toString());
                 } while (token.getTokenType() != TokenType.eof);
 
                 System.out.println("[SinErrores]");
 
             }catch (SourceFileReaderException srException){
                 System.out.println(srException.getMessage());
-            } catch (LexicalException lexException){
+            }catch (LexicalException lexException){
+                System.out.println("\nLexical error in ("+sourceFileReader.getLineNumber()+","+sourceFileReader.getColNumber()+")=> "+sourceFileReader.getCurrentLine());
                 System.out.println(lexException.getMessage());
             }
         } else System.out.println("Error: run the compiler with a java source file as parameter");

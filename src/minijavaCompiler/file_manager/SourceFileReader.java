@@ -4,7 +4,7 @@ import java.io.*;
 
 public class SourceFileReader {
 
-    private final char EOF = 0;
+    private final char EOF = (char) -1;
     private final char EOL = '\n';
 
     private BufferedReader bufferedReader;
@@ -26,12 +26,13 @@ public class SourceFileReader {
 
     public char readCharacter(){
         try {
-            if (currentLine == null || colNumber == currentLine.length()) {
+            if (currentLine == null || currentChar == EOL) { /*colNumber == currentLine.length()*/
                 if ((currentLine = bufferedReader.readLine()) != null) {
                     currentLine = currentLine + EOL; // ver doc
                     lineNumber++;
                     colNumber = 0;
                 } else {
+                    bufferedReader.close();
                     return EOF;
                 }
             }
@@ -49,6 +50,8 @@ public class SourceFileReader {
     public boolean isEOL(char character){
         return character == EOL;
     }
+
+    public String getCurrentLine(){return currentLine;}
 
     public int getLineNumber(){
         return lineNumber;

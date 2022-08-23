@@ -26,9 +26,9 @@ public enum TokenType {
     r_true,
     r_false,
 
-    intT,
-    charT,
-    stringT,
+    intLit,
+    charLit,
+    strLit,
 
     openBr,
     closeBr,
