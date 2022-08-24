@@ -27,16 +27,36 @@ public class Main {
                     System.out.println(token.toString());
                 } while (token.getTokenType() != TokenType.eof);
 
-                System.out.println("\n[SinErrores]");
+                System.out.println("\n"+"[SinErrores]");
 
             }catch (SourceFileReaderException srException){
-                System.out.println(srException.getMessage());
+                System.out.println("\n"+srException.getMessage());
             }catch (LexicalException lexException){
-                //System.out.println("\nLexical error in ("+sourceFileReader.getLineNumber()+","+sourceFileReader.getColNumber()+")=> "+sourceFileReader.getCurrentLine());
-                System.out.println(lexException.getMessage());
+                //printFancyErrorMsg(sourceFileReader.getLineNumber(), sourceFileReader.getColNumber(), sourceFileReader.getCurrentLine());
+                System.out.println("\n"+lexException.getMessage());
             }
         } else System.out.println("Error: run the compiler with a java source file as parameter");
 
     }
+
+/*    private static void printFancyErrorMsg(int lineNumber, int colNumber, String currentLine){
+        String errorTypeLine = "Error Léxico en linea "+lineNumber+" columna "+colNumber;
+        String line = "Detalle: "; //"Lexical error in ("+lineNumber+","+colNumber+")=> ";
+        String pointerLine = "";
+
+        for (int i = 0; i < line.length() - 1; i++){
+            pointerLine += " ";
+        }
+
+        for (int i = 0; i < colNumber - 1; i++){
+            if (currentLine.charAt(i) == '\t'){
+                pointerLine += '\t';
+            } else pointerLine += " ";
+        }
+        pointerLine += '^';
+
+        System.out.println("\n"+errorTypeLine);
+        System.out.println(line+currentLine+pointerLine);
+    }*/
 
 }

@@ -1,6 +1,7 @@
 package minijavaCompiler.lexical;
 
 import minijavaCompiler.file_manager.SourceFileReader;
+import minijavaCompiler.file_manager.SourceFileReaderException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,26 +15,25 @@ public class LexicalAnalyzer {
     private char currentChar;
     private String lexeme;
 
-    public LexicalAnalyzer (SourceFileReader fileReader){
+    public LexicalAnalyzer (SourceFileReader fileReader) throws SourceFileReaderException {
         this.fileReader = fileReader;
         currentChar = fileReader.readCharacter();
         loadReservedWords();
     }
 
-    public Token getNextToken() throws LexicalException {
+    public Token getNextToken() throws LexicalException, SourceFileReaderException {
         lexeme = "";
         return s0();
     }
 
-    private void updateLexeme(){
-        //if (!fileReader.isEOF(currentChar) && !fileReader.isEOL(currentChar)) // Solucion 1
-            lexeme = lexeme + currentChar;
+    private void updateLexeme(){lexeme = lexeme + currentChar;}
+    private void readNextCharacter() throws SourceFileReaderException {
+        currentChar = fileReader.readCharacter();
     }
-    private void readNextCharacter(){ currentChar = fileReader.readCharacter();}
 
     // AUTOMATA
 
-    private Token s0() throws LexicalException {
+    private Token s0() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
             updateLexeme();
             readNextCharacter();
@@ -135,11 +135,11 @@ public class LexicalAnalyzer {
             return s5();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber());
+            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
-    private Token s1() throws LexicalException {
+    private Token s1() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
             updateLexeme();
             readNextCharacter();
@@ -151,7 +151,7 @@ public class LexicalAnalyzer {
         } else return new Token(divOP, lexeme, fileReader.getLineNumber());
     }
 
-    private Token s2() throws LexicalException {
+    private Token s2() throws LexicalException, SourceFileReaderException {
         if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)){
             updateLexeme();
             readNextCharacter();
@@ -164,28 +164,32 @@ public class LexicalAnalyzer {
     }
 
 
-    private Token s3() throws LexicalException {
+    private Token s3() throws LexicalException, SourceFileReaderException {
         if (currentChar == '*'){
             updateLexeme();
             readNextCharacter();
             return s4();
         } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar)) updateLexeme(); // Solucion 2
+            if (!fileReader.isEOL(currentChar))
+                updateLexeme();
+            else lexeme = lexeme + " ";// Solucion 2
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
-    private Token s4() throws LexicalException {
+    private Token s4() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
             updateLexeme();
             readNextCharacter();
             return getNextToken();
         } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar)) updateLexeme(); // Solucion 2
+            if (!fileReader.isEOL(currentChar))
+                updateLexeme();
+            else lexeme = lexeme + " ";// Solucion 2
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s5() {
@@ -203,7 +207,7 @@ public class LexicalAnalyzer {
     private Token s13(){ return new Token(modOP, lexeme, fileReader.getLineNumber());}
     private Token s14(){ return new Token(multOP, lexeme, fileReader.getLineNumber());}
 
-    private Token s15(){
+    private Token s15() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -213,7 +217,7 @@ public class LexicalAnalyzer {
 
     private Token s16(){ return new Token(addAssign, lexeme, fileReader.getLineNumber());}
 
-    private Token s17(){
+    private Token s17() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -223,7 +227,7 @@ public class LexicalAnalyzer {
 
     private Token s18(){ return new Token(subAssign, lexeme, fileReader.getLineNumber());}
 
-    private Token s19(){
+    private Token s19() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -233,7 +237,7 @@ public class LexicalAnalyzer {
 
     private Token s20(){ return new Token(equals, lexeme, fileReader.getLineNumber());}
 
-    private Token s21(){
+    private Token s21() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -243,7 +247,7 @@ public class LexicalAnalyzer {
 
     private Token s22(){ return new Token(greaterOrEquals, lexeme, fileReader.getLineNumber());}
 
-    private Token s23(){
+    private Token s23() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -252,7 +256,7 @@ public class LexicalAnalyzer {
     }
     private Token s24(){ return new Token(lessOrEquals, lexeme, fileReader.getLineNumber());}
 
-    private Token s25(){
+    private Token s25() throws SourceFileReaderException {
         if (currentChar == '='){
             updateLexeme();
             readNextCharacter();
@@ -262,33 +266,33 @@ public class LexicalAnalyzer {
 
     private Token s26(){ return new Token(notEquals, lexeme, fileReader.getLineNumber());}
 
-    private Token s27() throws LexicalException {
+    private Token s27() throws LexicalException, SourceFileReaderException {
         if (currentChar == '|'){
             updateLexeme();
             readNextCharacter();
             return s28();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber());
+            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
     private Token s28(){ return new Token(orOP, lexeme, fileReader.getLineNumber());}
 
-    private Token s29() throws LexicalException {
+    private Token s29() throws LexicalException, SourceFileReaderException {
         if (currentChar == '&'){
             updateLexeme();
             readNextCharacter();
             return s30();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber());
+            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
     private Token s30(){ return new Token(andOP, lexeme, fileReader.getLineNumber());}
 
-    private Token s31() throws LexicalException {
+    private Token s31() throws LexicalException, SourceFileReaderException {
         if (Character.isDigit(currentChar)){
             updateLexeme();
             readNextCharacter();
@@ -296,11 +300,11 @@ public class LexicalAnalyzer {
         } else if (lexeme.length() <= 9){
             return new Token(intLit, lexeme, fileReader.getLineNumber());
         } else {
-            throw new LexicalException(lexeme, fileReader.getLineNumber());
+            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
-    private Token s32() throws LexicalException {
+    private Token s32() throws LexicalException, SourceFileReaderException {
         if (currentChar == '\''){
             updateLexeme();
             readNextCharacter();
@@ -313,28 +317,28 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
-    private Token s33() throws LexicalException {
+    private Token s33() throws LexicalException, SourceFileReaderException {
         if ( currentChar != '\t' && !fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar) ){
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
-    private Token s34() throws LexicalException {
+    private Token s34() throws LexicalException, SourceFileReaderException {
         if (currentChar == '\'') {
             updateLexeme();
             readNextCharacter();
             return s35();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s35(){ return new Token(charLit, lexeme, fileReader.getLineNumber());}
 
-    private Token s36() throws LexicalException {
+    private Token s36() throws LexicalException, SourceFileReaderException {
         if (currentChar == '"'){
             updateLexeme();
             readNextCharacter();
@@ -347,20 +351,20 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
-    private Token s37() throws LexicalException {
+    private Token s37() throws LexicalException, SourceFileReaderException {
         if (!fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar)) {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber());
+        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s38() { return new Token(strLit, lexeme, fileReader.getLineNumber());}
 
-    private Token s39(){
+    private Token s39() throws SourceFileReaderException {
         if (Character.isLetterOrDigit(currentChar) || currentChar == '_'){
             updateLexeme();
             readNextCharacter();
@@ -368,7 +372,7 @@ public class LexicalAnalyzer {
         } else return new Token(classID, lexeme, fileReader.getLineNumber());
     }
 
-    private Token s40(){
+    private Token s40() throws SourceFileReaderException {
         if (Character.isLetterOrDigit(currentChar) || currentChar == '_'){
             updateLexeme();
             readNextCharacter();
@@ -381,8 +385,6 @@ public class LexicalAnalyzer {
             else return new Token(mvID, lexeme, fileReader.getLineNumber());
         }
     }
-
-    //
 
     private void loadReservedWords() {
         reservedWords = new HashMap<>();
@@ -408,6 +410,5 @@ public class LexicalAnalyzer {
         reservedWords.put("true",r_true);
         reservedWords.put("false",r_false);
     }
-
 }
 

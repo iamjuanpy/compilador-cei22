@@ -26,7 +26,7 @@ public class SourceFileReader {
         }
     }
 
-    public char readCharacter() {
+    public char readCharacter() throws SourceFileReaderException {
         try {
             if (currentLine == null || currentChar == EOL) {
                 if ((newLine = bufferedReader.readLine()) != null) { // VER
@@ -41,7 +41,7 @@ public class SourceFileReader {
             currentChar = currentLine.charAt(colNumber);
             colNumber++;
         } catch (IOException e){
-            //throw new SourceFileReaderException("Error reading file"); // VER
+            throw new SourceFileReaderException("Error reading file");
         }
 
         return currentChar;
