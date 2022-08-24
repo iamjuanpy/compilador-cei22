@@ -14,6 +14,10 @@ public class LexicalAnalyzer {
     private Map<String,TokenType> reservedWords;
     private char currentChar;
     private String lexeme;
+    private String firstCommentLineLexeme;
+    private String firstCommentLine;
+    private int commentLineNumber;
+    private int commentColNumber;
 
     public LexicalAnalyzer (SourceFileReader fileReader) throws SourceFileReaderException {
         this.fileReader = fileReader;
@@ -23,6 +27,7 @@ public class LexicalAnalyzer {
 
     public Token getNextToken() throws LexicalException, SourceFileReaderException {
         lexeme = "";
+        firstCommentLine = null;
         return s0();
     }
 
@@ -145,6 +150,9 @@ public class LexicalAnalyzer {
             readNextCharacter();
             return s2();
         } else if (currentChar == '*'){
+            firstCommentLine = fileReader.getCurrentLine();
+            commentLineNumber = fileReader.getLineNumber();
+            commentColNumber = fileReader.getColNumber() - 1;
             updateLexeme();
             readNextCharacter();
             return s3();
@@ -170,12 +178,17 @@ public class LexicalAnalyzer {
             readNextCharacter();
             return s4();
         } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar))
+            if (!fileReader.isEOL(currentChar)) {
                 updateLexeme();
-            else lexeme = lexeme + " ";// Solucion 2
+            }
+            else {
+                if(firstCommentLineLexeme == null) {
+                    firstCommentLineLexeme = lexeme;
+                }
+            }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, commentLineNumber, commentColNumber);
     }
 
     private Token s4() throws LexicalException, SourceFileReaderException {
@@ -184,12 +197,12 @@ public class LexicalAnalyzer {
             readNextCharacter();
             return getNextToken();
         } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar))
+            if (!fileReader.isEOL(currentChar)) {
                 updateLexeme();
-            else lexeme = lexeme + " ";// Solucion 2
+            }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, commentLineNumber, commentColNumber);
     }
 
     private Token s5() {
@@ -351,7 +364,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s37() throws LexicalException, SourceFileReaderException {

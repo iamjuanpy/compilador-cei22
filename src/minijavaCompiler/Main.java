@@ -32,14 +32,13 @@ public class Main {
             }catch (SourceFileReaderException srException){
                 System.out.println("\n"+srException.getMessage());
             }catch (LexicalException lexException){
-                //printFancyErrorMsg(sourceFileReader.getLineNumber(), sourceFileReader.getColNumber(), sourceFileReader.getCurrentLine());
                 System.out.println("\n"+lexException.getMessage());
             }
         } else System.out.println("Error: run the compiler with a java source file as parameter");
 
     }
 
-/*    private static void printFancyErrorMsg(int lineNumber, int colNumber, String currentLine){
+    private static void printFancyErrorMsg(int lineNumber, int colNumber, String currentLine){
         String errorTypeLine = "Error Léxico en linea "+lineNumber+" columna "+colNumber;
         String line = "Detalle: "; //"Lexical error in ("+lineNumber+","+colNumber+")=> ";
         String pointerLine = "";
@@ -57,6 +56,6 @@ public class Main {
 
         System.out.println("\n"+errorTypeLine);
         System.out.println(line+currentLine+pointerLine);
-    }*/
+    }
 
 }

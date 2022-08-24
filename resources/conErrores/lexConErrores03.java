@@ -1,4 +1,3 @@
 ///[Error:chau|4]
 
-/*Comment sin cerrar
-chau
+if class 123            ew /*rewerw
