@@ -9,6 +9,7 @@ public class SourceFileReader {
 
     private BufferedReader bufferedReader;
     private String newLine;
+
     private String currentLine;
     private char currentChar;
     private int lineNumber;
@@ -19,7 +20,7 @@ public class SourceFileReader {
             bufferedReader = new BufferedReader(new FileReader(filePath));
             lineNumber = 0;
             colNumber = 0;
-            newLine = null; // VER
+            newLine = null;
             currentLine = null;
         } catch (FileNotFoundException e){
             throw new SourceFileReaderException("Error: wrong file name");
@@ -29,7 +30,7 @@ public class SourceFileReader {
     public char readCharacter() throws SourceFileReaderException {
         try {
             if (currentLine == null || currentChar == EOL) {
-                if ((newLine = bufferedReader.readLine()) != null) { // VER
+                if ((newLine = bufferedReader.readLine()) != null) {
                     currentLine = newLine + EOL;
                     lineNumber++;
                     colNumber = 0;

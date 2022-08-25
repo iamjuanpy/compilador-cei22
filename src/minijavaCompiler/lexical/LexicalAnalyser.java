@@ -2,24 +2,26 @@ package minijavaCompiler.lexical;
 
 import minijavaCompiler.file_manager.SourceFileReader;
 import minijavaCompiler.file_manager.SourceFileReaderException;
+import minijavaCompiler.lexical.exceptions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static minijavaCompiler.lexical.TokenType.*;
 
-public class LexicalAnalyzer {
+public class LexicalAnalyser {
 
     private SourceFileReader fileReader;
     private Map<String,TokenType> reservedWords;
     private char currentChar;
     private String lexeme;
+
     private String firstCommentLineLexeme;
     private String firstCommentLine;
     private int commentLineNumber;
     private int commentColNumber;
 
-    public LexicalAnalyzer (SourceFileReader fileReader) throws SourceFileReaderException {
+    public LexicalAnalyser(SourceFileReader fileReader) throws SourceFileReaderException {
         this.fileReader = fileReader;
         currentChar = fileReader.readCharacter();
         loadReservedWords();
@@ -32,9 +34,7 @@ public class LexicalAnalyzer {
     }
 
     private void updateLexeme(){lexeme = lexeme + currentChar;}
-    private void readNextCharacter() throws SourceFileReaderException {
-        currentChar = fileReader.readCharacter();
-    }
+    private void readNextCharacter() throws SourceFileReaderException {currentChar = fileReader.readCharacter();}
 
     // AUTOMATA
 
@@ -140,7 +140,7 @@ public class LexicalAnalyzer {
             return s5();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(),lexeme+" no es un símbolo válido" ,fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
@@ -188,7 +188,7 @@ public class LexicalAnalyzer {
             }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, commentLineNumber, commentColNumber);
+        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
     }
 
     private Token s4() throws LexicalException, SourceFileReaderException {
@@ -202,7 +202,7 @@ public class LexicalAnalyzer {
             }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, commentLineNumber, commentColNumber);
+        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
     }
 
     private Token s5() {
@@ -286,7 +286,7 @@ public class LexicalAnalyzer {
             return s28();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "OR incompleto", fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
@@ -299,7 +299,7 @@ public class LexicalAnalyzer {
             return s30();
         } else {
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "AND incompleto",fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
@@ -313,7 +313,7 @@ public class LexicalAnalyzer {
         } else if (lexeme.length() <= 9){
             return new Token(intLit, lexeme, fileReader.getLineNumber());
         } else {
-            throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), lexeme+" es un número demasiado largo",fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
@@ -330,7 +330,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s33() throws LexicalException, SourceFileReaderException {
@@ -338,7 +338,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s34() throws LexicalException, SourceFileReaderException {
@@ -346,7 +346,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s35();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s35(){ return new Token(charLit, lexeme, fileReader.getLineNumber());}
@@ -364,7 +364,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s37() throws LexicalException, SourceFileReaderException {
@@ -372,7 +372,7 @@ public class LexicalAnalyzer {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s38() { return new Token(strLit, lexeme, fileReader.getLineNumber());}
