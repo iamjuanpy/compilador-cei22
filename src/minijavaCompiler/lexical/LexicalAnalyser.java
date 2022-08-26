@@ -331,11 +331,7 @@ public class LexicalAnalyser {
     // Char
 
     private Token s32() throws LexicalException, SourceFileReaderException {
-        if (currentChar == '\''){
-            updateLexeme();
-            readNextCharacter();
-            return s35();
-        } else if (currentChar == '\\'){
+        if (currentChar == '\\'){
             updateLexeme();
             readNextCharacter();
             return s33();
@@ -349,7 +345,11 @@ public class LexicalAnalyser {
     }
 
     private Token s33() throws LexicalException, SourceFileReaderException {
-        if (currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+        if (currentChar == 'u'){ // unicode
+            updateLexeme();
+            readNextCharacter();
+            return s41();
+        } else if (currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
             throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
         } else {
             updateLexeme();
@@ -422,6 +422,29 @@ public class LexicalAnalyser {
             }
             else return new Token(mvID, lexeme, fileReader.getLineNumber());
         }
+    }
+
+    //Unicode
+
+    private Token s41() throws LexicalException, SourceFileReaderException {
+        if (isHexaChar(currentChar)) {
+            updateLexeme();
+            readNextCharacter();
+            return s41();
+        } else if (currentChar == '\'' && lexeme.length() == 7) {
+            updateLexeme();
+            readNextCharacter();
+            return s35();
+        } else {
+            updateLexeme();
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Unicode char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        }
+    }
+
+    private boolean isHexaChar(char character){
+        boolean mayus = character == 'A' || character == 'B' || character == 'C' || character == 'D' || character == 'E' || character == 'F';
+        boolean minus = character == 'a' || character == 'b' || character == 'c' || character == 'd' || character == 'e' || character == 'f';
+        return Character.isDigit(character) || mayus || minus;
     }
 
     private void loadReservedWords() {
