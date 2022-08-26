@@ -36,6 +36,13 @@ public class LexicalAnalyser {
     private void updateLexeme(){lexeme = lexeme + currentChar;}
     private void readNextCharacter() throws SourceFileReaderException {currentChar = fileReader.readCharacter();}
 
+    private void saveMultiLineCommentFirstLineData(){
+        firstCommentLine = fileReader.getCurrentLine(); // Fancy Error
+        commentLineNumber = fileReader.getLineNumber(); //
+        commentColNumber = fileReader.getColNumber() - 1; //
+    }
+    private boolean noMultiLineCommentLexeme() { return firstCommentLineLexeme == null;}
+
     // AUTOMATA
 
     private Token s0() throws LexicalException, SourceFileReaderException {
@@ -132,27 +139,25 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s40();
         }
-        else if (fileReader.isEOL(currentChar) || currentChar == '\t' || currentChar == ' ') {
-            updateLexeme();
+        else if (fileReader.isEOL(currentChar) || currentChar == '\t' || currentChar == ' ') {  // Whitespaces, Tabs, EOL
             readNextCharacter();
             return getNextToken();
-        } else if (fileReader.isEOF(currentChar)){
+        } else if (fileReader.isEOF(currentChar)){ // EOF
             return s5();
-        } else {
+        } else { // Not Valid Symbols
             updateLexeme();
             throw new LexicalException(lexeme, fileReader.getCurrentLine(),lexeme+" no es un símbolo válido" ,fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
+    // Comments & EOF
+
     private Token s1() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
-            updateLexeme();
             readNextCharacter();
             return s2();
         } else if (currentChar == '*'){
-            firstCommentLine = fileReader.getCurrentLine();
-            commentLineNumber = fileReader.getLineNumber();
-            commentColNumber = fileReader.getColNumber() - 1;
+            saveMultiLineCommentFirstLineData();
             updateLexeme();
             readNextCharacter();
             return s3();
@@ -161,11 +166,9 @@ public class LexicalAnalyser {
 
     private Token s2() throws LexicalException, SourceFileReaderException {
         if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)){
-            updateLexeme();
             readNextCharacter();
             return getNextToken();
         } else {
-            updateLexeme();
             readNextCharacter();
             return s2();
         }
@@ -177,37 +180,43 @@ public class LexicalAnalyser {
             updateLexeme();
             readNextCharacter();
             return s4();
-        } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar)) {
-                updateLexeme();
-            }
-            else {
-                if(firstCommentLineLexeme == null) {
+        } else if (fileReader.isEOF(currentChar)) {
+            throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
+        } else {
+            if (fileReader.isEOL(currentChar)) {
+                if (noMultiLineCommentLexeme())
                     firstCommentLineLexeme = lexeme;
-                }
+            } else {
+                updateLexeme();
             }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
+        }
     }
 
     private Token s4() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
-            updateLexeme();
             readNextCharacter();
             return getNextToken();
-        } else if (!fileReader.isEOF(currentChar)){
-            if (!fileReader.isEOL(currentChar)) {
+        } else if (fileReader.isEOF(currentChar)) {
+            throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
+        } else {
+            if (fileReader.isEOL(currentChar)) {
+                if (noMultiLineCommentLexeme())
+                    firstCommentLineLexeme = lexeme;
+            } else {
                 updateLexeme();
             }
             readNextCharacter();
             return s3();
-        } else throw new LexicalException(firstCommentLineLexeme, firstCommentLine, "Comentario multilínea sin cerrar", commentLineNumber, commentColNumber);
+        }
     }
 
     private Token s5() {
         return new Token(eof,"eof",fileReader.getLineNumber());
     }
+
+    // Punctuation
 
     private Token s6(){ return new Token(openBr, lexeme, fileReader.getLineNumber());}
     private Token s7(){ return new Token(closeBr, lexeme, fileReader.getLineNumber());}
@@ -216,6 +225,8 @@ public class LexicalAnalyser {
     private Token s10(){ return new Token(semicolon, lexeme, fileReader.getLineNumber());}
     private Token s11(){ return new Token(dot, lexeme, fileReader.getLineNumber());}
     private Token s12(){ return new Token(comma, lexeme, fileReader.getLineNumber());}
+
+    // Operators
 
     private Token s13(){ return new Token(modOP, lexeme, fileReader.getLineNumber());}
     private Token s14(){ return new Token(multOP, lexeme, fileReader.getLineNumber());}
@@ -303,6 +314,8 @@ public class LexicalAnalyser {
 
     private Token s30(){ return new Token(andOP, lexeme, fileReader.getLineNumber());}
 
+    // Int
+
     private Token s31() throws LexicalException, SourceFileReaderException {
         if (Character.isDigit(currentChar)){
             updateLexeme();
@@ -315,6 +328,8 @@ public class LexicalAnalyser {
         }
     }
 
+    // Char
+
     private Token s32() throws LexicalException, SourceFileReaderException {
         if (currentChar == '\''){
             updateLexeme();
@@ -324,19 +339,23 @@ public class LexicalAnalyser {
             updateLexeme();
             readNextCharacter();
             return s33();
-        } else if ( currentChar != '\t' && !fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar) ){
+        } else if (currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        } else {
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        }
     }
 
     private Token s33() throws LexicalException, SourceFileReaderException {
-        if ( currentChar != '\t' && !fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar) ){
+        if (currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        } else {
             updateLexeme();
             readNextCharacter();
             return s34();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        }
     }
 
     private Token s34() throws LexicalException, SourceFileReaderException {
@@ -349,6 +368,8 @@ public class LexicalAnalyser {
 
     private Token s35(){ return new Token(charLit, lexeme, fileReader.getLineNumber());}
 
+    // String
+
     private Token s36() throws LexicalException, SourceFileReaderException {
         if (currentChar == '"'){
             updateLexeme();
@@ -358,22 +379,28 @@ public class LexicalAnalyser {
             updateLexeme();
             readNextCharacter();
             return s37();
-        } else if (!fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar)) {
+        } else if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+        } else {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+        }
     }
 
     private Token s37() throws LexicalException, SourceFileReaderException {
-        if (!fileReader.isEOL(currentChar) && !fileReader.isEOF(currentChar)) {
+        if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+        } else {
             updateLexeme();
             readNextCharacter();
             return s36();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+        }
     }
 
     private Token s38() { return new Token(strLit, lexeme, fileReader.getLineNumber());}
+
+    // Identifiers
 
     private Token s39() throws SourceFileReaderException {
         if (Character.isLetterOrDigit(currentChar) || currentChar == '_'){
