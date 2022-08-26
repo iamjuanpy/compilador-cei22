@@ -7,11 +7,11 @@ public class FancyErrorStringBuilder {
         String detailLine = "Detalle: ";
         String pointerLine = "";
 
-        for (int i = 0; i < detailLine.length() - 1; i++){
+        for (int i = 0; i < detailLine.length(); i++){
             pointerLine += " ";
         }
 
-        for (int i = 0; i < colNumber ; i++){
+        for (int i = 0; i < colNumber - 1 ; i++){
             if (errorLine.charAt(i) == '\t'){
                 pointerLine += '\t';
             } else pointerLine += " ";

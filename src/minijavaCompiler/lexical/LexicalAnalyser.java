@@ -285,7 +285,6 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s28();
         } else {
-            updateLexeme();
             throw new LexicalException(lexeme, fileReader.getCurrentLine(), "OR incompleto", fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
@@ -298,7 +297,6 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s30();
         } else {
-            updateLexeme();
             throw new LexicalException(lexeme, fileReader.getCurrentLine(), "AND incompleto",fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
