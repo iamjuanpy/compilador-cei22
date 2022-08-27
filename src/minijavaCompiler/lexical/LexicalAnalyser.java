@@ -335,7 +335,7 @@ public class LexicalAnalyser {
             updateLexeme();
             readNextCharacter();
             return s33();
-        } else if (currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+        } else if (currentChar == '\'' || currentChar == '\t' || fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
             throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
         } else {
             updateLexeme();
@@ -345,7 +345,7 @@ public class LexicalAnalyser {
     }
 
     private Token s33() throws LexicalException, SourceFileReaderException {
-        if (currentChar == 'u'){ // unicode
+        if (currentChar == 'u'){ // Unicode
             updateLexeme();
             readNextCharacter();
             return s41();
@@ -424,7 +424,7 @@ public class LexicalAnalyser {
         }
     }
 
-    //Unicode
+    // Unicode
 
     private Token s41() throws LexicalException, SourceFileReaderException {
         if (isHexaChar(currentChar)) {
@@ -442,9 +442,9 @@ public class LexicalAnalyser {
     }
 
     private boolean isHexaChar(char character){
-        boolean mayus = character == 'A' || character == 'B' || character == 'C' || character == 'D' || character == 'E' || character == 'F';
-        boolean minus = character == 'a' || character == 'b' || character == 'c' || character == 'd' || character == 'e' || character == 'f';
-        return Character.isDigit(character) || mayus || minus;
+        boolean upperCase = character == 'A' || character == 'B' || character == 'C' || character == 'D' || character == 'E' || character == 'F';
+        boolean lowerCase = character == 'a' || character == 'b' || character == 'c' || character == 'd' || character == 'e' || character == 'f';
+        return Character.isDigit(character) || upperCase || lowerCase;
     }
 
     private void loadReservedWords() {
