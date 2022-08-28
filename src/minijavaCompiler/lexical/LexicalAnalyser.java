@@ -33,18 +33,25 @@ public class LexicalAnalyser {
         return s0();
     }
 
+    // Aux Methods
     private void updateLexeme(){lexeme = lexeme + currentChar;}
     private void readNextCharacter() throws SourceFileReaderException {currentChar = fileReader.readCharacter();}
 
+    // Multi-detection
+    public void recoverFromError() throws SourceFileReaderException {
+        lexeme = "";
+        currentChar = fileReader.readCharacter();
+    }
+
+    // MultiLine Comments ErrorCode Builder
     private void saveMultiLineCommentFirstLineData(){
-        firstCommentLine = fileReader.getCurrentLine(); // Fancy Error
-        commentLineNumber = fileReader.getLineNumber(); //
-        commentColNumber = fileReader.getColNumber() - 1; //
+        firstCommentLine = fileReader.getCurrentLine();
+        commentLineNumber = fileReader.getLineNumber();
+        commentColNumber = fileReader.getColNumber() - 1;
     }
     private boolean noMultiLineCommentLexeme() { return firstCommentLineLexeme == null;}
 
     // AUTOMATA
-
     private Token s0() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
             updateLexeme();
@@ -146,12 +153,11 @@ public class LexicalAnalyser {
             return s5();
         } else { // Not Valid Symbols
             updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(),lexeme+" no es un símbolo válido" ,fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(),lexeme+" no es un símbolo válido" ,fileReader.getLineNumber(), fileReader.getColNumber()-1);
         }
     }
 
     // Comments & EOF
-
     private Token s1() throws LexicalException, SourceFileReaderException {
         if (currentChar == '/'){
             readNextCharacter();
@@ -217,7 +223,6 @@ public class LexicalAnalyser {
     }
 
     // Punctuation
-
     private Token s6(){ return new Token(openBr, lexeme, fileReader.getLineNumber());}
     private Token s7(){ return new Token(closeBr, lexeme, fileReader.getLineNumber());}
     private Token s8(){ return new Token(openCurly, lexeme, fileReader.getLineNumber());}
@@ -227,7 +232,6 @@ public class LexicalAnalyser {
     private Token s12(){ return new Token(comma, lexeme, fileReader.getLineNumber());}
 
     // Operators
-
     private Token s13(){ return new Token(modOP, lexeme, fileReader.getLineNumber());}
     private Token s14(){ return new Token(multOP, lexeme, fileReader.getLineNumber());}
 
@@ -296,7 +300,7 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s28();
         } else {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "OR incompleto", fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "OR incompleto", fileReader.getLineNumber(), fileReader.getColNumber()-1);
         }
     }
 
@@ -308,14 +312,13 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s30();
         } else {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "AND incompleto",fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "AND incompleto",fileReader.getLineNumber(), fileReader.getColNumber()-1);
         }
     }
 
     private Token s30(){ return new Token(andOP, lexeme, fileReader.getLineNumber());}
 
     // Int
-
     private Token s31() throws LexicalException, SourceFileReaderException {
         if (Character.isDigit(currentChar)){
             updateLexeme();
@@ -324,12 +327,11 @@ public class LexicalAnalyser {
         } else if (lexeme.length() <= 9){
             return new Token(intLit, lexeme, fileReader.getLineNumber());
         } else {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), lexeme+" es un número demasiado largo",fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), lexeme+" es un número demasiado largo",fileReader.getLineNumber(), fileReader.getColNumber()-lexeme.length());
         }
     }
 
     // Char
-
     private Token s32() throws LexicalException, SourceFileReaderException {
         if (currentChar == '\\'){
             updateLexeme();
@@ -363,13 +365,12 @@ public class LexicalAnalyser {
             updateLexeme();
             readNextCharacter();
             return s35();
-        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+        } else throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
     }
 
     private Token s35(){ return new Token(charLit, lexeme, fileReader.getLineNumber());}
 
     // String
-
     private Token s36() throws LexicalException, SourceFileReaderException {
         if (currentChar == '"'){
             updateLexeme();
@@ -380,7 +381,7 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s37();
         } else if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string inválido", fileReader.getLineNumber(), fileReader.getColNumber());
         } else {
             updateLexeme();
             readNextCharacter();
@@ -389,8 +390,13 @@ public class LexicalAnalyser {
     }
 
     private Token s37() throws LexicalException, SourceFileReaderException {
-        if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string sin cerrar", fileReader.getLineNumber(), fileReader.getColNumber());
+        if (currentChar == '\\'){
+            updateLexeme();
+            readNextCharacter();
+            return s37();
+        }
+        else if (fileReader.isEOL(currentChar) || fileReader.isEOF(currentChar)) {
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal string inválido", fileReader.getLineNumber(), fileReader.getColNumber());
         } else {
             updateLexeme();
             readNextCharacter();
@@ -401,7 +407,6 @@ public class LexicalAnalyser {
     private Token s38() { return new Token(strLit, lexeme, fileReader.getLineNumber());}
 
     // Identifiers
-
     private Token s39() throws SourceFileReaderException {
         if (Character.isLetterOrDigit(currentChar) || currentChar == '_'){
             updateLexeme();
@@ -425,9 +430,8 @@ public class LexicalAnalyser {
     }
 
     // Unicode
-
     private Token s41() throws LexicalException, SourceFileReaderException {
-        if (isHexaChar(currentChar)) {
+        if (isHexaChar(currentChar) && lexeme.length() < 7) {
             updateLexeme();
             readNextCharacter();
             return s41();
@@ -436,8 +440,7 @@ public class LexicalAnalyser {
             readNextCharacter();
             return s35();
         } else {
-            updateLexeme();
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Unicode char inválido", fileReader.getLineNumber(), fileReader.getColNumber());
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), "Literal char unicode inválido", fileReader.getLineNumber(), fileReader.getColNumber());
         }
     }
 
@@ -447,6 +450,7 @@ public class LexicalAnalyser {
         return Character.isDigit(character) || upperCase || lowerCase;
     }
 
+    // Reserved Words
     private void loadReservedWords() {
         reservedWords = new HashMap<>();
         reservedWords.put("class",r_class);

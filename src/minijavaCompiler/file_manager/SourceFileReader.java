@@ -28,6 +28,7 @@ public class SourceFileReader {
     }
 
     public char readCharacter() throws SourceFileReaderException {
+        if (currentChar == EOF) return EOF;
         try {
             if (currentLine == null || currentChar == EOL) {
                 if ((newLine = bufferedReader.readLine()) != null) {
@@ -36,6 +37,7 @@ public class SourceFileReader {
                     colNumber = 0;
                 } else {
                     bufferedReader.close();
+                    currentChar = EOF;
                     return EOF;
                 }
             }
@@ -44,7 +46,6 @@ public class SourceFileReader {
         } catch (IOException e){
             throw new SourceFileReaderException("Error reading file");
         }
-
         return currentChar;
     }
 

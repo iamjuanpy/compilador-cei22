@@ -20,17 +20,25 @@ public class Main {
                 sourceFileReader = new SourceFileReader(filePath);
                 lexicalAnalyser = new LexicalAnalyser(sourceFileReader);
 
-                Token token;
+                Token token = null;
+                boolean noError = true;
                 do {
-                    token = lexicalAnalyser.getNextToken();
-                    System.out.println(token.toString());
-                } while (token.getTokenType() != TokenType.eof);
+                    try {
+                        token = lexicalAnalyser.getNextToken();
+                        System.out.println(token.toString());
+                    } catch (LexicalException exception){
+                        System.out.println("\n"+exception.getMessage()+"\n");
+                        noError = false;
+                        lexicalAnalyser.recoverFromError();
+                    }
+                } while (token == null || token.getTokenType() != TokenType.eof);
 
-                System.out.println("\n"+"[SinErrores]");
-            }catch (SourceFileReaderException | LexicalException exception) {
+                if (noError) System.out.println("\n"+"[SinErrores]");
+
+            }catch (SourceFileReaderException exception) {
                 System.out.println("\n"+exception.getMessage());
             }
-        } else System.out.println("Error: run the compiler with a java source file as parameter");
+        } else System.out.println("Error: no java source file as parameter");
 
     }
 }

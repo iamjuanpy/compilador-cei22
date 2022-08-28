@@ -1,3 +1,3 @@
-///[Error:'\u0afS|3]
+///[Error:'\u0af|3]
 
 '\u0afS'
