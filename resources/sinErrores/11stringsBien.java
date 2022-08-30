@@ -1,2 +1,2 @@
 
-"hola " + "caracteres $%323 #"
+"hola " + "caracteres $%323 #"""

@@ -29,7 +29,6 @@ public class LexicalAnalyser {
 
     public Token getNextToken() throws LexicalException, SourceFileReaderException {
         lexeme = "";
-        firstCommentLine = null;
         return s0();
     }
 
@@ -45,6 +44,7 @@ public class LexicalAnalyser {
 
     // MultiLine Comments ErrorCode Builder
     private void saveMultiLineCommentFirstLineData(){
+        firstCommentLineLexeme = null;
         firstCommentLine = fileReader.getCurrentLine();
         commentLineNumber = fileReader.getLineNumber();
         commentColNumber = fileReader.getColNumber() - 1;
@@ -191,7 +191,7 @@ public class LexicalAnalyser {
         } else {
             if (fileReader.isEOL(currentChar)) {
                 if (noMultiLineCommentLexeme())
-                    firstCommentLineLexeme = lexeme;
+                    firstCommentLineLexeme = lexeme; // Save comment lexeme until EOL
             } else {
                 updateLexeme();
             }
@@ -209,7 +209,7 @@ public class LexicalAnalyser {
         } else {
             if (fileReader.isEOL(currentChar)) {
                 if (noMultiLineCommentLexeme())
-                    firstCommentLineLexeme = lexeme;
+                    firstCommentLineLexeme = lexeme; // Save comment lexeme until EOL
             } else {
                 updateLexeme();
             }
@@ -320,14 +320,14 @@ public class LexicalAnalyser {
 
     // Int
     private Token s31() throws LexicalException, SourceFileReaderException {
-        if (Character.isDigit(currentChar)){
+        if (Character.isDigit(currentChar) && lexeme.length() < 9){
             updateLexeme();
             readNextCharacter();
             return s31();
-        } else if (lexeme.length() <= 9){
-            return new Token(intLit, lexeme, fileReader.getLineNumber());
+        } else if (Character.isDigit(currentChar)){
+            throw new LexicalException(lexeme, fileReader.getCurrentLine(), lexeme+" es un número demasiado largo",fileReader.getLineNumber(), fileReader.getColNumber());
         } else {
-            throw new LexicalException(lexeme, fileReader.getCurrentLine(), lexeme+" es un número demasiado largo",fileReader.getLineNumber(), fileReader.getColNumber()-lexeme.length());
+            return new Token(intLit, lexeme, fileReader.getLineNumber());
         }
     }
 

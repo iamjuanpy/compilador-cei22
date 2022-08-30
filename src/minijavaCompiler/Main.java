@@ -35,7 +35,7 @@ public class Main {
 
                 if (noError) System.out.println("\n"+"[SinErrores]");
 
-            }catch (SourceFileReaderException exception) {
+            } catch (SourceFileReaderException exception) {
                 System.out.println("\n"+exception.getMessage());
             }
         } else System.out.println("Error: no java source file as parameter");
