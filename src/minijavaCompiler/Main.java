@@ -31,7 +31,7 @@ public class Main {
                         noError = false;
                         lexicalAnalyser.recoverFromError();
                     }
-                } while (token == null || token.getTokenType() != TokenType.eof);
+                } while (token == null || token.tokenType != TokenType.eof);
 
                 if (noError) System.out.println("\n"+"[SinErrores]");
 
