@@ -153,13 +153,11 @@ public class SyntaxParser {
     }
 
     private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
-        TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};
-        if (Arrays.asList(primerosEncabezadoMet).contains(currentToken.tokenType)) { // Primeros(<EncabezadoMetodo>)
-            estaticoOpt();
-            tipoMetodo();
-            match(mvID);
-            argsFormales();
-        } else throw new SyntacticException(currentToken.lexeme, currentToken.lineNumber);
+        TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};//Primeros(<EncabezadoMetodo>)
+        estaticoOpt();
+        tipoMetodo();
+        match(mvID);
+        argsFormales();
     }
 
     private void visibilidad() throws SyntacticException, LexicalException, SourceFileReaderException {
