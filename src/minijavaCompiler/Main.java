@@ -6,6 +6,8 @@ import minijavaCompiler.lexical.LexicalAnalyser;
 import minijavaCompiler.lexical.exceptions.LexicalException;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
+import minijavaCompiler.syntax.SyntacticException;
+import minijavaCompiler.syntax.SyntaxParser;
 
 public class Main {
     public static void main(String [] args){
@@ -13,6 +15,7 @@ public class Main {
         String filePath;
         SourceFileReader sourceFileReader = null;
         LexicalAnalyser lexicalAnalyser;
+        SyntaxParser syntaxParser;
 
         if (args.length == 1){
             try {
@@ -20,18 +23,13 @@ public class Main {
                 sourceFileReader = new SourceFileReader(filePath);
                 lexicalAnalyser = new LexicalAnalyser(sourceFileReader);
 
-                Token token = null;
                 boolean noError = true;
-                do {
-                    try {
-                        token = lexicalAnalyser.getNextToken();
-                        System.out.println(token.toString());
-                    } catch (LexicalException exception){
-                        System.out.println("\n"+exception.getMessage()+"\n");
-                        noError = false;
-                        lexicalAnalyser.recoverFromError();
-                    }
-                } while (token == null || token.tokenType != TokenType.eof);
+                try {
+                    syntaxParser = new SyntaxParser(lexicalAnalyser);
+                } catch (LexicalException | SyntacticException exception){
+                    System.out.println("\n"+exception.getMessage()+"\n");
+                    noError = false;
+                }
 
                 if (noError) System.out.println("\n"+"[SinErrores]");
 
