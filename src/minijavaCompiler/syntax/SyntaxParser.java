@@ -112,7 +112,7 @@ public class SyntaxParser {
     }
 
     private void listaMiembros() throws LexicalException, SourceFileReaderException, SyntacticException {
-        TokenType[] primerosMiembro = {r_public, r_private, r_static, r_boolean, r_int, r_char, classID};
+        TokenType[] primerosMiembro = {r_public, r_private, r_static, r_boolean, r_int, r_char, classID, r_void};
         if (Arrays.asList(primerosMiembro).contains(currentToken.tokenType)) {
             miembro();
             listaMiembros();
