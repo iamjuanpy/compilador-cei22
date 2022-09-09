@@ -401,7 +401,10 @@ public class SyntaxParser {
             match(r_else);
             sentencia();
         } else {
-            //Siguiente( nt_ifFactorizado) = { Primero sentencia o } }
+            //Siguiente(nt_ifFactorizado) = { Primeros(Sentencia) u } }
+            if (currentToken.tokenType != semicolon && currentToken.tokenType != mvID && currentToken.tokenType != r_return && currentToken.tokenType != r_var && currentToken.tokenType != r_if && currentToken.tokenType != r_while && currentToken.tokenType != openCurly && currentToken.tokenType != classID && currentToken.tokenType != openBr && currentToken.tokenType != r_this && currentToken.tokenType != r_new && currentToken.tokenType != closeCurly){
+                throw new SyntacticException("Sentencia mal cerrada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -424,7 +427,10 @@ public class SyntaxParser {
             expresionUnaria();
             expresionRecursiva();
         } else {
-            //Siguiente( expresion recursiva) = { ) u ; u operador binario}
+            //Siguiente(ExpresionRecursiva) = { , u ) u ; u Primeros(OperadorBinario)}
+            if (currentToken.tokenType != comma && currentToken.tokenType != closeBr && currentToken.tokenType != semicolon && currentToken.tokenType != orOP && currentToken.tokenType != andOP && currentToken.tokenType != equals && currentToken.tokenType != notEquals && currentToken.tokenType != less && currentToken.tokenType != greater && currentToken.tokenType != lessOrEquals && currentToken.tokenType != greaterOrEquals && currentToken.tokenType != addOP && currentToken.tokenType != subOP && currentToken.tokenType != multOP && currentToken.tokenType != divOP && currentToken.tokenType != modOP) {
+                throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -527,7 +533,10 @@ public class SyntaxParser {
         if (currentToken.tokenType == openBr) {
             argsActuales();
         } else {
-            //Siguientes(accesoVarMetFactorizado) = { . u operadorBinario u ;}
+            //Siguientes(accesoVarMetFactorizado) = { ( u ) u , u . u Primeros(OperadorBinario) u ; u Primeros(TipoAsignacion)}
+            if (currentToken.tokenType != openBr && currentToken.tokenType != closeBr && currentToken.tokenType != comma && currentToken.tokenType != dot && currentToken.tokenType != semicolon && currentToken.tokenType != orOP && currentToken.tokenType != andOP && currentToken.tokenType != equals && currentToken.tokenType != notEquals && currentToken.tokenType != less && currentToken.tokenType != greater && currentToken.tokenType != lessOrEquals && currentToken.tokenType != greaterOrEquals && currentToken.tokenType != addOP && currentToken.tokenType != subOP && currentToken.tokenType != multOP && currentToken.tokenType != divOP && currentToken.tokenType != modOP && currentToken.tokenType != assign && currentToken.tokenType != addAssign && currentToken.tokenType != subAssign ) {
+                throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
     private void accesoMetodoEstatico() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -562,6 +571,9 @@ public class SyntaxParser {
             listaExps();
         } else {
             //Siguiente(listaExpsOpt) = { ) }
+            if (currentToken.tokenType != closeBr){
+                throw new SyntacticException("Lista de argumentos sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
     private void listaExps() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -574,6 +586,9 @@ public class SyntaxParser {
             listaExps();
         } else {
             // Siguiente(listaExpsFactorizada) = { ) }
+            if (currentToken.tokenType != closeBr){
+                throw new SyntacticException("Lista de argumentos sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -581,7 +596,10 @@ public class SyntaxParser {
         if (currentToken.tokenType == dot) {
             varOMetEncadenado();
         } else {
-            //Siguientes(encadenadoOpt) = {  Primeros(TipoAsignacion) u ; u operadorBinario}
+            //Siguientes(encadenadoOpt) = { Primeros(TipoAsignacion) u ; u Primeros(OperadorBinario) u ) }
+            if (currentToken.tokenType != comma && currentToken.tokenType != closeBr && currentToken.tokenType != assign && currentToken.tokenType != addAssign && currentToken.tokenType != subAssign && currentToken.tokenType != semicolon && currentToken.tokenType != orOP && currentToken.tokenType != andOP && currentToken.tokenType != equals && currentToken.tokenType != notEquals && currentToken.tokenType != less && currentToken.tokenType != greater && currentToken.tokenType != lessOrEquals && currentToken.tokenType != greaterOrEquals && currentToken.tokenType != addOP && currentToken.tokenType != subOP && currentToken.tokenType != multOP && currentToken.tokenType != divOP && currentToken.tokenType != modOP) {
+                throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
     private void varOMetEncadenado() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -595,7 +613,10 @@ public class SyntaxParser {
             argsActuales();
             encadenadoOpt();
         } else {
-            //Siguientes(varOMetEncadenadoFactorizado) = { . ; u operadorBinario}
+            //Siguientes(varOMetEncadenadoFactorizado) = { . u ; u operadorBinario}
+//            if (currentToken.tokenType != dot && currentToken.tokenType != semicolon && currentToken.tokenType != orOP && currentToken.tokenType != andOP && currentToken.tokenType != equals && currentToken.tokenType != notEquals && currentToken.tokenType != less && currentToken.tokenType != greater && currentToken.tokenType != lessOrEquals && currentToken.tokenType != greaterOrEquals && currentToken.tokenType != addOP && currentToken.tokenType != subOP && currentToken.tokenType != multOP && currentToken.tokenType != divOP && currentToken.tokenType != modOP) {
+//                throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+//            }
         }
     }
 }
