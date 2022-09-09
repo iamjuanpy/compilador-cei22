@@ -22,11 +22,11 @@ public class SyntaxParser {
         inicial();
     }
 
-    private void match(TokenType tokenType) throws LexicalException, SourceFileReaderException, SyntacticException {
-        if (tokenType == currentToken.tokenType){
+    private void match(TokenType expectedTokenType) throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (expectedTokenType == currentToken.tokenType){
             currentToken = lexicalAnalyser.getNextToken();
         } else {
-            throw new SyntacticException(tokenType,currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            throw new SyntacticException(expectedTokenType,currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
 
@@ -41,6 +41,9 @@ public class SyntaxParser {
             listadeclases();
         } else {
             //Siguiente(ListaClases) = EOF
+            if (currentToken.tokenType != eof) {
+                throw new SyntacticException("Se esperaba el fin del archivo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -49,7 +52,7 @@ public class SyntaxParser {
             claseConcreta();
         } else if (currentToken.tokenType == r_interface) { // Primeros(<Interface>)
             nt_interface();
-        } else throw new SyntacticException("declaración de clase o interface", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba declaración de clase o interface", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void claseConcreta() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -77,6 +80,9 @@ public class SyntaxParser {
             match(classID);
         } else {
             // Siguientes(HeredaDe) = Primeros(ImplementaA) U { { }
+            if (currentToken.tokenType != openCurly && currentToken.tokenType != r_implements) {
+                throw new SyntacticException("Se esperaba una lista de atributos/métodos", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -86,6 +92,9 @@ public class SyntaxParser {
             listaTipoReferencia();
         } else {
             // Siguientes(implementaA) = { { }
+            if (currentToken.tokenType != openCurly) {
+                throw new SyntacticException("Se esperaba una lista de atributos/métodos", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -95,6 +104,9 @@ public class SyntaxParser {
             listaTipoReferencia();
         } else {
             // Siguientes(extiendeA) = { { }
+            if (currentToken.tokenType != openCurly) {
+                throw new SyntacticException("Se esperaba una lista de encabezados de métodos", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -109,6 +121,9 @@ public class SyntaxParser {
             listaTipoReferencia();
         } else {
             //Siguiente(listaTipoReferenciaFactorizada) = { { }
+            if (currentToken.tokenType != openCurly) {
+                throw new SyntacticException("Se esperaba una lista de métodos", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -119,6 +134,9 @@ public class SyntaxParser {
             listaMiembros();
         } else {
             //Siguiente(ListaMiembros) = { } }
+            if (currentToken.tokenType != closeCurly) {
+                throw new SyntacticException("Clase sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -130,6 +148,9 @@ public class SyntaxParser {
             listaEncabezados();
         } else {
             // Siguiente(ListaEncabezados) = { } }
+            if (currentToken.tokenType != closeCurly) {
+                throw new SyntacticException("Interface sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -137,8 +158,8 @@ public class SyntaxParser {
         if (currentToken.tokenType == r_public || currentToken.tokenType == r_private) {
             atributo();
         } else if ( currentToken.tokenType == r_static || currentToken.tokenType == r_void || currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == classID){
-            metodo();
-        } else throw new SyntacticException("declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            atributoOMetodo();
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void atributo() throws SyntacticException, LexicalException, SourceFileReaderException {
@@ -148,13 +169,42 @@ public class SyntaxParser {
         match(semicolon);
     }
 
-    private void metodo() throws LexicalException, SourceFileReaderException, SyntacticException {
-        encabezadoMetodo();
-        bloque();
+    private void atributoOMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == classID) {
+            tipo();
+            match(mvID);
+            atributoOmisionOMetodo();
+        }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
+            encabezadoMetodoStaticOVoid();
+            bloque();
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+    }
+
+    private void atributoOmisionOMetodo() throws LexicalException, SourceFileReaderException, SyntacticException{
+        if (currentToken.tokenType == comma || currentToken.tokenType == semicolon) {
+            listaDecAtrsFactorizada();
+            match(semicolon);
+        } else if (currentToken.tokenType == openBr) {
+            argsFormales();
+            bloque();
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+    }
+
+    private void encabezadoMetodoStaticOVoid() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == r_static) {
+            match(r_static);
+            tipoMetodo();
+            match(mvID);
+            argsFormales();
+        } else if (currentToken.tokenType == r_void) {
+            match(r_void);
+            match(mvID);
+            argsFormales();
+        } else throw new SyntacticException("Se esperaba declaración de método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
-        TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};//Primeros(<EncabezadoMetodo>)
+        TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};
         estaticoOpt();
         tipoMetodo();
         match(mvID);
@@ -166,19 +216,23 @@ public class SyntaxParser {
             match(r_public);
         } else if (currentToken.tokenType == r_private) {
             match(r_private);
-        } else throw new SyntacticException("identificador de visibilidad", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba identificador de visibilidad", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void tipo() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
             tipoPrimitivo();
         } else if (currentToken.tokenType == classID) {
             match(classID);
-        } else throw new SyntacticException("identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void tipoPrimitivo() throws LexicalException, SourceFileReaderException, SyntacticException {
-        if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean){
-            match(currentToken.tokenType);
-        } else throw new SyntacticException("identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        if (currentToken.tokenType == r_int){
+            match(r_int);
+        } else if (currentToken.tokenType == r_char){
+            match(r_char);
+        } else if (currentToken.tokenType == r_boolean) {
+            match(r_boolean);
+        }else throw new SyntacticException("Se esperaba identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void listaDecAtrs() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -190,7 +244,9 @@ public class SyntaxParser {
             match(comma);
             listaDecAtrs();
         } else {
-            //Siguiente(listaDecAtrsFactorizada) = { ; }
+            if (currentToken.tokenType != semicolon) { //Siguiente(listaDecAtrsFactorizada) = { ; }
+                throw new SyntacticException("Declaración de atributo sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -199,6 +255,9 @@ public class SyntaxParser {
             match(r_static);
         } else {
             //Siguiente(EstaticoOpt) = Primeros(TipoMetodo)
+            if (currentToken.tokenType != r_int && currentToken.tokenType != r_char && currentToken.tokenType != r_boolean && currentToken.tokenType != classID && currentToken.tokenType != r_void) {
+                throw new SyntacticException("Se esperaba el tipo del método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
     private void tipoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -206,7 +265,7 @@ public class SyntaxParser {
             tipo();
         } else if (currentToken.tokenType == r_void){
             match(r_void);
-        } else throw new SyntacticException("identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void argsFormales() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -218,7 +277,9 @@ public class SyntaxParser {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean || currentToken.tokenType == classID){
             listaArgsFormales();
         } else {
-            //Siguiente(listaArgsFormalesOpt) = { ) }
+            if (currentToken.tokenType != closeBr) { //Siguiente(listaArgsFormalesOpt) = { ) }
+                throw new SyntacticException("Lista de argumentos sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
     private void listaArgsFormales() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -230,7 +291,9 @@ public class SyntaxParser {
             match(comma);
             listaArgsFormales();
         } else {
-            //Siguiente(listaArgsFormalesOpt) = { ) }
+            if (currentToken.tokenType != closeBr) { //Siguiente(listaArgsFormalesOpt) = { ) }
+                throw new SyntacticException("Lista de argumentos sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -251,7 +314,9 @@ public class SyntaxParser {
             sentencia();
             listaSentencias();
         } else {
-            //Siguientes(ListaSentencias) = ;
+            if (currentToken.tokenType != closeCurly) { //Siguientes(ListaSentencias) = { } }
+                throw new SyntacticException("Bloque sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -273,7 +338,7 @@ public class SyntaxParser {
             nt_while();
         } else if (currentToken.tokenType == openCurly){
             bloque();
-        } else throw new SyntacticException("sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void asignacionOLlamada() throws LexicalException, SourceFileReaderException, SyntacticException {
         acceso();
@@ -284,7 +349,9 @@ public class SyntaxParser {
             tipoDeAsignacion();
             expresion();
         } else {
-            // Siguiente(asignacionOLlamadaFactorizada) = { ; }
+            if (currentToken.tokenType != semicolon) { // Siguientes(asignacionOLlamadaFactorizada) = { ; }
+                throw new SyntacticException("Sentencia sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -295,7 +362,7 @@ public class SyntaxParser {
             match(addAssign);
         } else if (currentToken.tokenType == subAssign) {
             match(subAssign);
-        } else throw new SyntacticException("una asignación", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba asignación", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void varLocal() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -315,7 +382,9 @@ public class SyntaxParser {
         if (Arrays.asList(primerosExpresion).contains(currentToken.tokenType)) {
             expresion();
         } else {
-            // sig (expresionOPT) = { ; }
+            if (currentToken.tokenType != semicolon) { // Siguientes(expresionOpt) = { ; }
+                throw new SyntacticException("Return sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+            }
         }
     }
 
@@ -387,7 +456,7 @@ public class SyntaxParser {
             match(divOP);
         } else if (currentToken.tokenType == modOP){
             match(modOP);
-        } else throw new SyntacticException("un operador", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba operador", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void expresionUnaria() throws SyntacticException, LexicalException, SourceFileReaderException {
         TokenType[] primerosOperadorUn = {addOP, subOP, not};
@@ -397,7 +466,7 @@ public class SyntaxParser {
             operando();
         } else if (Arrays.asList(primerosOperando).contains(currentToken.tokenType)) {
             operando();
-        } else throw new SyntacticException("una expresión", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba expresión", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void operadorUnario() throws SyntacticException, LexicalException, SourceFileReaderException {
         if (currentToken.tokenType == addOP){
@@ -406,14 +475,14 @@ public class SyntaxParser {
             match(subOP);
         } else if (currentToken.tokenType == not){
             match(not);
-        } else throw new SyntacticException("un operador", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba operador", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
     private void operando() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_null || currentToken.tokenType == r_true || currentToken.tokenType == r_false || currentToken.tokenType == intLit || currentToken.tokenType == charLit || currentToken.tokenType == strLit ){
             literal();
         } else if (currentToken.tokenType == r_this || currentToken.tokenType == mvID || currentToken.tokenType == r_new || currentToken.tokenType == openBr || currentToken.tokenType == classID){
             acceso();
-        } else throw new SyntacticException("un operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void literal() throws SyntacticException, LexicalException, SourceFileReaderException {
@@ -429,7 +498,7 @@ public class SyntaxParser {
             match(charLit);
         } else if (currentToken.tokenType == strLit) {
             match(strLit);
-        } else throw new SyntacticException("un operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void acceso() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -447,7 +516,7 @@ public class SyntaxParser {
             accesoMetodoEstatico();
         } else if (currentToken.tokenType == openBr){
             expresionParentizada();
-        } else throw new SyntacticException("un operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba operando", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void accesoVarMet() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -458,7 +527,7 @@ public class SyntaxParser {
         if (currentToken.tokenType == openBr) {
             argsActuales();
         } else {
-            //Siguientes(accesoVarMetFactorizado) = { . u operadorBinario}
+            //Siguientes(accesoVarMetFactorizado) = { . u operadorBinario u ;}
         }
     }
     private void accesoMetodoEstatico() throws LexicalException, SourceFileReaderException, SyntacticException {
