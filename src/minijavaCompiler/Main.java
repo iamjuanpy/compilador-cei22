@@ -4,9 +4,7 @@ import minijavaCompiler.file_manager.SourceFileReader;
 import minijavaCompiler.file_manager.SourceFileReaderException;
 import minijavaCompiler.lexical.LexicalAnalyser;
 import minijavaCompiler.lexical.exceptions.LexicalException;
-import minijavaCompiler.lexical.Token;
-import minijavaCompiler.lexical.TokenType;
-import minijavaCompiler.syntax.SyntacticException;
+import minijavaCompiler.syntax.exceptions.SyntacticException;
 import minijavaCompiler.syntax.SyntaxParser;
 
 public class Main {
