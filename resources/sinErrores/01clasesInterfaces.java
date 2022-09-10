@@ -3,3 +3,7 @@
 class Prueba1{
 
 }
+
+interface Interface1 {
+
+}

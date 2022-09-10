@@ -6,4 +6,12 @@ class Prueba1{
     int metodo1() {
         
     }
+
+    void metodo2(){
+
+    }
+
+    static Clase2 metodo3() {
+
+    }
 }
