@@ -21,18 +21,11 @@ public class Main {
                 sourceFileReader = new SourceFileReader(filePath);
                 lexicalAnalyser = new LexicalAnalyser(sourceFileReader);
 
-                boolean noError = true;
-                try {
-                    syntaxParser = new SyntaxParser(lexicalAnalyser);
-                } catch (LexicalException | SyntacticException exception){
-                    System.out.println("\n"+exception.getMessage()+"\n");
-                    noError = false;
-                }
+                syntaxParser = new SyntaxParser(lexicalAnalyser);
 
-                if (noError) System.out.println("\n"+"[SinErrores]");
-
-            } catch (SourceFileReaderException exception) {
-                System.out.println("\n"+exception.getMessage());
+                System.out.println("\n"+"[SinErrores]");
+            } catch (SourceFileReaderException | LexicalException | SyntacticException  exception) {
+                System.out.println("\n"+exception.getMessage()+"\n");
             }
         } else System.out.println("Error: no java source file as parameter");
 
