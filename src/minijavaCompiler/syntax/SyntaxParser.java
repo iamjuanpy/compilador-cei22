@@ -31,14 +31,14 @@ public class SyntaxParser {
     }
 
     private void inicial() throws LexicalException, SourceFileReaderException, SyntacticException {
-        listadeclases();
+        listaClases();
         match(eof);
     }
 
-    private void listadeclases() throws SyntacticException, LexicalException, SourceFileReaderException {
+    private void listaClases() throws SyntacticException, LexicalException, SourceFileReaderException {
         if (currentToken.tokenType == TokenType.r_class || currentToken.tokenType == TokenType.r_interface) {
             clase();
-            listadeclases();
+            listaClases();
         } else {
             if (currentToken.tokenType == eof) { // Siguientes(...) = EOF
                 // nada
@@ -168,7 +168,7 @@ public class SyntaxParser {
             match(mvID);
             atributoOmisionOMetodo();
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
-            encabezadoMetodoStaticOVoid();
+            encabezadoMetodo();
             bloque();
         } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
@@ -181,19 +181,6 @@ public class SyntaxParser {
             argsFormales();
             bloque();
         } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
-    }
-
-    private void encabezadoMetodoStaticOVoid() throws LexicalException, SourceFileReaderException, SyntacticException {
-        if (currentToken.tokenType == r_static) {
-            match(r_static);
-            tipoMetodo();
-            match(mvID);
-            argsFormales();
-        } else if (currentToken.tokenType == r_void) {
-            match(r_void);
-            match(mvID);
-            argsFormales();
-        } else throw new SyntacticException("Se esperaba declaración de método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -420,8 +407,8 @@ public class SyntaxParser {
             expresionUnaria();
             expresionRecursiva();
         } else {
-            TokenType[] siguientesExpresionRecursiva = {comma, semicolon, closeBr, orOP, andOP, equals, notEquals, less, greater, lessOrEquals, greaterOrEquals, addOP, subOP, multOP, divOP, modOP};
-            if (Arrays.asList(siguientesExpresionRecursiva).contains(currentToken.tokenType)) { //Siguiente(...) = { , , ) , ; , Primeros(<OperadorBinario>) }
+            TokenType[] siguientesExpresionRecursiva = {comma, semicolon, closeBr }; 
+            if (Arrays.asList(siguientesExpresionRecursiva).contains(currentToken.tokenType)) { //Siguiente(...) = { , , ) , ; }
                 // nada
             } else throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
@@ -588,7 +575,7 @@ public class SyntaxParser {
             varOMetEncadenado();
         } else {
             TokenType[] siguientesEncadenadoOpt = { closeBr,comma, assign, addAssign, subAssign, semicolon, orOP, andOP, equals, notEquals, less, greater, lessOrEquals, greaterOrEquals, addOP, subOP, multOP, divOP, modOP};
-            if (Arrays.asList(siguientesEncadenadoOpt).contains(currentToken.tokenType)) { //Siguientes(...) = { . , ; , ), , ,Primeros(<OperadorBinario>) , Primeros(<TipoAsignacion>) }
+            if (Arrays.asList(siguientesEncadenadoOpt).contains(currentToken.tokenType)) { //Siguientes(...) = { ; , ), , ,Primeros(<OperadorBinario>) , Primeros(<TipoAsignacion>) }
                 // nada
             } else throw new SyntacticException("Expresión mal formada", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
@@ -602,7 +589,6 @@ public class SyntaxParser {
     private void varOMetEncadenadoFactorizado() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == openBr) {
             argsActuales();
-            encadenadoOpt();
         } else {
             TokenType[] siguientesVarOMetEncFact = {dot, semicolon, closeBr, comma, orOP, andOP, equals, notEquals, less, greater, lessOrEquals, greaterOrEquals, addOP, subOP, multOP, divOP, modOP, assign,addAssign, subAssign};
             if (Arrays.asList(siguientesVarOMetEncFact).contains(currentToken.tokenType)) { //Siguientes(...) = { . , ; , ), , ,Primeros(<OperadorBinario>) , Primeros(<TipoAsignacion>) }
