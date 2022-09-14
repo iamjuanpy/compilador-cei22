@@ -8,7 +8,7 @@ import java.util.Map;
 import static minijavaCompiler.lexical.TokenType.*;
 
 
-public class SyntaxErrorUtil {
+public class SyntaxErrorNamesUtil {
 
     private static Map<TokenType,String> map;
 
@@ -44,32 +44,32 @@ public class SyntaxErrorUtil {
             map.put(charLit,"literal char");
             map.put(strLit,"literal string");
 
-            map.put(openBr,"(");
-            map.put(closeBr,")");
-            map.put(openCurly,"{");
-            map.put(closeCurly,"}");
-            map.put(semicolon,";");
-            map.put(comma,",");
-            map.put(dot,".");
+            map.put(openBr,"símbolo (");
+            map.put(closeBr,"símbolo )");
+            map.put(openCurly,"símbolo {");
+            map.put(closeCurly,"símbolo }");
+            map.put(semicolon,"símbolo ;");
+            map.put(comma,"símbolo ,");
+            map.put(dot,"símbolo .");
 
-            map.put(greater,">");
-            map.put(less,"<");
-            map.put(not,"!");
-            map.put(equals,"==");
-            map.put(greaterOrEquals,">=");
-            map.put(lessOrEquals,"<=");
-            map.put(notEquals,"!=");
-            map.put(addOP,"+");
-            map.put(subOP,"-");
-            map.put(multOP,"*");
-            map.put(divOP,"/");
-            map.put(andOP,"&&");
-            map.put(orOP,"||");
-            map.put(modOP,"%");
+            map.put(greater,"símbolo >");
+            map.put(less,"símbolo <");
+            map.put(not,"símbolo !");
+            map.put(equals,"símbolo ==");
+            map.put(greaterOrEquals,"símbolo >=");
+            map.put(lessOrEquals,"símbolo <=");
+            map.put(notEquals,"símbolo !=");
+            map.put(addOP,"símbolo +");
+            map.put(subOP,"símbolo -");
+            map.put(multOP,"símbolo *");
+            map.put(divOP,"símbolo /");
+            map.put(andOP,"símbolo &&");
+            map.put(orOP,"símbolo ||");
+            map.put(modOP,"símbolo %");
 
-            map.put(assign,"=");
-            map.put(addAssign,"+=");
-            map.put(subAssign,"-=");
+            map.put(assign,"símbolo =");
+            map.put(addAssign,"símbolo +=");
+            map.put(subAssign,"símbolo -=");
 
             map.put(eof,"el fin del archivo");
         }

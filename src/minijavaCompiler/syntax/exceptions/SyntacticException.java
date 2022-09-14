@@ -9,14 +9,14 @@ public class SyntacticException extends Exception{
     }
 
     public SyntacticException(TokenType expectedToken, TokenType foundToken, String lexeme, int lineNumber) {
-        super("Error semántico en línea "+lineNumber +": "+"Se esperaba "+ SyntaxErrorUtil.getTokenNamesMap().get(expectedToken)+
-                " y se encontró "+ SyntaxErrorUtil.getTokenNamesMap().get(foundToken) +"\n"+
+        super("Error semántico en línea "+lineNumber +": "+"Se esperaba "+ SyntaxErrorNamesUtil.getTokenNamesMap().get(expectedToken)+
+                " y se encontró "+ SyntaxErrorNamesUtil.getTokenNamesMap().get(foundToken) +"\n"+"\n"+
                 "[Error:"+lexeme+"|"+lineNumber+"]");
     }
 
     public SyntacticException(String errorMsg, TokenType foundToken, String lexeme, int lineNumber) {
         super("Error semántico en línea "+lineNumber+": "+errorMsg+
-                ", se encontró "+ SyntaxErrorUtil.getTokenNamesMap().get(foundToken) +"\n"+
+                ", se encontró "+ SyntaxErrorNamesUtil.getTokenNamesMap().get(foundToken) +"\n"+"\n"+
                 "[Error:"+lexeme+"|"+lineNumber+"]");
     }
 

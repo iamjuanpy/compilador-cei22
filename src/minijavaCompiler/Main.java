@@ -25,7 +25,7 @@ public class Main {
 
                 System.out.println("\n"+"[SinErrores]");
             } catch (SourceFileReaderException | LexicalException | SyntacticException  exception) {
-                System.out.println("\n"+exception.getMessage()+"\n");
+                System.out.println("\n"+exception.getMessage());
             }
         } else System.out.println("Error: no java source file as parameter");
 

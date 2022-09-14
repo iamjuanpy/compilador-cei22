@@ -5,6 +5,6 @@ class Hijo extends Padre {
 
 }
 
-class Nieto extends Hijo {
+class Nieto extends Hijo implements Persona, Humano {
 
 }

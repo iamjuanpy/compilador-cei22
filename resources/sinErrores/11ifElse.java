@@ -9,6 +9,9 @@ class Clase {
         }
         else noAB();
 
+        if (true) print(); // esto es asi?
+        else chau();
+
     }
 
 }
