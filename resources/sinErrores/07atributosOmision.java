@@ -7,6 +7,7 @@ class Clase {
     }
     static void met2(){}
 
+    public boolean variable5;
     int variable2,variable3,variable4;
 
 }
