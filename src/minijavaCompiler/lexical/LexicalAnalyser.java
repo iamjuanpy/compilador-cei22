@@ -219,7 +219,7 @@ public class LexicalAnalyser {
     }
 
     private Token s5() {
-        return new Token(eof,"eof",fileReader.getLineNumber());
+        return new Token(eof,"",fileReader.getLineNumber());
     }
 
     // Punctuation
