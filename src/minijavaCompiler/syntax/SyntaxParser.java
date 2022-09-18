@@ -16,7 +16,7 @@ public class SyntaxParser {
     LexicalAnalyser lexicalAnalyser;
     Token currentToken;
 
-    public SyntaxParser(LexicalAnalyser lexicalAnalyser) throws LexicalException, SourceFileReaderException {
+    public SyntaxParser(LexicalAnalyser lexicalAnalyser) throws LexicalException, SourceFileReaderException{
         this.lexicalAnalyser = lexicalAnalyser;
         currentToken = lexicalAnalyser.getNextToken();
     }
@@ -174,7 +174,7 @@ public class SyntaxParser {
             match(classID);
             constructorOAttrOMetodo();
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
-            encabezadoMetodo(); 
+            encabezadoMetodo(); // ver aclaración en el informe > logros intentados
             bloque();
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
