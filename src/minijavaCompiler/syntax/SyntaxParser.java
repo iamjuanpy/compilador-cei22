@@ -16,10 +16,9 @@ public class SyntaxParser {
     LexicalAnalyser lexicalAnalyser;
     Token currentToken;
 
-    public SyntaxParser(LexicalAnalyser lexicalAnalyser) throws LexicalException, SourceFileReaderException, SyntacticException {
+    public SyntaxParser(LexicalAnalyser lexicalAnalyser) throws LexicalException, SourceFileReaderException {
         this.lexicalAnalyser = lexicalAnalyser;
         currentToken = lexicalAnalyser.getNextToken();
-        inicial();
     }
 
     private void match(TokenType expectedTokenType) throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -28,6 +27,10 @@ public class SyntaxParser {
         } else {
             throw new SyntacticException(expectedTokenType,currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
+    }
+
+    public void startParse() throws LexicalException, SourceFileReaderException, SyntacticException {
+        inicial();
     }
 
     private void inicial() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -151,7 +154,7 @@ public class SyntaxParser {
         if (currentToken.tokenType == r_public || currentToken.tokenType == r_private) {
             atributo();
         } else if ( currentToken.tokenType == r_static || currentToken.tokenType == r_void || currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == classID){
-            atributoOMetodo();
+            atributoOMetodoOConstructor();
         } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
@@ -162,15 +165,28 @@ public class SyntaxParser {
         match(semicolon);
     }
 
-    private void atributoOMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
-        if (currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == classID) {
-            tipo();
+    private void atributoOMetodoOConstructor() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char ) {
+            tipoPrimitivo();
             match(mvID);
             atributoOmisionOMetodo();
+        }else if (currentToken.tokenType == classID){
+            match(classID);
+            constructorOAttrOMetodo();
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
-            encabezadoMetodo(); // ver aclaración en el informe > logros intentados
+            encabezadoMetodo(); 
             bloque();
-        } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+    }
+
+    private void constructorOAttrOMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == openBr){
+            argsFormales();
+            bloque();
+        } else if (currentToken.tokenType == mvID) {
+            match(mvID);
+            atributoOmisionOMetodo();
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void atributoOmisionOMetodo() throws LexicalException, SourceFileReaderException, SyntacticException{
@@ -180,7 +196,7 @@ public class SyntaxParser {
         } else if (currentToken.tokenType == openBr) {
             argsFormales();
             bloque();
-        } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
     private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
