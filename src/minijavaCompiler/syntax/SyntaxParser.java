@@ -6,7 +6,6 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
 import minijavaCompiler.lexical.exceptions.LexicalException;
 import minijavaCompiler.semantics.SemanticException;
-import minijavaCompiler.semantics.SymbolTable;
 import minijavaCompiler.semantics.entries.*;
 import minijavaCompiler.semantics.entries.types.PrimitiveType;
 import minijavaCompiler.semantics.entries.types.ReferenceType;
@@ -65,34 +64,34 @@ public class SyntaxParser {
     }
 
     private void claseConcreta() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
-        symbolTable.setCurrentClass(new ConcreteClass(currentToken));
         match(r_class);
+        symbolTable.setCurrentClass(new ConcreteClass(currentToken));
         match(classID);
         heredaDe();
         implementaA();
         match(openCurly);
         listaMiembros();
         match(closeCurly);
-        symbolTable.addCurrentClass();
+        symbolTable.saveCurrentClass();
     }
 
     private void nt_interface() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
-        symbolTable.setCurrentClass(new Interface(currentToken));
         match(r_interface);
+        symbolTable.setCurrentClass(new Interface(currentToken));
         match(classID);
         extiendeA();
         match(openCurly);
         listaEncabezados();
         match(closeCurly);
-        symbolTable.addCurrentClass();
+        symbolTable.saveCurrentClass();
     }
 
-    private void heredaDe() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void heredaDe() throws LexicalException, SourceFileReaderException, SyntacticException { // ONLY CONCRETA
         if(currentToken.tokenType == r_extends){
             match(r_extends);
             Token extendClass = currentToken;
             match(classID);
-
+            symbolTable.currentClass.addExtends(extendClass);
         } else {
             if (currentToken.tokenType == openCurly || currentToken.tokenType == r_implements) { // Siguientes(...) = { implements, { }
                 //nada
@@ -100,7 +99,7 @@ public class SyntaxParser {
         }
     }
 
-    private void implementaA() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void implementaA() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException { // ONLY CONCRETA
         if(currentToken.tokenType == r_implements){
             match(r_implements);
             listaTipoReferencia();
@@ -111,7 +110,7 @@ public class SyntaxParser {
         }
     }
 
-    private void extiendeA() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void extiendeA() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException { // ONLY INTERFACE
         if(currentToken.tokenType == r_extends){
             match(r_extends);
             listaTipoReferencia();
@@ -122,12 +121,14 @@ public class SyntaxParser {
         }
     }
 
-    private void listaTipoReferencia() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaTipoReferencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+        Token extendsOrImp = currentToken;
         match(classID);
+        symbolTable.currentClass.addImplementsOrInterfaceExtends(extendsOrImp);
         listaTipoReferenciaFactorizada();
     }
 
-    private void listaTipoReferenciaFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaTipoReferenciaFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == comma) {
             match(comma);
             listaTipoReferencia();
@@ -138,7 +139,7 @@ public class SyntaxParser {
         }
     }
 
-    private void listaMiembros() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaMiembros() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         TokenType[] primerosMiembro = {r_public, r_private, r_static, r_boolean, r_int, r_char, classID, r_void};
         if (Arrays.asList(primerosMiembro).contains(currentToken.tokenType)) {
             miembro();
@@ -150,7 +151,7 @@ public class SyntaxParser {
         }
     }
 
-    private void listaEncabezados() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaEncabezados() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};
         if (Arrays.asList(primerosEncabezadoMet).contains(currentToken.tokenType)) {
             encabezadoMetodo();
@@ -163,7 +164,7 @@ public class SyntaxParser {
         }
     }
 
-    private void miembro() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void miembro() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == r_public || currentToken.tokenType == r_private) {
             atributo();
         } else if ( currentToken.tokenType == r_static || currentToken.tokenType == r_void || currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == classID){
@@ -178,7 +179,7 @@ public class SyntaxParser {
         match(semicolon);
     }
 
-    private void atributoOMetodoOConstructor() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void atributoOMetodoOConstructor() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == r_boolean || currentToken.tokenType == r_int || currentToken.tokenType == r_char ) {
             Type tipo = tipoPrimitivo();
             Token nombreToken = currentToken;
@@ -195,40 +196,41 @@ public class SyntaxParser {
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void constructorOAttrOMetodo(Type tipoMetodo, Token nombreConstructor) throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void constructorOAttrOMetodo(Type tipoMetodo, Token nombreConstructor) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == openBr){
-            symbolTable.currentClass.addConstructor(new Constructor(nombreConstructor));
+            symbolTable.currentUnit = new Constructor(nombreConstructor);
             argsFormales();
             bloque();
+            symbolTable.currentClass.addConstructor((Constructor) symbolTable.currentUnit);
         } else if (currentToken.tokenType == mvID) {
-            Token nombreMetodo = currentToken;
+            Token nombreMetodoOAttr = currentToken;
             match(mvID);
-            atributoOmisionOMetodo(tipoMetodo, nombreMetodo);
+            atributoOmisionOMetodo(tipoMetodo, nombreMetodoOAttr);
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void atributoOmisionOMetodo(Type tipo, Token nombreMetodoOAttr) throws LexicalException, SourceFileReaderException, SyntacticException{
+    private void atributoOmisionOMetodo(Type tipo, Token nombreMetodoOAttr) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == comma || currentToken.tokenType == semicolon) {
             symbolTable.currentClass.addAttribute(new Attribute(true,tipo,nombreMetodoOAttr));
             listaDecAtrsFactorizada(true, tipo);
             match(semicolon);
         } else if (currentToken.tokenType == openBr) {
-            Method metodo = new Method(false, tipo, nombreMetodoOAttr);
+            symbolTable.currentUnit = new Method(false, tipo, nombreMetodoOAttr);
             argsFormales();
             bloque();
-            // Crear metodo
+            symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void encabezadoMetodo() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         //TokenType[] primerosEncabezadoMet = {r_static, r_boolean, r_int, r_char, classID, r_void};
         boolean isStatic = estaticoOpt();
         Type type = tipoMetodo();
         Token methodName = currentToken;
         match(mvID);
-        Method metodo = new Method(isStatic, type, methodName);
+        symbolTable.currentUnit = new Method(isStatic, type, methodName);
         argsFormales();
-        symbolTable.currentClass.addMethod(metodo);
+        symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
     }
 
     private boolean visibilidad() throws SyntacticException, LexicalException, SourceFileReaderException {
@@ -299,12 +301,12 @@ public class SyntaxParser {
         } else throw new SyntacticException("Se esperaba identificador de tipo del método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void argsFormales() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void argsFormales() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(openBr);
         listaArgsFormalesOpt();
         match(closeBr);
     }
-    private void listaArgsFormalesOpt() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaArgsFormalesOpt() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean || currentToken.tokenType == classID){
             listaArgsFormales();
         } else {
@@ -313,11 +315,11 @@ public class SyntaxParser {
             } else throw new SyntacticException("Lista de argumentos sin cerrar, se esperaba )", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
-    private void listaArgsFormales() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaArgsFormales() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         argFormal();
         listaArgsFormalesFactorizada();
     }
-    private void listaArgsFormalesFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaArgsFormalesFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == comma) {
             match(comma);
             listaArgsFormales();
@@ -328,10 +330,11 @@ public class SyntaxParser {
         }
     }
 
-    private void argFormal() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void argFormal() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         Type tipoArg = tipo();
         Token idArg = currentToken;
         match(mvID);
+        symbolTable.currentUnit.addParameter(new Parameter(tipoArg, idArg));
     }
 
     private void bloque() throws LexicalException, SourceFileReaderException, SyntacticException {

@@ -1,17 +1,13 @@
 package minijavaCompiler.semantics;
 
-import minijavaCompiler.semantics.entries.Attribute;
-import minijavaCompiler.semantics.entries.ClassEntry;
-import minijavaCompiler.semantics.entries.Constructor;
-import minijavaCompiler.semantics.entries.Method;
-import minijavaCompiler.semantics.entries.types.Type;
+import minijavaCompiler.semantics.entries.*;
 
 import java.util.HashMap;
 
 public class SymbolTable {
 
     public ClassEntry currentClass;
-
+    public Unit currentUnit;
     private HashMap<String, ClassEntry> classesHashMap;
 
     public SymbolTable(){
@@ -29,7 +25,7 @@ public class SymbolTable {
         } else currentClass = classEntry;
     }
 
-    public void addCurrentClass(){
+    public void saveCurrentClass(){
         classesHashMap.put(currentClass.getName(), currentClass);
     }
 

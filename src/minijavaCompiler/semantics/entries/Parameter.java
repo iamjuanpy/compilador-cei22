@@ -7,7 +7,11 @@ public class Parameter {
 
     private Token idToken;
     private Type parameterType;
-    private String parameterName;
+
+    public Parameter(Type tipoArg, Token idArg) {
+        parameterType = tipoArg;
+        idToken = idArg;
+    }
 
     public String getName() {
         return idToken.lexeme;

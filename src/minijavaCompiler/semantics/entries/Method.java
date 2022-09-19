@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static minijavaCompiler.Main.symbolTable;
-
-public class Method {
+public class Method implements Unit {
 
     private Token idToken;
     private boolean isStatic;
