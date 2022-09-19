@@ -4,15 +4,13 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.ClassEntry;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
+import minijavaCompiler.semantics.entries.types.Type;
 
 import java.util.HashMap;
 
 public class SymbolTable {
 
-    private ClassEntry currentClass;
-    private Attribute lastAddedAttribute;
-    private Constructor currentConstructor;
-    private Method currentMethod;
+    public ClassEntry currentClass;
 
     private HashMap<String, ClassEntry> classesHashMap;
 
@@ -26,20 +24,15 @@ public class SymbolTable {
     }
 
     public void setCurrentClass(ClassEntry classEntry) throws SemanticException {
-        if (classesHashMap.get(classEntry.getName()) == null) {
-            currentClass = classEntry;
-        } else throw new SemanticException(classEntry.getName(), classEntry.getLine());
+        if (classesHashMap.get(classEntry.getName()) != null) {
+            throw new SemanticException(classEntry.getName(), classEntry.getLine());
+        } else currentClass = classEntry;
     }
-    public void setCurrentConstructor(Constructor constructorEntry){currentConstructor = constructorEntry;}
-    public void setCurrentMethod(Method methodEntry){currentMethod = methodEntry;}
 
-    public void addCurrentClass(){classesHashMap.put(currentClass.getName(), currentClass);}
-    public void addAttribute(Attribute attr){
-        currentClass.addAttribute(attr);
-        lastAddedAttribute = attr;
+    public void addCurrentClass(){
+        classesHashMap.put(currentClass.getName(), currentClass);
     }
-    public void addCurrentConstructor(){currentClass.addConstructor(currentConstructor);}
-    public void addCurrentMethod(){currentClass.addMethod(currentMethod);}
 
+    // MOMENTANEAMENTE PERMITIENDO 1 CONSTRUCTOR / 1 METODO POR NOMBRE
 
 }

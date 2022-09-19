@@ -1,7 +1,13 @@
 package minijavaCompiler.semantics.entries.types;
 
+import minijavaCompiler.lexical.Token;
+
 public class ReferenceType implements Type{
 
-    private String typeClassId;
+    private Token typeClassId;
+
+    public ReferenceType(Token typeId) {
+        typeClassId = typeId;
+    }
 
 }

@@ -9,4 +9,11 @@ public class Parameter {
     private Type parameterType;
     private String parameterName;
 
+    public String getName() {
+        return idToken.lexeme;
+    }
+
+    public int getLine() {
+        return idToken.lineNumber;
+    }
 }

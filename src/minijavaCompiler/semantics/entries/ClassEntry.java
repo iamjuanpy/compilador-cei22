@@ -11,4 +11,7 @@ public interface ClassEntry {
     void addConstructor(Constructor constructor);
     void addMethod(Method method);
 
+    boolean hasConstructor(Constructor constructorEntry);
+    boolean hasMethod(Method methodEntry);
+    boolean hasAttribute(Attribute attr);
 }
