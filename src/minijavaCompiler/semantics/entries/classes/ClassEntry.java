@@ -10,11 +10,14 @@ import java.util.HashMap;
 
 public interface ClassEntry {
     void correctlyDeclared() throws SemanticException;
-    void consolidate();
+    void consolidate() throws SemanticException;
 
     String getName();
     int getLine();
+    HashMap<String, Attribute> getAttributeHashMap();
+    HashMap<String, Method> getMethodHashMap();
     boolean isConcreteClass();
+
     void hasCircularInheritence(HashMap<String, Token> inheritance) throws SemanticException;
 
     void addAttribute(Attribute attribute) throws SemanticException;

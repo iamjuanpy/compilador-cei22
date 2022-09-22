@@ -12,27 +12,29 @@ import static minijavaCompiler.Main.symbolTable;
 
 public class Interface implements ClassEntry {
 
-    private Token idToken;
+    private Token classIDToken;
     private HashMap<String, Method> methodHashMap;
     private HashMap<String, Token> extendsInts;
     private boolean consolidated;
 
     public Interface(Token token){
-        this.idToken = token;
+        this.classIDToken = token;
         methodHashMap = new HashMap<>();
         extendsInts = new HashMap<>();
     }
 
     public String getName() {
-        return idToken.lexeme;
+        return classIDToken.lexeme;
     }
     public int getLine() {
-        return idToken.lineNumber;
+        return classIDToken.lineNumber;
     }
-    public boolean isConcreteClass(){ return false;}
+    public HashMap<String, Attribute> getAttributeHashMap() {return null;}   // No llega
+    public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
+    public boolean isConcreteClass() { return false;}
 
     public void hasCircularInheritence(HashMap<String, Token> inheritance) throws SemanticException {
-        // TO - DO
+
     }
 
     public void correctlyDeclared() throws SemanticException {
@@ -40,14 +42,15 @@ public class Interface implements ClassEntry {
         checkMethods();
     }
 
-    public void consolidate() {
+    public void consolidate() throws SemanticException {
         if (!consolidated){
             consolidateAncestors();
+            // ver que hacer aca
             consolidated = true;
         }
     }
 
-    private void consolidateAncestors(){
+    private void consolidateAncestors() throws SemanticException {
         for (Token interfaceID : extendsInts.values())
             symbolTable.getClass(interfaceID.lexeme).consolidate();
     }

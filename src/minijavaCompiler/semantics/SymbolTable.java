@@ -9,6 +9,8 @@ public class SymbolTable {
 
     public ClassEntry currentClass;
     public Unit currentUnit;
+    public Unit mainMethod;
+
     private HashMap<String, ClassEntry> classesHashMap;
 
     public SymbolTable() {
@@ -16,8 +18,9 @@ public class SymbolTable {
     }
 
     public void checkDeclarations() throws SemanticException {
-        for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();    // Paso 1: esta bien declarado
-        //for (ClassEntry c : classesHashMap.values()) c.consolidate();       // Paso 2: consolidar clases/interfaces
+        for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
+        for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
+        if (mainMethod == null) throw new SemanticException("Ninguna clase tiene metodo main","",0);
     }
 
     public boolean classExists(String className){

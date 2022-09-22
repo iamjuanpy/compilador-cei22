@@ -3,6 +3,7 @@ package minijavaCompiler.semantics.entries;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.types.Type;
+import minijavaCompiler.semantics.entries.types.primitives.VoidType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +51,8 @@ public class Method implements Unit {
     }
 
     public Type getReturnType() {return returnType;}
+
+    public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && idToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
 
     public boolean hasSameSignature(Method method) {
         if (isStatic != method.isStatic())

@@ -1,8 +1,4 @@
 
-class A extends A {
-
-}
-
 class C extends A {
 
 }
