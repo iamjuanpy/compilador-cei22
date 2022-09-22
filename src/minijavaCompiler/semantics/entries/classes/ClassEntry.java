@@ -9,7 +9,7 @@ import minijavaCompiler.semantics.entries.Method;
 import java.util.HashMap;
 
 public interface ClassEntry {
-    void isWellDeclared() throws SemanticException;
+    void correctlyDeclared() throws SemanticException;
     void consolidate();
 
     String getName();

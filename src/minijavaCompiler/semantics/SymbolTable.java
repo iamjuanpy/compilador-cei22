@@ -1,6 +1,5 @@
 package minijavaCompiler.semantics;
 
-import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.Unit;
 
@@ -17,7 +16,7 @@ public class SymbolTable {
     }
 
     public void checkDeclarations() throws SemanticException {
-        for (ClassEntry c : classesHashMap.values()) c.isWellDeclared();    // Paso 1: esta bien declarado
+        for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();    // Paso 1: esta bien declarado
         //for (ClassEntry c : classesHashMap.values()) c.consolidate();       // Paso 2: consolidar clases/interfaces
     }
 
@@ -31,7 +30,7 @@ public class SymbolTable {
 
     public void setCurrentClass(ClassEntry classEntry) throws SemanticException {
         if (classesHashMap.get(classEntry.getName()) != null) {
-            throw new SemanticException(classEntry.getName(), classEntry.getLine());
+            throw new SemanticException("No puede haber una clase/interface con nombre repetido, "+classEntry.getName(),classEntry.getName(), classEntry.getLine());
         } else currentClass = classEntry;
     }
 

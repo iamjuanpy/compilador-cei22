@@ -30,7 +30,7 @@ public class Method implements Unit {
         if (parameterHashMap.get(parameter.getName()) == null){
             parameterHashMap.put(parameter.getName(),parameter);
             parameterList.add(parameter);
-        } else throw new SemanticException(parameter.getName(), parameter.getLine());
+        } else throw new SemanticException("No puede haber mas de un parámetro con el mismo nombre, "+parameter.getName(),parameter.getName(), parameter.getLine());
     }
 
     public String getName() {
@@ -73,10 +73,10 @@ public class Method implements Unit {
         return true;
     }
 
-    public void isWellDeclared() throws SemanticException {
+    public void correctlyDeclared() throws SemanticException {
         checkReturnType();
         for (Parameter p : parameterHashMap.values())
-            p.isWellDeclared();
+            p.correctlyDeclared();
     }
 
     private void checkReturnType() throws SemanticException {

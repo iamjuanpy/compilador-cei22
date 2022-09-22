@@ -28,7 +28,7 @@ public class Parameter {
 
     public boolean equals(Parameter p) { return parameterType.equals(p.getParameterType());}
 
-    public void isWellDeclared() throws SemanticException {
+    public void correctlyDeclared() throws SemanticException {
         if (!parameterType.isPrimitive() && !symbolTable.classExists(parameterType.getTypeName())) // Tipo clase con clase no existente
             throw new SemanticException("No se puede declarar un parametro de tipo "+parameterType.getTypeName()+", la clase no existe", parameterType.getTypeName(), parameterType.getLine());
     }

@@ -32,11 +32,11 @@ public class Interface implements ClassEntry {
     public boolean isConcreteClass(){ return false;}
 
     public void hasCircularInheritence(HashMap<String, Token> inheritance) throws SemanticException {
-
+        // TO - DO
     }
 
-    public void isWellDeclared() throws SemanticException {
-        checkExtends();
+    public void correctlyDeclared() throws SemanticException {
+        checkInheritance();
         checkMethods();
     }
 
@@ -53,7 +53,7 @@ public class Interface implements ClassEntry {
     }
 
 
-    private void checkExtends() throws SemanticException {
+    private void checkInheritance() throws SemanticException {
         for (Token extInterface : extendsInts.values()) {
             if (!symbolTable.classExists(extInterface.lexeme))
                 throw new SemanticException("No se puede extender la interface "+extInterface.lexeme+", no existe", extInterface.lexeme, extInterface.lineNumber);
@@ -64,7 +64,7 @@ public class Interface implements ClassEntry {
 
     private void checkMethods() throws SemanticException {
         for (Method method : methodHashMap.values())
-            method.isWellDeclared();
+            method.correctlyDeclared();
     }
 
     public void setAncestorClass(Token extendClass) {} // NO LLEGA

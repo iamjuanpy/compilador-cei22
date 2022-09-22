@@ -52,15 +52,28 @@ public class ConcreteClass implements ClassEntry {
             inheritance.put(classIDToken.lexeme, ancestorClassToken);
             symbolTable.getClass(ancestorClassToken.lexeme).hasCircularInheritence(inheritance);
         } else {
-            // Si la tengo, reporto el error con la linea mas lejana (COMO)
-            throw new SemanticException("No puede haber herencia circular", ancestorClassToken.lexeme, ancestorClassToken.lineNumber);
+            // Si la tengo, reporto el error con la linea mas lejana
+            Token lastToken = getLastToken(inheritance, ancestorClassToken);
+            throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
         }
     }
 
-    public void isWellDeclared() throws SemanticException {
+    private Token getLastToken(HashMap<String, Token> inheritanceList, Token lastAncestor) {
+        Token lastToken = null;
+        for (Token extendsClass : inheritanceList.values()) {
+            if (lastToken == null || extendsClass.lineNumber >= lastToken.lineNumber)
+                lastToken = extendsClass;
+        }
+
+        if (lastAncestor.lineNumber >= lastToken.lineNumber)
+            return lastAncestor;
+        else return lastToken;
+    }
+
+    public void correctlyDeclared() throws SemanticException {
         System.out.println("chequeando "+classIDToken.lexeme);
-        checkExtends();
-        checkImplements();
+        checkInheritance();
+        checkInterfaces();
         checkAttributes();
         checkMethods();
         checkConstructor();
@@ -80,15 +93,13 @@ public class ConcreteClass implements ClassEntry {
             symbolTable.getClass(interfaceID.lexeme).consolidate();
     }
 
-    private void checkExtends() throws SemanticException {
+    private void checkInheritance() throws SemanticException {
         if (ancestorClassToken != null && !symbolTable.classExists(ancestorClassToken.lexeme))
             throw new SemanticException("No se puede extender a la clase "+ ancestorClassToken.lexeme+", no existe", ancestorClassToken.lexeme, ancestorClassToken.lineNumber);
-        HashMap<String, Token> inheritanceList = new HashMap<>();
-        inheritanceList.put(classIDToken.lexeme, ancestorClassToken);
-        hasCircularInheritence(inheritanceList);
+        hasCircularInheritence(new HashMap<>());
     }
 
-    private void checkImplements() throws SemanticException {
+    private void checkInterfaces() throws SemanticException {
         for (Token impInterface : implementsInts.values()) {
             if ((impInterface.lexeme).equals(classIDToken.lexeme))
                 throw new SemanticException("La clase "+ ancestorClassToken.lexeme+" no se puede implementar como interface a si misma", ancestorClassToken.lexeme, ancestorClassToken.lineNumber);
@@ -101,16 +112,16 @@ public class ConcreteClass implements ClassEntry {
 
     private void checkAttributes() throws SemanticException {
         for (Attribute attribute : attributeHashMap.values())
-            attribute.isWellDeclared();
+            attribute.correctlyDeclared();
     }
 
     private void checkConstructor() throws SemanticException {
-        constructor.isWellDeclared();
+        constructor.correctlyDeclared();
     }
 
     private void checkMethods() throws SemanticException {
         for (Method method : methodHashMap.values())
-            method.isWellDeclared();
+            method.correctlyDeclared();
     }
 
     public void setAncestorClass(Token ancestorClass){
@@ -124,7 +135,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void addMethod(Method method) throws SemanticException {
         if (alreadyHasMethodWithName(method.getName())) {
-            throw new SemanticException("Hay dos miembros llamados "+method.getName(), method.getName(), method.getLine());
+            throw new SemanticException("Hay dos métodos llamados "+method.getName(), method.getName(), method.getLine());
         } else methodHashMap.put(method.getName(), method);
     }
 
@@ -132,7 +143,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void addAttribute(Attribute attribute) throws SemanticException {
         if (alreadyHasAttributeWithName(attribute.getName())) {
-            throw new SemanticException("Hay dos miembros llamados "+attribute.getName(), attribute.getName(), attribute.getLine());
+            throw new SemanticException("Hay dos atributos llamados "+attribute.getName(), attribute.getName(), attribute.getLine());
         } else attributeHashMap.put(attribute.getName(), attribute);
     }
 

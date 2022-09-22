@@ -26,7 +26,7 @@ public class Attribute {
         return idToken.lineNumber;
     }
 
-    public void isWellDeclared() throws SemanticException {
+    public void correctlyDeclared() throws SemanticException {
         if (!attrType.isPrimitive() && !symbolTable.classExists(attrType.getTypeName())) // Tipo clase con clase no existente
             throw new SemanticException("No se puede declarar un atributo de tipo "+attrType.getTypeName()+", la clase no existe", attrType.getTypeName(), attrType.getLine());
     }
