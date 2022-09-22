@@ -13,14 +13,14 @@ import static minijavaCompiler.Main.symbolTable;
 
 public class Method implements Unit {
 
-    private Token idToken;
+    private Token methodToken;
     private boolean isStatic;
     private Type returnType;
     private HashMap<String,Parameter> parameterHashMap;
     private List<Parameter> parameterList;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
-        idToken = methodToken;
+        this.methodToken = methodToken;
         this.isStatic = isStatic;
         returnType = type;
         parameterHashMap = new HashMap<>();
@@ -35,11 +35,11 @@ public class Method implements Unit {
     }
 
     public String getName() {
-        return idToken.lexeme;
+        return methodToken.lexeme;
     }
 
     public int getLine() {
-        return idToken.lineNumber;
+        return methodToken.lineNumber;
     }
 
     public boolean isStatic() {
@@ -52,7 +52,7 @@ public class Method implements Unit {
 
     public Type getReturnType() {return returnType;}
 
-    public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && idToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
+    public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && methodToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
 
     public boolean hasSameSignature(Method method) {
         if (isStatic != method.isStatic())
@@ -67,7 +67,7 @@ public class Method implements Unit {
     }
 
     private boolean sameParameters(Method method) {
-        if (parameterHashMap.size() != method.getParametersList().size())
+        if (parameterList.size() != method.getParametersList().size())
             return false;
         List<Parameter> otherMethodParametersList = method.getParametersList();
         for (int i = 0; i < parameterList.size(); i++)
@@ -78,8 +78,8 @@ public class Method implements Unit {
 
     public void correctlyDeclared() throws SemanticException {
         checkReturnType();
-        for (Parameter p : parameterHashMap.values())
-            p.correctlyDeclared();
+        for (Parameter parameter : parameterHashMap.values())
+            parameter.correctlyDeclared();
     }
 
     private void checkReturnType() throws SemanticException {

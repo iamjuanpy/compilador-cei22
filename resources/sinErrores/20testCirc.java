@@ -1,10 +1,21 @@
 
-class C extends A {
+class D implements A{
 
+    static void main(){}
+
+    void m1 (boolean a, int b){}
 }
 
-class A extends B {
+interface B extends C {
 
+    void m1(int a, boolean b);
 }
 
-class B extends C {}
+interface A extends B,C {
+
+    void m1(int a, boolean b);
+}
+
+interface C {
+
+}

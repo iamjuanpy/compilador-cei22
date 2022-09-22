@@ -18,12 +18,12 @@ public interface ClassEntry {
     HashMap<String, Method> getMethodHashMap();
     boolean isConcreteClass();
 
-    void hasCircularInheritence(HashMap<String, Token> inheritance) throws SemanticException;
+    void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException;
 
     void addAttribute(Attribute attribute) throws SemanticException;
     void addConstructor(Constructor constructor) throws SemanticException;
     void addMethod(Method method) throws SemanticException;
 
-    void setAncestorClass(Token extendClass);
-    void addImplementsOrInterfaceExtends(Token implement) throws SemanticException;
+    void setAncestorClass(Token classToken);
+    void addMultipleInheritence(Token interfaceToken) throws SemanticException;
 }

@@ -8,20 +8,20 @@ import static minijavaCompiler.Main.symbolTable;
 
 public class Parameter {
 
-    private Token idToken;
+    private Token parameterToken;
     private Type parameterType;
 
     public Parameter(Type tipoArg, Token idArg) {
+        parameterToken = idArg;
         parameterType = tipoArg;
-        idToken = idArg;
     }
 
     public String getName() {
-        return idToken.lexeme;
+        return parameterToken.lexeme;
     }
 
     public int getLine() {
-        return idToken.lineNumber;
+        return parameterToken.lineNumber;
     }
 
     private Type getParameterType() {return parameterType;}
