@@ -45,7 +45,11 @@ public class Method implements Unit {
         return isStatic;
     }
 
-    private Type getReturnType() {return returnType;}
+    public List<Parameter> getParametersList() {
+        return parameterList;
+    }
+
+    public Type getReturnType() {return returnType;}
 
     public boolean hasSameSignature(Method method) {
         if (isStatic != method.isStatic())
@@ -67,9 +71,6 @@ public class Method implements Unit {
             if (!parameterList.get(i).equals(otherMethodParametersList.get(i)))
                 return false;
         return true;
-    }
-
-    private List<Parameter> getParametersList() {
     }
 
     public void isWellDeclared() throws SemanticException {
