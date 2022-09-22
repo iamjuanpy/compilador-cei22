@@ -1,6 +1,8 @@
 package minijavaCompiler.semantics;
 
-import minijavaCompiler.semantics.entries.*;
+import minijavaCompiler.lexical.Token;
+import minijavaCompiler.semantics.entries.classes.ClassEntry;
+import minijavaCompiler.semantics.entries.Unit;
 
 import java.util.HashMap;
 
@@ -10,13 +12,21 @@ public class SymbolTable {
     public Unit currentUnit;
     private HashMap<String, ClassEntry> classesHashMap;
 
-    public SymbolTable(){
+    public SymbolTable() {
         classesHashMap = new HashMap<>();
     }
 
-    public void checkDeclarations() throws SemanticException{
-        classesHashMap.forEach((name, c) -> c.isWellDeclared());       // Paso 1: esta bien declarado
-        classesHashMap.forEach((name, c) -> c.consolidate());          // Paso 2: consolidar clases/interfaces
+    public void checkDeclarations() throws SemanticException {
+        for (ClassEntry c : classesHashMap.values()) c.isWellDeclared();    // Paso 1: esta bien declarado
+        //for (ClassEntry c : classesHashMap.values()) c.consolidate();       // Paso 2: consolidar clases/interfaces
+    }
+
+    public boolean classExists(String className){
+        return classesHashMap.get(className) != null;
+    }
+
+    public ClassEntry getClass(String className){
+        return classesHashMap.get(className);
     }
 
     public void setCurrentClass(ClassEntry classEntry) throws SemanticException {
@@ -25,7 +35,7 @@ public class SymbolTable {
         } else currentClass = classEntry;
     }
 
-    public void saveCurrentClass(){
+    public void saveCurrentClass() {
         classesHashMap.put(currentClass.getName(), currentClass);
     }
 

@@ -4,6 +4,7 @@ import minijavaCompiler.file_manager.SourceFileReader;
 import minijavaCompiler.file_manager.SourceFileReaderException;
 import minijavaCompiler.lexical.LexicalAnalyser;
 import minijavaCompiler.lexical.exceptions.LexicalException;
+import minijavaCompiler.semantics.DefaultClasses;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.SymbolTable;
 import minijavaCompiler.syntax.exceptions.SyntacticException;
@@ -28,6 +29,7 @@ public class Main {
 
                 syntaxParser = new SyntaxParser(lexicalAnalyser);
                 symbolTable = new SymbolTable();
+                DefaultClasses.instanceSymbolTableDefaults();
 
                 syntaxParser.startParse();                                  // Etapa 2/3
                 symbolTable.checkDeclarations();                            // Etapa 3

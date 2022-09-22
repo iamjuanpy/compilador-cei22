@@ -6,10 +6,18 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
 import minijavaCompiler.lexical.exceptions.LexicalException;
 import minijavaCompiler.semantics.SemanticException;
-import minijavaCompiler.semantics.entries.*;
+import minijavaCompiler.semantics.entries.classes.ConcreteClass;
+import minijavaCompiler.semantics.entries.classes.Interface;
+import minijavaCompiler.semantics.entries.Attribute;
+import minijavaCompiler.semantics.entries.Constructor;
+import minijavaCompiler.semantics.entries.Method;
+import minijavaCompiler.semantics.entries.Parameter;
 import minijavaCompiler.semantics.entries.types.PrimitiveType;
 import minijavaCompiler.semantics.entries.types.ReferenceType;
 import minijavaCompiler.semantics.entries.types.Type;
+import minijavaCompiler.semantics.entries.types.primitives.BoolType;
+import minijavaCompiler.semantics.entries.types.primitives.CharType;
+import minijavaCompiler.semantics.entries.types.primitives.IntType;
 import minijavaCompiler.syntax.exceptions.SyntacticException;
 
 import java.util.Arrays;
@@ -91,7 +99,7 @@ public class SyntaxParser {
             match(r_extends);
             Token extendClass = currentToken;
             match(classID);
-            symbolTable.currentClass.addExtends(extendClass);
+            symbolTable.currentClass.setAncestorClass(extendClass);
         } else {
             if (currentToken.tokenType == openCurly || currentToken.tokenType == r_implements) { // Siguientes(...) = { implements, { }
                 //nada
@@ -172,7 +180,7 @@ public class SyntaxParser {
         } else throw new SyntacticException("Se esperaba declaración de atributo o método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void atributo() throws SyntacticException, LexicalException, SourceFileReaderException {
+    private void atributo() throws SyntacticException, LexicalException, SourceFileReaderException, SemanticException {
         boolean isPublic = visibilidad();
         Type type = tipo();
         listaDecAtrs(isPublic,type);
@@ -254,23 +262,23 @@ public class SyntaxParser {
     private Type tipoPrimitivo() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_int){
             match(r_int);
-            return new PrimitiveType("int");
+            return new IntType();
         } else if (currentToken.tokenType == r_char){
             match(r_char);
-            return new PrimitiveType("char");
+            return new CharType();
         } else if (currentToken.tokenType == r_boolean) {
             match(r_boolean);
-            return new PrimitiveType("boolean");
+            return new BoolType();
         }else throw new SyntacticException("Se esperaba identificador de tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void listaDecAtrs(boolean visibilidad, Type tipoAtributo) throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaDecAtrs(boolean visibilidad, Type tipoAtributo) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         Token idAtributo = currentToken;
         match(mvID);
         symbolTable.currentClass.addAttribute(new Attribute(visibilidad,tipoAtributo,idAtributo));
         listaDecAtrsFactorizada(visibilidad,tipoAtributo);
     }
-    private void listaDecAtrsFactorizada(boolean visibilidad, Type tipoAtributo) throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void listaDecAtrsFactorizada(boolean visibilidad, Type tipoAtributo) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == comma) {
             match(comma);
             listaDecAtrs(visibilidad,tipoAtributo);

@@ -1,6 +1,7 @@
 package minijavaCompiler.semantics.entries;
 
 import minijavaCompiler.lexical.Token;
+import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.types.Type;
 
 import static minijavaCompiler.Main.symbolTable;
@@ -25,4 +26,8 @@ public class Attribute {
         return idToken.lineNumber;
     }
 
+    public void isWellDeclared() throws SemanticException {
+        if (!attrType.isPrimitive() && !symbolTable.classExists(attrType.getTypeName())) // Tipo clase con clase no existente
+            throw new SemanticException("No se puede declarar un atributo de tipo "+attrType.getTypeName()+", la clase no existe", attrType.getTypeName(), attrType.getLine());
+    }
 }

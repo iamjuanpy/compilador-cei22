@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class Method implements Unit {
 
     private Token idToken;
@@ -37,5 +39,47 @@ public class Method implements Unit {
 
     public int getLine() {
         return idToken.lineNumber;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    private Type getReturnType() {return returnType;}
+
+    public boolean hasSameSignature(Method method) {
+        if (isStatic != method.isStatic())
+            return false;
+        if (differentReturnType(method))
+            return false;
+        return sameParameters(method);
+    }
+
+    private boolean differentReturnType(Method method) {
+        return !returnType.equals(method.getReturnType());
+    }
+
+    private boolean sameParameters(Method method) {
+        if (parameterHashMap.size() != method.getParametersList().size())
+            return false;
+        List<Parameter> otherMethodParametersList = method.getParametersList();
+        for (int i = 0; i < parameterList.size(); i++)
+            if (!parameterList.get(i).equals(otherMethodParametersList.get(i)))
+                return false;
+        return true;
+    }
+
+    private List<Parameter> getParametersList() {
+    }
+
+    public void isWellDeclared() throws SemanticException {
+        checkReturnType();
+        for (Parameter p : parameterHashMap.values())
+            p.isWellDeclared();
+    }
+
+    private void checkReturnType() throws SemanticException {
+        if (!returnType.isPrimitive() && !symbolTable.classExists(returnType.getTypeName())) // Tipo clase con clase no existente
+            throw new SemanticException("No se puede declarar un parametro de tipo "+returnType.getTypeName()+", la clase no existe", returnType.getTypeName(), returnType.getLine());
     }
 }

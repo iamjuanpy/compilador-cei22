@@ -10,4 +10,11 @@ public class ReferenceType implements Type{
         typeClassId = typeId;
     }
 
+    public String getTypeName() {return typeClassId.lexeme;}
+    public int getLine(){return typeClassId.lineNumber;}
+
+    public boolean isPrimitive() {return false;}
+
+    public boolean equals(Type type) {return typeClassId.lexeme.equals(type.getTypeName());}
+
 }
