@@ -11,7 +11,7 @@ public class SymbolTable {
     public ClassEntry currentClass;
     public Unit currentUnit;
     public Unit mainMethod;
-    public Token eofToken; // sobra?
+    public Token eofToken;
 
     private HashMap<String, ClassEntry> classesHashMap;
 

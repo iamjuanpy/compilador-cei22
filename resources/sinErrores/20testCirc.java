@@ -1,19 +1,19 @@
 
-class D implements A{
+class D implements A, B{
 
     static void main(){}
 
-    void m1 (boolean a, int b){}
+    void m1 (int a, boolean b){}
 }
 
-interface B extends C {
+interface B{
 
     void m1(int a, boolean b);
 }
 
-interface A extends B,C {
+interface A{
 
-    void m1(int a, boolean b);
+    void m2(int a, boolean b);
 }
 
 interface C {
