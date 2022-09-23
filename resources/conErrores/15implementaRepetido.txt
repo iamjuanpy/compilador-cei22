@@ -1,0 +1,7 @@
+///[Error:B|5]
+
+interface B {}
+
+class A implements B,B{
+
+}

@@ -1,0 +1,13 @@
+///[Error:a|11]
+
+class A {
+
+    int a() {}
+
+}
+
+class B extends A {
+
+    int a(boolean b) {}
+
+}

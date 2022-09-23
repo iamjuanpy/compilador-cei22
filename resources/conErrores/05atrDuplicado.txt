@@ -1,0 +1,9 @@
+///[Error:a|7]
+
+class A {
+
+    private int a;
+
+    public boolean a;
+
+}

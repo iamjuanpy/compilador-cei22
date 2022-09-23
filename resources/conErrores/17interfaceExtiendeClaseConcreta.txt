@@ -1,0 +1,8 @@
+///[Error:B|6]
+
+class B {
+}
+
+interface A extends B{
+
+}

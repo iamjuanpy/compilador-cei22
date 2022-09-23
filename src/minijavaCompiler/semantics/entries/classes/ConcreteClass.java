@@ -144,7 +144,7 @@ public class ConcreteClass implements ClassEntry {
     private void checkInterfaces() throws SemanticException {
         for (Token impInterface : interfacesHashMap.values()) {
             if ((impInterface.lexeme).equals(classToken.lexeme))
-                throw new SemanticException("La clase "+ extendsClassToken.lexeme+" no se puede implementar como interface a si misma", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+                throw new SemanticException("La clase "+ impInterface.lexeme+" no se puede implementar como interface a si misma", impInterface.lexeme, impInterface.lineNumber);
             if (!symbolTable.classExists(impInterface.lexeme))
                 throw new SemanticException("No se puede implementar la interface "+impInterface.lexeme+", no existe", impInterface.lexeme, impInterface.lineNumber);
             else if (symbolTable.getClass(impInterface.lexeme).isConcreteClass())

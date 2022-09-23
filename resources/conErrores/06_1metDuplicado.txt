@@ -1,0 +1,13 @@
+///[Error:a|9]
+
+class A {
+
+    boolean a(){
+
+    }
+
+    static void a() {
+
+    }
+
+}

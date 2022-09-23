@@ -1,0 +1,10 @@
+///[Error:A|8]
+interface A {
+
+}
+
+class B implements A{}
+//
+class A {
+
+}

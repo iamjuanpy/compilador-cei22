@@ -1,0 +1,13 @@
+///[Error:a|11]
+
+class A {
+
+    private int a;
+
+}
+
+class B extends A {
+
+    public int a;
+
+}

@@ -1,0 +1,13 @@
+///[Error:A|11]
+
+class B extends C {
+
+}
+
+class A extends B{
+
+}
+
+class C extends A {
+
+}

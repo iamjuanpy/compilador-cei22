@@ -1,0 +1,10 @@
+///[Error:A|8]
+class A {
+
+}
+
+class B extends A{}
+
+class A {
+
+}

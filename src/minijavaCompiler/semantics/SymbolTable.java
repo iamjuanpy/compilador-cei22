@@ -1,5 +1,6 @@
 package minijavaCompiler.semantics;
 
+import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.Unit;
 
@@ -10,6 +11,7 @@ public class SymbolTable {
     public ClassEntry currentClass;
     public Unit currentUnit;
     public Unit mainMethod;
+    public Token eofToken; // sobra?
 
     private HashMap<String, ClassEntry> classesHashMap;
 
@@ -20,7 +22,8 @@ public class SymbolTable {
     public void checkDeclarations() throws SemanticException {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
-        if (mainMethod == null) throw new SemanticException("Ninguna clase tiene metodo main","",0);
+        if (mainMethod == null)
+            throw new SemanticException("Ninguna clase tiene metodo main", eofToken.lexeme, eofToken.lineNumber); // Ver que exista un metodo main
     }
 
     public boolean classExists(String className){

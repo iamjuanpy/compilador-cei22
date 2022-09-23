@@ -49,6 +49,7 @@ public class SyntaxParser {
 
     private void inicial() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         listaClases();
+        symbolTable.eofToken = currentToken; // sobra?
         match(eof);
     }
 
