@@ -346,14 +346,16 @@ public class SyntaxParser {
         symbolTable.currentUnit.addParameter(new Parameter(tipoArgumento, tokenArgumento));
     }
 
-    private void bloque() throws LexicalException, SourceFileReaderException, SyntacticException {
+    // Sentencias
+
+    private void bloque() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(openCurly);
         listaSentencias();
         match(closeCurly);
     }
 
-    private void listaSentencias() throws LexicalException, SourceFileReaderException, SyntacticException {
-        TokenType[] primerosSentencia = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new};
+    private void listaSentencias() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+        TokenType[] primerosSentencia = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, r_int, r_char, r_boolean};
         if (Arrays.asList(primerosSentencia).contains(currentToken.tokenType)) {
             sentencia();
             listaSentencias();
@@ -364,11 +366,14 @@ public class SyntaxParser {
         }
     }
 
-    private void sentencia() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void sentencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == semicolon){
             match(semicolon);
-        } else if (currentToken.tokenType == mvID || currentToken.tokenType == classID || currentToken.tokenType == openBr || currentToken.tokenType == r_this || currentToken.tokenType == r_new){
+        } else if (currentToken.tokenType == mvID || currentToken.tokenType == openBr || currentToken.tokenType == r_this || currentToken.tokenType == r_new){
             asignacionOLlamada();
+            match(semicolon);
+        } else if (currentToken.tokenType == classID || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
+            varLocalClasicaOMetodoEstatico();
             match(semicolon);
         } else if (currentToken.tokenType == r_var){
             varLocal();
@@ -409,6 +414,54 @@ public class SyntaxParser {
         } else throw new SyntacticException("Se esperaba un operador de asignación", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
+    private void varLocalClasicaOMetodoEstatico() throws SemanticException, LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
+            tipoPrimitivo();
+            varLocalClasica();
+        } else if (currentToken.tokenType == classID) {
+            tipo();
+            varLocalClasicaOMetodoEstaticoFactorizado();
+        } else throw new SyntacticException("Se esperaba un tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+    }
+
+    private void varLocalClasicaOMetodoEstaticoFactorizado() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == dot){
+            match(dot);
+            match(mvID);
+            argsActuales();
+        } else if (currentToken.tokenType == mvID) {
+            varLocalClasica();
+        } else throw new SyntacticException("Se esperaba una declaración de variable o sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+    }
+
+    private void varLocalClasica() throws LexicalException, SourceFileReaderException, SyntacticException {
+        match(mvID);
+        asignacionOpcional();
+        varLocalClasicaFactorizada();
+    }
+
+    private void asignacionOpcional() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == assign || currentToken.tokenType == addAssign || currentToken.tokenType == subAssign) {
+            tipoDeAsignacion();
+            expresion();
+        } else {
+            if (currentToken.tokenType == comma || currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
+                // nada
+            } else throw new SyntacticException("Declaracion de variable sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        }
+    }
+
+    private void varLocalClasicaFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException {
+        if (currentToken.tokenType == comma){
+            match(comma);
+            varLocalClasica();
+        } else {
+            if (currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
+                //nada
+            } else throw new SyntacticException("Declaracion de variable sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        }
+    }
+
     private void varLocal() throws LexicalException, SourceFileReaderException, SyntacticException {
         match(r_var);
         match(mvID);
@@ -432,7 +485,7 @@ public class SyntaxParser {
         }
     }
 
-    private void nt_if() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void nt_if() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(r_if);
         match(openBr);
         expresion();
@@ -440,19 +493,19 @@ public class SyntaxParser {
         sentencia();
         nt_else();
     }
-    private void nt_else() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void nt_else() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == r_else){
             match(r_else);
             sentencia();
         } else {
-            TokenType[] siguientesElseFactorizado = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, closeCurly};
+            TokenType[] siguientesElseFactorizado = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, closeCurly, r_int, r_char, r_boolean};
             if (Arrays.asList(siguientesElseFactorizado).contains(currentToken.tokenType)){ // Siguiente(...) = { Primeros(<Sentencia>), } }
                 // Nada por ahora
             } else throw new SyntacticException("Se esperaba una sentencia o fin de bloque", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
 
-    private void nt_while() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void nt_while() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(r_while);
         match(openBr);
         expresion();

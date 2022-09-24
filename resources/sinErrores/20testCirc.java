@@ -1,21 +1,22 @@
 
-class D implements A, B{
+class D {
 
     static void main(){}
 
-    void m1 (int a, boolean b){}
+    void m1 (int a, boolean b){
+
+        D a, b = new D();
+
+        D.main();
+
+        if (true) {
+
+        }
+
+        D b;
+
+        int e, f, g = 5;
+
+    }
 }
 
-interface B{
-
-    void m1(int a, boolean b);
-}
-
-interface A{
-
-    void m2(int a, boolean b);
-}
-
-interface C {
-
-}
