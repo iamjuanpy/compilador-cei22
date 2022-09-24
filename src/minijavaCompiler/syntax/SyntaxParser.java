@@ -54,7 +54,7 @@ public class SyntaxParser {
     }
 
     private void listaClases() throws SyntacticException, LexicalException, SourceFileReaderException, SemanticException {
-        if (currentToken.tokenType == TokenType.r_class || currentToken.tokenType == TokenType.r_interface) {
+        if (currentToken.tokenType == r_class || currentToken.tokenType == r_interface) {
             clase();
             listaClases();
         } else {
@@ -414,7 +414,7 @@ public class SyntaxParser {
         } else throw new SyntacticException("Se esperaba un operador de asignación", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
-    private void varLocalClasicaOMetodoEstatico() throws SemanticException, LexicalException, SourceFileReaderException, SyntacticException {
+    private void varLocalClasicaOMetodoEstatico() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
             tipoPrimitivo();
             varLocalClasica();
@@ -429,6 +429,8 @@ public class SyntaxParser {
             match(dot);
             match(mvID);
             argsActuales();
+            encadenadoOpt();
+            asignacionOLlamadaFactorizada();    // esto semánticamente SOBRA
         } else if (currentToken.tokenType == mvID) {
             varLocalClasica();
         } else throw new SyntacticException("Se esperaba una declaración de variable o sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
@@ -441,8 +443,8 @@ public class SyntaxParser {
     }
 
     private void asignacionOpcional() throws LexicalException, SourceFileReaderException, SyntacticException {
-        if (currentToken.tokenType == assign || currentToken.tokenType == addAssign || currentToken.tokenType == subAssign) {
-            tipoDeAsignacion();
+        if (currentToken.tokenType == assign) {
+            match(assign);
             expresion();
         } else {
             if (currentToken.tokenType == comma || currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
