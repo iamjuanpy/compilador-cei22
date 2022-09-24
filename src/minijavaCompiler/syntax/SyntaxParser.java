@@ -49,7 +49,7 @@ public class SyntaxParser {
 
     private void inicial() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         listaClases();
-        symbolTable.eofToken = currentToken; // sobra?
+        symbolTable.eofToken = currentToken;
         match(eof);
     }
 
@@ -182,9 +182,9 @@ public class SyntaxParser {
     }
 
     private void atributo() throws SyntacticException, LexicalException, SourceFileReaderException, SemanticException {
-        boolean isPublic = visibilidad();
-        Type type = tipo();
-        listaDecAtrs(isPublic,type);
+        boolean esPublic = visibilidad();
+        Type tipo = tipo();
+        listaDecAtrs(esPublic,tipo);
         match(semicolon);
     }
 
@@ -200,7 +200,7 @@ public class SyntaxParser {
             match(classID);
             constructorOAttrOMetodo(tipo, tokenIdentificador); // Guardo el id de clase como tipo y como constructor
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
-            encabezadoMetodo(); // crea el metodo aca
+            encabezadoMetodo();
             bloque();
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }

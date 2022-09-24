@@ -32,7 +32,7 @@ public class Main {
                 DefaultClasses.instanceSymbolTableDefaults();
 
                 syntaxParser.startParse();                                  // Etapa 2/3
-                symbolTable.checkDeclarations();                            // Etapa 3
+                symbolTable.checkDeclarations();                            // Etapa 3, linea a comentar para probar constructores
 
                 System.out.println("\n"+"Compilación exitosa");
                 System.out.println("\n"+"[SinErrores]");

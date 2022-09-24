@@ -2,6 +2,7 @@ package minijavaCompiler.semantics.entries;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.types.Type;
 import minijavaCompiler.semantics.entries.types.primitives.VoidType;
 
@@ -13,6 +14,7 @@ import static minijavaCompiler.Main.symbolTable;
 
 public class Method implements Unit {
 
+    private ClassEntry classDeclared;
     private Token methodToken;
     private boolean isStatic;
     private Type returnType;
@@ -22,7 +24,8 @@ public class Method implements Unit {
     public Method(boolean isStatic, Type type, Token methodToken) {
         this.methodToken = methodToken;
         this.isStatic = isStatic;
-        returnType = type;
+        this.classDeclared = symbolTable.currentClass;
+                returnType = type;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();
     }

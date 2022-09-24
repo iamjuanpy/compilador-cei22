@@ -22,8 +22,8 @@ public class SymbolTable {
     public void checkDeclarations() throws SemanticException {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
-        if (mainMethod == null)
-            throw new SemanticException("Ninguna clase tiene metodo main", eofToken.lexeme, eofToken.lineNumber); // Ver que exista un metodo main
+        if (mainMethod == null)                                                 // Paso 3: Ver que exista un metodo main
+            throw new SemanticException("Ninguna clase tiene metodo main", eofToken.lexeme, eofToken.lineNumber);
     }
 
     public boolean classExists(String className){
@@ -43,7 +43,5 @@ public class SymbolTable {
     public void saveCurrentClass() {
         classesHashMap.put(currentClass.getName(), currentClass);
     }
-
-    // MOMENTANEAMENTE PERMITIENDO 1 CONSTRUCTOR / 1 METODO POR NOMBRE
 
 }

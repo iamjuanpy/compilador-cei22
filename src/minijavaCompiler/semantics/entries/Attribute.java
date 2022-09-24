@@ -2,12 +2,14 @@ package minijavaCompiler.semantics.entries;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.types.Type;
 
 import static minijavaCompiler.Main.symbolTable;
 
 public class Attribute {
 
+    private ClassEntry classDeclared;
     private Token idToken;
     private Type attrType;
     private boolean visibility;
@@ -16,6 +18,7 @@ public class Attribute {
         this.idToken = id;
         this.attrType = type;
         this.visibility = visibility;
+        this.classDeclared = symbolTable.currentClass;
     }
 
     public String getName() {
