@@ -33,6 +33,33 @@ public class Interface implements ClassEntry {
     public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
     public boolean isConcreteClass() { return false;}
 
+    // Chequeo declaraciones 
+
+    public void correctlyDeclared() throws SemanticException {
+        checkInheritance();
+        checkMethods();
+    }
+
+    public void consolidate() throws SemanticException {
+        if (!consolidated){
+            consolidateAncestors();
+            copyInheritedMethods();
+            consolidated = true;
+        }
+    }
+
+    //Chequeo correctamente declarado
+
+    private void checkInheritance() throws SemanticException {
+        for (Token extInterface : interfacesHashMap.values()) {
+            if (!symbolTable.classExists(extInterface.lexeme))
+                throw new SemanticException("No se puede extender la interface "+extInterface.lexeme+", no existe", extInterface.lexeme, extInterface.lineNumber);
+            else if (symbolTable.getClass(extInterface.lexeme).isConcreteClass())
+                throw new SemanticException("No se puede extender "+extInterface.lexeme+", es una clase concreta", extInterface.lexeme, extInterface.lineNumber);
+        }
+        hasCircularInheritance(new HashMap<>());
+    }
+
     public void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
         for (Token extendsInterface : interfacesHashMap.values()) { // Chequeo arbol de herencia de a un implement
             if (inheritanceMap.get(extendsInterface.lexeme) == null) { // Reviso si ya tengo en la lista recorrida la misma interface
@@ -57,19 +84,12 @@ public class Interface implements ClassEntry {
         else return lastToken;
     }
 
-
-    public void correctlyDeclared() throws SemanticException {
-        checkInheritance();
-        checkMethods();
+    private void checkMethods() throws SemanticException {
+        for (Method method : methodHashMap.values())
+            method.correctlyDeclared();
     }
 
-    public void consolidate() throws SemanticException {
-        if (!consolidated){
-            consolidateAncestors();
-            checkInheritedMethods();
-            consolidated = true;
-        }
-    }
+    // Consolidacion
 
     private void consolidateAncestors() throws SemanticException {
         for (Token interfaceID : interfacesHashMap.values())
@@ -77,7 +97,7 @@ public class Interface implements ClassEntry {
     }
 
 
-    private void checkInheritedMethods() throws SemanticException {
+    private void copyInheritedMethods() throws SemanticException {
         for (Token interfaceID : interfacesHashMap.values())
             for (Method method : symbolTable.getClass(interfaceID.lexeme).getMethodHashMap().values()){
                 if (methodHashMap.get(method.getName()) != null) {
@@ -88,26 +108,12 @@ public class Interface implements ClassEntry {
     }
 
     private Method getLastDeclaredMethod(Method method1, Method method2) {
-        if (method1.getLine() >= method2.getLine())
+        if (method1.getLine() >= method2.getLine()) // Puedo estar extendiendo dos interfaces, elijo la ultima declarada para mostrar el error
             return method1;
         else return method2;
     }
 
-
-    private void checkInheritance() throws SemanticException {
-        for (Token extInterface : interfacesHashMap.values()) {
-            if (!symbolTable.classExists(extInterface.lexeme))
-                throw new SemanticException("No se puede extender la interface "+extInterface.lexeme+", no existe", extInterface.lexeme, extInterface.lineNumber);
-            else if (symbolTable.getClass(extInterface.lexeme).isConcreteClass())
-                throw new SemanticException("No se puede extender "+extInterface.lexeme+", es una clase concreta", extInterface.lexeme, extInterface.lineNumber);
-        }
-        hasCircularInheritance(new HashMap<>());
-    }
-
-    private void checkMethods() throws SemanticException {
-        for (Method method : methodHashMap.values())
-            method.correctlyDeclared();
-    }
+    // Setters
 
     public void setAncestorClass(Token classToken) {} // NO LLEGA
 
@@ -119,6 +125,7 @@ public class Interface implements ClassEntry {
 
     public void addAttribute(Attribute attribute) throws SemanticException {} // NO LLEGA
     public void addConstructor(Constructor constructor) throws SemanticException {} // NO LLEGA
+
     public void addMethod(Method method) throws SemanticException {
         if (method.isStatic())
             throw new SemanticException("Una interfaz no puede tener métodos estáticos", method.getName(), method.getLine());

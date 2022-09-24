@@ -41,6 +41,38 @@ public class ConcreteClass implements ClassEntry {
     public boolean isConcreteClass(){return true;}
     public HashMap<String, Attribute> getAttributeHashMap(){return attributeHashMap;}
     public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
+    private boolean notObjectClass() {
+        return extendsClassToken != null;
+    }
+
+    // Chequeo declaraciones
+
+    public void correctlyDeclared() throws SemanticException {
+        checkInheritance();
+        checkInterfaces();
+        checkAttributes();
+        checkMethods();
+        checkConstructor();
+    }
+
+    public void consolidate() throws SemanticException {
+        if (!consolidated){
+            consolidateAncestors();
+            consolidateMethods();
+            copyInheritedAttributes();
+            consolidated = true;
+        }
+    }
+
+    // Chequeo correctamente declarado
+
+    private void checkInheritance() throws SemanticException {
+        if (notObjectClass() && !symbolTable.classExists(extendsClassToken.lexeme))
+            throw new SemanticException("No se puede extender a la clase "+ extendsClassToken.lexeme+", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+        if (notObjectClass() && !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass())
+            throw new SemanticException("No se puede extender una interface "+ extendsClassToken.lexeme, extendsClassToken.lexeme, extendsClassToken.lineNumber);
+        hasCircularInheritance(new HashMap<>());
+    }
 
     public void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
         if (classToken.lexeme.equals("Object")) // Si llegue a object no hay herencia circular
@@ -64,80 +96,6 @@ public class ConcreteClass implements ClassEntry {
         if (lastAncestor.lineNumber >= lastToken.lineNumber)
             return lastAncestor;
         else return lastToken;
-    }
-
-    public void correctlyDeclared() throws SemanticException {
-        checkInheritance();
-        checkInterfaces();
-        checkAttributes();
-        checkMethods();
-        checkConstructor();
-    }
-
-    public void consolidate() throws SemanticException {
-        if (!consolidated){
-            consolidateAncestors();
-            checkInheritedMethods();
-            checkInheritedAttributes();
-            consolidated = true;
-        }
-    }
-
-    private void consolidateAncestors() throws SemanticException {
-        if (notObjectClass())
-            symbolTable.getClass(extendsClassToken.lexeme).consolidate();
-        for (Token interfaceID : interfacesHashMap.values())
-            symbolTable.getClass(interfaceID.lexeme).consolidate();
-    }
-
-    private void checkInheritedAttributes() throws SemanticException {
-        if (notObjectClass()) {
-            for (Attribute attr : symbolTable.getClass(extendsClassToken.lexeme).getAttributeHashMap().values()) {
-                if (attributeHashMap.get(attr.getName()) == null) {
-                    attributeHashMap.put(attr.getName(), attr); // Si es publico lo copio
-                } else
-                    throw new SemanticException("No se puede declarar un atributo con el mismo nombre que un atributo de clase padre", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
-            }
-        }
-    }
-
-    private boolean notObjectClass() {
-        return extendsClassToken != null;
-    }
-
-    private void checkInheritedMethods() throws SemanticException {
-        checkRedefinedMethods();
-        checkImplementedMethods();
-    }
-
-    private void checkRedefinedMethods() throws SemanticException {
-        if (notObjectClass()) {
-            for (Method method : symbolTable.getClass(extendsClassToken.lexeme).getMethodHashMap().values()) {
-                if (methodHashMap.get(method.getName()) == null) {  // Si no redefine el metodo, se agrega
-                    methodHashMap.put(method.getName(), method);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {   // Si se redefine pero con distintos parametros o tipo de retorno, error semantico
-                    throw new SemanticException("El método redefinido "+method.getName()+" tiene distinto retorno/parámetros", method.getName(), methodHashMap.get(method.getName()).getLine());
-                }
-            }
-        }
-    }
-
-    private void checkImplementedMethods() throws SemanticException {
-        for (Token intface : interfacesHashMap.values()){
-            for (Method method : symbolTable.getClass(intface.lexeme).getMethodHashMap().values()){
-                if (methodHashMap.get(method.getName()) == null) {          // Si no implementa un metodo, error
-                    throw new SemanticException("Falta implementar el metodo "+method.getName()+" de la interface "+intface.lexeme, intface.lexeme, intface.lineNumber);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {   // Si lo implementa pero con distintos parametros, error
-                    throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", method.getName(), methodHashMap.get(method.getName()).getLine());
-                }
-            }
-        }
-    }
-
-    private void checkInheritance() throws SemanticException {
-        if (notObjectClass() && !symbolTable.classExists(extendsClassToken.lexeme))
-            throw new SemanticException("No se puede extender a la clase "+ extendsClassToken.lexeme+", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
-        hasCircularInheritance(new HashMap<>());
     }
 
     private void checkInterfaces() throws SemanticException {
@@ -164,6 +122,57 @@ public class ConcreteClass implements ClassEntry {
         for (Method method : methodHashMap.values())
             method.correctlyDeclared();
     }
+
+    // Consolidacion
+
+    private void consolidateAncestors() throws SemanticException {
+        if (notObjectClass())
+            symbolTable.getClass(extendsClassToken.lexeme).consolidate();
+        for (Token interfaceID : interfacesHashMap.values())
+            symbolTable.getClass(interfaceID.lexeme).consolidate();
+    }
+
+    private void copyInheritedAttributes() throws SemanticException {
+        if (notObjectClass()) {
+            for (Attribute attr : symbolTable.getClass(extendsClassToken.lexeme).getAttributeHashMap().values()) {
+                if (attributeHashMap.get(attr.getName()) == null) {
+                    attributeHashMap.put(attr.getName(), attr);
+                } else
+                    throw new SemanticException("No se puede declarar un atributo con el mismo nombre que un atributo de clase padre", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
+            }
+        }
+    }
+
+    private void consolidateMethods() throws SemanticException {
+        copyNotRedefinedMethods();
+        checkImplementedMethods();
+    }
+
+    private void copyNotRedefinedMethods() throws SemanticException {
+        if (notObjectClass()) {
+            for (Method method : symbolTable.getClass(extendsClassToken.lexeme).getMethodHashMap().values()) {
+                if (methodHashMap.get(method.getName()) == null) {  // Si no redefine el metodo, se agrega
+                    methodHashMap.put(method.getName(), method);
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {   // Si se redefine pero con distintos parametros o tipo de retorno, error semantico
+                    throw new SemanticException("El método redefinido "+method.getName()+" tiene distinto retorno/parámetros", method.getName(), methodHashMap.get(method.getName()).getLine());
+                }
+            }
+        }
+    }
+
+    private void checkImplementedMethods() throws SemanticException {
+        for (Token intface : interfacesHashMap.values()){
+            for (Method method : symbolTable.getClass(intface.lexeme).getMethodHashMap().values()){
+                if (methodHashMap.get(method.getName()) == null) {                              // Si no implementa un metodo, error
+                    throw new SemanticException("Falta implementar el metodo "+method.getName()+" de la interface "+intface.lexeme, intface.lexeme, intface.lineNumber);
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {     // Si lo implementa pero con distintos parametros, error
+                    throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", method.getName(), methodHashMap.get(method.getName()).getLine());
+                }
+            }
+        }
+    }
+
+    // Setters
 
     public void setAncestorClass(Token classToken){
         this.extendsClassToken = classToken;}

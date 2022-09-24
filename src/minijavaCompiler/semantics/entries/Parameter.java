@@ -19,18 +19,16 @@ public class Parameter {
     public String getName() {
         return parameterToken.lexeme;
     }
-
     public int getLine() {
         return parameterToken.lineNumber;
     }
-
     private Type getParameterType() {return parameterType;}
-
-    public boolean equals(Parameter p) { return parameterType.equals(p.getParameterType());}
 
     public void correctlyDeclared() throws SemanticException {
         if (!parameterType.isPrimitive() && !symbolTable.classExists(parameterType.getTypeName())) // Tipo clase con clase no existente
             throw new SemanticException("No se puede declarar un parametro de tipo "+parameterType.getTypeName()+", la clase no existe", parameterType.getTypeName(), parameterType.getLine());
     }
+
+    public boolean equals(Parameter p) { return parameterType.equals(p.getParameterType());}
 
 }

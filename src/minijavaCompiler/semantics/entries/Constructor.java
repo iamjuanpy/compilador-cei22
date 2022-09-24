@@ -19,13 +19,8 @@ public class Constructor implements Unit {
         parameterList = new ArrayList<>();
     }
 
-    public String getName() {
-        return idToken.lexeme;
-    }
-
-    public int getLine() {
-        return idToken.lineNumber;
-    }
+    public String getName() {return idToken.lexeme;}
+    public int getLine() {return idToken.lineNumber;}
 
     public void addParameter(Parameter parameter) throws SemanticException {
         if (parameterHashMap.get(parameter.getName()) == null){
