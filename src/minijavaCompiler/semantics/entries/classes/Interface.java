@@ -62,11 +62,11 @@ public class Interface implements ClassEntry {
     }
 
     public void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
-        for (Token extendsInterface : interfacesHashMap.values()) { // Chequeo arbol de herencia de a un implement
-            if (inheritanceMap.get(extendsInterface.lexeme) == null) { // Reviso si ya tengo en la lista recorrida la misma interface
+        for (Token extendsInterface : interfacesHashMap.values()) {                                             // Chequeo arbol de herencia de a un implement
+            if (inheritanceMap.get(extendsInterface.lexeme) == null) {                                          // Reviso si ya tengo en la lista recorrida la misma interface
                 inheritanceMap.put(interfaceToken.lexeme, extendsInterface);
                 symbolTable.getClass(extendsInterface.lexeme).hasCircularInheritance(inheritanceMap);
-            } else { // Si la tengo, reporto el error con la ultima linea que genere el problema
+            } else {                                                                                            // Si la tengo, reporto el error con la ultima linea que genere el problema
                 Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsInterface);
                 throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
             }

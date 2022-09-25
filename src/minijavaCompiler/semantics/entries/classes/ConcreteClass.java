@@ -70,18 +70,20 @@ public class ConcreteClass implements ClassEntry {
     private void checkInheritance() throws SemanticException {
         if (notObjectClass() && !symbolTable.classExists(extendsClassToken.lexeme))
             throw new SemanticException("No se puede extender a la clase "+ extendsClassToken.lexeme+", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+        if (notObjectClass() && (extendsClassToken.lexeme).equals(classToken.lexeme))
+            throw new SemanticException("La clase "+ extendsClassToken.lexeme+" no se puede extender a si misma", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         if (notObjectClass() && !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass())
             throw new SemanticException("Clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         hasCircularInheritance(new HashMap<>());
     }
 
     public void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
-        if (classToken.lexeme.equals("Object")) // Si llegue a object no hay herencia circular
+        if (classToken.lexeme.equals("Object"))                                                                     // Si llegue a object no hay herencia circular
             return;
-        if (inheritanceMap.get(extendsClassToken.lexeme) == null) { // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
+        if (inheritanceMap.get(extendsClassToken.lexeme) == null) {                                                 // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
             inheritanceMap.put(classToken.lexeme, extendsClassToken);
             symbolTable.getClass(extendsClassToken.lexeme).hasCircularInheritance(inheritanceMap);
-        } else { // Si la tengo, reporto el error con la ultima linea que genere el problema
+        } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
             Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
             throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
         }
