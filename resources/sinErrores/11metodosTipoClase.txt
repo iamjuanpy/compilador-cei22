@@ -1,0 +1,20 @@
+interface A {
+
+    A m1(Clase cee);
+
+    Clase m2(A a);
+
+}
+
+class Clase implements A{
+
+    static void main() {
+    }
+
+    A m1(Clase b) {
+    }
+
+    Clase m2(A a) {
+    }
+
+}

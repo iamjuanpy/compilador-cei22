@@ -28,6 +28,7 @@ public class ConcreteClass implements ClassEntry {
         methodHashMap = new HashMap<>();
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
+        consolidated = false;
         createDefaultConstructor();
     }
 
@@ -70,7 +71,7 @@ public class ConcreteClass implements ClassEntry {
         if (notObjectClass() && !symbolTable.classExists(extendsClassToken.lexeme))
             throw new SemanticException("No se puede extender a la clase "+ extendsClassToken.lexeme+", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         if (notObjectClass() && !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass())
-            throw new SemanticException("No se puede extender una interface "+ extendsClassToken.lexeme, extendsClassToken.lexeme, extendsClassToken.lineNumber);
+            throw new SemanticException("Clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         hasCircularInheritance(new HashMap<>());
     }
 
@@ -208,7 +209,7 @@ public class ConcreteClass implements ClassEntry {
 
     private boolean alreadyHasAttributeWithName(String name) {return attributeHashMap.get(name) != null;}
 
-    public void addConstructor(Constructor constructor) throws SemanticException {
+    public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar constructores solo en sintactico
         if (!constructor.getName().equals(classToken.lexeme))
             throw new SemanticException("Un constructor tiene que ser del tipo de la clase", constructor.getName(),constructor.getLine());
         if (hasUserDeclaredConstructor) {

@@ -1,0 +1,13 @@
+interface Interface {}
+
+class Clase implements Interface {
+
+    public int a;
+
+    static void main(){
+    }
+
+    void m1(){
+    }
+
+}

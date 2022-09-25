@@ -21,6 +21,7 @@ public class Interface implements ClassEntry {
         this.interfaceToken = token;
         methodHashMap = new HashMap<>();
         interfacesHashMap = new HashMap<>();
+        consolidated = false;
     }
 
     public String getName() {

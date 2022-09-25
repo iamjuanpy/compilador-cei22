@@ -1,0 +1,13 @@
+interface A {
+
+}
+
+class Clase implements A{
+
+    private A a,b,c;
+    public Clase obj;
+
+    static void main() {
+    }
+
+}

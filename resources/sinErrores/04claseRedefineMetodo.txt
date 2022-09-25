@@ -1,0 +1,23 @@
+class Padre {
+
+    public int b;
+
+    int m2(){
+    }
+
+}
+
+class Clase extends Padre{
+
+    public int a;
+
+    static void main(){
+    }
+
+    void m1(){
+    }
+
+    int m2(){
+    }
+
+}

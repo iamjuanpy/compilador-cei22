@@ -23,7 +23,7 @@ public class SymbolTable {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
         if (mainMethod == null)                                                 // Paso 3: Ver que exista un metodo main
-            throw new SemanticException("Ninguna clase tiene metodo main", eofToken.lexeme, eofToken.lineNumber);
+            throw new SemanticException("No se encontró clase con metodo main", eofToken.lexeme, eofToken.lineNumber);
     }
 
     public boolean classExists(String className){

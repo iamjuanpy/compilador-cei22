@@ -1,0 +1,20 @@
+interface Interface {
+
+    boolean m2(Interface a);
+
+}
+
+class Clase implements Interface {
+
+    public int a;
+
+    static void main(){
+    }
+
+    void m1(){
+    }
+
+    boolean m2(Interface parametro){
+    }
+
+}

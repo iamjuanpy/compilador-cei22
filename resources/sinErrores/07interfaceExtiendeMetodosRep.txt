@@ -1,0 +1,24 @@
+interface A {
+
+    boolean m1();
+    void m2(int a);
+
+}
+
+interface B {
+
+    void m2(int a);
+
+}
+
+interface C extends A,B{
+
+    boolean m1();
+
+}
+
+class Clase {
+
+    static void main() {
+    }
+}
