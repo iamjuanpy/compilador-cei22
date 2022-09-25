@@ -11,9 +11,9 @@ public class Parameter {
     private Token parameterToken;
     private Type parameterType;
 
-    public Parameter(Type tipoArg, Token idArg) {
-        parameterToken = idArg;
-        parameterType = tipoArg;
+    public Parameter(Type type, Token token) {
+        parameterToken = token;
+        parameterType = type;
     }
 
     public String getName() {

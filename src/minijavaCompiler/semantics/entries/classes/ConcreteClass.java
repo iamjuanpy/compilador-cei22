@@ -192,7 +192,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
         if (interfacesHashMap.get(interfaceToken.lexeme) != null) {
-            throw new SemanticException("No se puede implementar dos veces la interfaz "+ interfaceToken.lexeme, interfaceToken.lexeme, interfaceToken.lineNumber);
+            throw new SemanticException("No se puede implementar dos veces la interface "+ interfaceToken.lexeme, interfaceToken.lexeme, interfaceToken.lineNumber);
         } else interfacesHashMap.put(interfaceToken.lexeme, interfaceToken);
     }
 

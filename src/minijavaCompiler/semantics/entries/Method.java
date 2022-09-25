@@ -25,7 +25,7 @@ public class Method implements Unit {
         this.methodToken = methodToken;
         this.isStatic = isStatic;
         this.classDeclared = symbolTable.currentClass;
-        returnType = type;
+        this.returnType = type;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();
     }
@@ -35,6 +35,7 @@ public class Method implements Unit {
     public boolean isStatic() {return isStatic;}
     public List<Parameter> getParametersList() {return parameterList;}
     public Type getReturnType() {return returnType;}
+    public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && methodToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
 
     public void addParameter(Parameter parameter) throws SemanticException {
         if (parameterHashMap.get(parameter.getName()) == null){
@@ -49,7 +50,10 @@ public class Method implements Unit {
             parameter.correctlyDeclared();
     }
 
-    public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && methodToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
+    private void isReturnTypeCorrectlyDeclared() throws SemanticException {
+        if (!returnType.isPrimitive() && !symbolTable.classExists(returnType.getTypeName())) // Tipo clase con clase no existente
+            throw new SemanticException("No se puede declarar un parametro de tipo "+returnType.getTypeName()+", la clase no existe", returnType.getTypeName(), returnType.getLine());
+    }
 
     public boolean hasSameSignature(Method method) {
         if (isStatic != method.isStatic())
@@ -71,11 +75,6 @@ public class Method implements Unit {
             if (!parameterList.get(i).equals(otherMethodParametersList.get(i)))     // difiere un parametro
                 return false;
         return true;
-    }
-
-    private void isReturnTypeCorrectlyDeclared() throws SemanticException {
-        if (!returnType.isPrimitive() && !symbolTable.classExists(returnType.getTypeName())) // Tipo clase con clase no existente
-            throw new SemanticException("No se puede declarar un parametro de tipo "+returnType.getTypeName()+", la clase no existe", returnType.getTypeName(), returnType.getLine());
     }
 
 }

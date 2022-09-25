@@ -10,30 +10,30 @@ import static minijavaCompiler.Main.symbolTable;
 public class Attribute {
 
     private ClassEntry classDeclared;
-    private Token idToken;
-    private Type attrType;
-    private boolean visibility;
+    private Token attributeToken;
+    private Type attributeType;
+    private boolean isPublic;
 
-    public Attribute(boolean visibility, Type type, Token id) {
-        this.idToken = id;
-        this.attrType = type;
-        this.visibility = visibility;
+    public Attribute(boolean isPublic, Type type, Token id) {
+        this.attributeToken = id;
+        this.attributeType = type;
+        this.isPublic = isPublic;
         this.classDeclared = symbolTable.currentClass;
     }
 
     public String getName() {
-        return idToken.lexeme;
+        return attributeToken.lexeme;
     }
     public int getLine() {
-        return idToken.lineNumber;
+        return attributeToken.lineNumber;
     }
     public boolean isPublic(){
-        return visibility;
+        return isPublic;
     }
 
     public void correctlyDeclared() throws SemanticException {
-        if (!attrType.isPrimitive() && !symbolTable.classExists(attrType.getTypeName())) // Tipo clase con clase no existente
-            throw new SemanticException("No se puede declarar un atributo de tipo "+attrType.getTypeName()+", la clase no existe", attrType.getTypeName(), attrType.getLine());
+        if (!attributeType.isPrimitive() && !symbolTable.classExists(attributeType.getTypeName())) // Tipo clase con clase no existente
+            throw new SemanticException("No se puede declarar un atributo de tipo "+ attributeType.getTypeName()+", la clase no existe", attributeType.getTypeName(), attributeType.getLine());
     }
 
 }
