@@ -49,7 +49,8 @@ public class ConcreteClass implements ClassEntry {
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {
-        checkInheritance();
+        if (notObjectClass())
+            checkInheritance();
         checkInterfaces();
         checkAttributes();
         checkMethods();
@@ -58,9 +59,11 @@ public class ConcreteClass implements ClassEntry {
 
     public void consolidate() throws SemanticException {
         if (!consolidated){
-            consolidateAncestors();
-            consolidateMethods();
-            copyInheritedAttributes();
+            if (notObjectClass()) {
+                consolidateAncestors();
+                consolidateMethods();
+                copyInheritedAttributes();
+            }
             consolidated = true;
         }
     }
@@ -68,21 +71,27 @@ public class ConcreteClass implements ClassEntry {
     // Chequeo correctamente declarado
 
     private void checkInheritance() throws SemanticException {
-        if (notObjectClass() && !symbolTable.classExists(extendsClassToken.lexeme))
-            throw new SemanticException("No se puede extender a la clase "+ extendsClassToken.lexeme+", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
-        if (notObjectClass() && (extendsClassToken.lexeme).equals(classToken.lexeme))
-            throw new SemanticException("La clase "+ extendsClassToken.lexeme+" no se puede extender a si misma", extendsClassToken.lexeme, extendsClassToken.lineNumber);
-        if (notObjectClass() && !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass())
+        if (classExtendsItself())
+            throw new SemanticException("La clase " + extendsClassToken.lexeme + " no se puede extender a si misma", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+        else if (classExtendsNonExistent())
+            throw new SemanticException("No se puede extender a la clase " + extendsClassToken.lexeme + ", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+        else if (classExtendsAnInterface())
             throw new SemanticException("Clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
-        hasCircularInheritance(new HashMap<>());
+        checkCircularInheritance(new HashMap<>());
     }
 
-    public void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
+    private boolean classExtendsItself() {return (extendsClassToken.lexeme).equals(classToken.lexeme);}
+
+    private boolean classExtendsNonExistent() {return !symbolTable.classExists(extendsClassToken.lexeme);}
+
+    private boolean classExtendsAnInterface() {return !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass();}
+
+    public void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
         if (classToken.lexeme.equals("Object"))                                                                     // Si llegue a object no hay herencia circular
             return;
-        if (inheritanceMap.get(extendsClassToken.lexeme) == null) {                                                 // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
+        else if (inheritanceMap.get(extendsClassToken.lexeme) == null) {                                            // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
             inheritanceMap.put(classToken.lexeme, extendsClassToken);
-            symbolTable.getClass(extendsClassToken.lexeme).hasCircularInheritance(inheritanceMap);
+            symbolTable.getClass(extendsClassToken.lexeme).checkCircularInheritance(inheritanceMap);
         } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
             Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
             throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
@@ -103,14 +112,20 @@ public class ConcreteClass implements ClassEntry {
 
     private void checkInterfaces() throws SemanticException {
         for (Token impInterface : interfacesHashMap.values()) {
-            if ((impInterface.lexeme).equals(classToken.lexeme))
-                throw new SemanticException("La clase "+ impInterface.lexeme+" no se puede implementar como interface a si misma", impInterface.lexeme, impInterface.lineNumber);
-            if (!symbolTable.classExists(impInterface.lexeme))
+            if (classImplementsItself(impInterface))
+                throw new SemanticException("La clase "+impInterface.lexeme+" no se puede implementar como interface a si misma", impInterface.lexeme, impInterface.lineNumber);
+            else if (classImplementsNonExistent(impInterface))
                 throw new SemanticException("No se puede implementar la interface "+impInterface.lexeme+", no existe", impInterface.lexeme, impInterface.lineNumber);
-            else if (symbolTable.getClass(impInterface.lexeme).isConcreteClass())
+            else if (classImplementsConcreteClass(impInterface))
                 throw new SemanticException("No se puede implementar "+impInterface.lexeme+", es una clase concreta", impInterface.lexeme, impInterface.lineNumber);
         }
     }
+
+    private boolean classImplementsItself(Token interfaceToken) {return (interfaceToken.lexeme).equals(classToken.lexeme);}
+
+    private boolean classImplementsNonExistent(Token interfaceToken) {return !symbolTable.classExists(interfaceToken.lexeme);}
+
+    private boolean classImplementsConcreteClass(Token interfaceToken) {return symbolTable.getClass(interfaceToken.lexeme).isConcreteClass();}
 
     private void checkAttributes() throws SemanticException {
         for (Attribute attribute : attributeHashMap.values())
@@ -129,20 +144,16 @@ public class ConcreteClass implements ClassEntry {
     // Consolidacion
 
     private void consolidateAncestors() throws SemanticException {
-        if (notObjectClass())
-            symbolTable.getClass(extendsClassToken.lexeme).consolidate();
+        symbolTable.getClass(extendsClassToken.lexeme).consolidate();
         for (Token interfaceID : interfacesHashMap.values())
             symbolTable.getClass(interfaceID.lexeme).consolidate();
     }
 
     private void copyInheritedAttributes() throws SemanticException {
-        if (notObjectClass()) {
-            for (Attribute attr : symbolTable.getClass(extendsClassToken.lexeme).getAttributeHashMap().values()) {
-                if (attributeHashMap.get(attr.getName()) == null) {
-                    attributeHashMap.put(attr.getName(), attr);
-                } else
-                    throw new SemanticException("No se puede declarar un atributo con el mismo nombre que un atributo de clase padre", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
-            }
+        for (Attribute attr : symbolTable.getClass(extendsClassToken.lexeme).getAttributeHashMap().values()) {
+            if (attributeHashMap.get(attr.getName()) == null) {
+                attributeHashMap.put(attr.getName(), attr);
+            } else throw new SemanticException("No se puede declarar un atributo con el mismo nombre que un atributo de clase padre", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
         }
     }
 
@@ -157,7 +168,7 @@ public class ConcreteClass implements ClassEntry {
                 if (methodHashMap.get(method.getName()) == null) {  // Si no redefine el metodo, se agrega
                     methodHashMap.put(method.getName(), method);
                 } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {   // Si se redefine pero con distintos parametros o tipo de retorno, error semantico
-                    throw new SemanticException("El método redefinido "+method.getName()+" tiene distinto retorno/parámetros", method.getName(), methodHashMap.get(method.getName()).getLine());
+                    throw new SemanticException("El método "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
                 }
             }
         }
@@ -177,8 +188,7 @@ public class ConcreteClass implements ClassEntry {
 
     // Setters
 
-    public void setAncestorClass(Token classToken){
-        this.extendsClassToken = classToken;}
+    public void setAncestorClass(Token classToken){this.extendsClassToken = classToken;}
 
     public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
         if (interfacesHashMap.get(interfaceToken.lexeme) != null) {
@@ -214,7 +224,7 @@ public class ConcreteClass implements ClassEntry {
     public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar constructores solo en sintactico
         if (!constructor.getName().equals(classToken.lexeme))
             throw new SemanticException("Un constructor tiene que ser del tipo de la clase", constructor.getName(),constructor.getLine());
-        if (hasUserDeclaredConstructor) {
+        else if (hasUserDeclaredConstructor) {
             throw new SemanticException("No se puede declarar mas de un constructor",constructor.getName(), constructor.getLine());
         } else {
             this.constructor = constructor;

@@ -18,7 +18,7 @@ public interface ClassEntry {
     HashMap<String, Method> getMethodHashMap();
     boolean isConcreteClass();
 
-    void hasCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException;
+    void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException;
 
     void addAttribute(Attribute attribute) throws SemanticException;
     void addConstructor(Constructor constructor) throws SemanticException;

@@ -1,0 +1,5 @@
+///[Error:String|2]
+class String {
+
+    private int a;
+}
