@@ -33,7 +33,7 @@ public class Interface implements ClassEntry {
     public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
     public boolean isConcreteClass() { return false;}
 
-    // Chequeo declaraciones 
+    // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {
         checkInheritance();
@@ -102,15 +102,9 @@ public class Interface implements ClassEntry {
             for (Method method : symbolTable.getClass(interfaceID.lexeme).getMethodHashMap().values()){
                 if (methodHashMap.get(method.getName()) != null) {
                     if (!method.hasSameSignature(methodHashMap.get(method.getName())))
-                        throw new SemanticException("No se puede extender una interface teniendo un metodo redefinido con distintos parametros/retorno", method.getName(), getLastDeclaredMethod(method, methodHashMap.get(method.getName())).getLine());
+                        throw new SemanticException("No se puede extender una interface teniendo un metodo redefinido con distintos parametros/retorno", interfaceID.lexeme, interfaceID.lineNumber);
                 } else methodHashMap.put(method.getName(), method);
             }
-    }
-
-    private Method getLastDeclaredMethod(Method method1, Method method2) {
-        if (method1.getLine() >= method2.getLine()) // Puedo estar extendiendo dos interfaces, elijo la ultima declarada para mostrar el error
-            return method1;
-        else return method2;
     }
 
     // Setters
