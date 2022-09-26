@@ -76,7 +76,7 @@ public class Interface implements ClassEntry {
                 symbolTable.getClass(interfaceExtend.lexeme).checkCircularInheritance(inheritanceMap);
             } else {                                                                                            // Si la tengo, reporto el error con la ultima linea que genere el problema
                 Token lastToken = getLastInheritanceDeclaration(inheritanceMap, interfaceExtend);
-                throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
+                throw new SemanticException("No puede haber herencia circular en una interface", lastToken.lexeme, lastToken.lineNumber);
             }
         }
     }

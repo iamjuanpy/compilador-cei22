@@ -94,7 +94,7 @@ public class ConcreteClass implements ClassEntry {
             symbolTable.getClass(extendsClassToken.lexeme).checkCircularInheritance(inheritanceMap);
         } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
             Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
-            throw new SemanticException("No puede haber herencia circular", lastToken.lexeme, lastToken.lineNumber);
+            throw new SemanticException("No puede haber herencia circular en una clase", lastToken.lexeme, lastToken.lineNumber);
         }
     }
 
@@ -165,9 +165,9 @@ public class ConcreteClass implements ClassEntry {
     private void copyNotRedefinedMethods() throws SemanticException {
         if (notObjectClass()) {
             for (Method method : symbolTable.getClass(extendsClassToken.lexeme).getMethodHashMap().values()) {
-                if (methodHashMap.get(method.getName()) == null) {  // Si no redefine el metodo, se agrega
+                if (methodHashMap.get(method.getName()) == null) {
                     methodHashMap.put(method.getName(), method);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {   // Si se redefine pero con distintos parametros o tipo de retorno, error semantico
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
                     throw new SemanticException("El método "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
                 }
             }
@@ -177,9 +177,9 @@ public class ConcreteClass implements ClassEntry {
     private void checkImplementedMethods() throws SemanticException {
         for (Token intface : interfacesHashMap.values()){
             for (Method method : symbolTable.getClass(intface.lexeme).getMethodHashMap().values()){
-                if (methodHashMap.get(method.getName()) == null) {                              // Si no implementa un metodo, error
+                if (methodHashMap.get(method.getName()) == null) {
                     throw new SemanticException("Falta implementar el metodo "+method.getName()+" de la interface "+intface.lexeme, intface.lexeme, intface.lineNumber);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {     // Si lo implementa pero con distintos parametros, error
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
                     throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", method.getName(), methodHashMap.get(method.getName()).getLine());
                 }
             }
@@ -221,7 +221,7 @@ public class ConcreteClass implements ClassEntry {
 
     private boolean alreadyHasAttributeWithName(String name) {return attributeHashMap.get(name) != null;}
 
-    public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar constructores solo en sintactico
+    public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar MULTIPLES constructores solo en sintactico
         if (!constructor.getName().equals(classToken.lexeme))
             throw new SemanticException("Un constructor tiene que ser del tipo de la clase", constructor.getName(),constructor.getLine());
         else if (hasUserDeclaredConstructor) {
