@@ -7,7 +7,7 @@ interface A {
 
 interface B {
 
-    void m2(int a);
+    void m2(int addg);
 
 }
 

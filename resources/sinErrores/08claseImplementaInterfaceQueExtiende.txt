@@ -3,11 +3,14 @@ interface A {
     boolean m1();
     void m2(int a);
 
+    char m3();
+    int m4(int a, char b);
+
 }
 
 interface B {
 
-    void m2(int a);
+    void m2(int ajiowejirew);
 
 }
 
@@ -25,7 +28,15 @@ class Clase implements C {
     boolean m1() {
     }
 
-    void m2(int a) {
+    void m2(int par) {
+    }
+
+    char m3(){
+
+    }
+
+    int m4(int num, char car){
+
     }
 
 }

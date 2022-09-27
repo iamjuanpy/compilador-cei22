@@ -22,9 +22,9 @@ public class Method implements Unit {
     private List<Parameter> parameterList;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
+        this.classDeclared = symbolTable.currentClass;
         this.methodToken = methodToken;
         this.isStatic = isStatic;
-        this.classDeclared = symbolTable.currentClass;
         this.returnType = type;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();

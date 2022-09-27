@@ -1,12 +1,16 @@
 class Padre {
 
     private int b;
+    public Padre d;
+    private char c;
 
 }
 
 class Clase extends Padre{
 
     public int a;
+    private boolean e;
+    boolean f;
 
     static void main(){
     }

@@ -5,6 +5,15 @@ class Padre {
     int m2(){
     }
 
+    boolean m3(){
+    }
+
+    char m4(char a){
+    }
+
+    static Padre m5(){
+    }
+
 }
 
 class Clase extends Padre{
@@ -18,6 +27,15 @@ class Clase extends Padre{
     }
 
     int m2(){
+    }
+
+    boolean m3(){
+    }
+
+    char m4(char aerrwe){
+    }
+
+    static Padre m5(){
     }
 
 }

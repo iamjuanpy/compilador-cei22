@@ -1,6 +1,12 @@
 interface Interface {
 
+    int m0(Clase c);
+
     boolean m2(Interface a);
+
+    char m3();
+
+    Clase m4(Clase ccc);
 
 }
 
@@ -14,7 +20,21 @@ class Clase implements Interface {
     void m1(){
     }
 
-    boolean m2(Interface parametro){
+    int m0(Clase clase){
+
+    }
+
+    boolean m2(Interface interf){
+
+    }
+
+    char m3(){
+
+
+    }
+
+    Clase m4(Clase ccccccccc){
+
     }
 
 }

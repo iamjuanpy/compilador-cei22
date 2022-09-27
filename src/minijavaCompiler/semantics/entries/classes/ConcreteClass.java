@@ -25,11 +25,11 @@ public class ConcreteClass implements ClassEntry {
     public ConcreteClass(Token token){
         this.classToken = token;
         attributeHashMap = new HashMap<>();
+        createDefaultConstructor();
         methodHashMap = new HashMap<>();
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
         consolidated = false;
-        createDefaultConstructor();
     }
 
     private void createDefaultConstructor() {

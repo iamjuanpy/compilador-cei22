@@ -9,7 +9,10 @@ class Clase {
     // metodos en el medio
     int met1(){
     }
-    static void main(){}
+    static void main(){
+        new Clase(1);
+        new Clase("",0);
+    }
 
 }
 

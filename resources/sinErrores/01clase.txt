@@ -8,4 +8,13 @@ class Clase {
     void m1(){
     }
 
+    int m2(char c){}
+
+    static boolean m3(Clase c, Clase d){
+    }
+
+    static Clase m4(){}
+
+    char m5(){}
+
 }
