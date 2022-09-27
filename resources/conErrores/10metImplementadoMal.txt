@@ -1,4 +1,4 @@
-///[Error:a|11]
+///[Error:A|9]
 
 interface A {
 

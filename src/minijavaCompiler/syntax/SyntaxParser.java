@@ -165,6 +165,7 @@ public class SyntaxParser {
         if (Arrays.asList(primerosEncabezadoMet).contains(currentToken.tokenType)) {
             encabezadoMetodo();
             match(semicolon);
+            symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
             listaEncabezados();
         } else {
             if (currentToken.tokenType == closeCurly) { // Siguiente(...) = { } }
@@ -202,6 +203,7 @@ public class SyntaxParser {
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
             encabezadoMetodo();
             bloque();
+            symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
@@ -239,7 +241,6 @@ public class SyntaxParser {
         match(mvID);
         symbolTable.currentUnit = new Method(esEstatico, tipo, tokenMetodo);
         argsFormales();
-        symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
     }
 
     private boolean visibilidad() throws SyntacticException, LexicalException, SourceFileReaderException {

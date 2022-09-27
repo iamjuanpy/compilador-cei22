@@ -168,7 +168,7 @@ public class ConcreteClass implements ClassEntry {
                 if (methodHashMap.get(method.getName()) == null) {
                     methodHashMap.put(method.getName(), method);
                 } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
-                    throw new SemanticException("El método "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
+                    throw new SemanticException("El método heredado "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
                 }
             }
         }
@@ -180,7 +180,7 @@ public class ConcreteClass implements ClassEntry {
                 if (methodHashMap.get(method.getName()) == null) {
                     throw new SemanticException("Falta implementar el metodo "+method.getName()+" de la interface "+intface.lexeme, intface.lexeme, intface.lineNumber);
                 } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
-                    throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", method.getName(), methodHashMap.get(method.getName()).getLine());
+                    throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", intface.lexeme, intface.lineNumber);
                 }
             }
         }

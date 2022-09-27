@@ -1,0 +1,18 @@
+///[Error:Interface|16]
+class A {
+
+    static void m1(int a){
+
+    }
+
+}
+
+interface Interface {
+
+    boolean m1();
+
+}
+
+class B extends A implements Interface {    // el problema lo tiene la interface con el metodo heredado
+
+}
