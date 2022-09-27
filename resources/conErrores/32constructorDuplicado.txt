@@ -1,0 +1,15 @@
+///[Error:A|10]
+class A {
+
+    A(int a){
+
+    }
+
+    A() {}
+
+    A(int a){
+
+    }
+
+
+}

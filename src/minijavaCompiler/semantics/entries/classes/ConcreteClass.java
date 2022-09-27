@@ -6,7 +6,9 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.classID;
@@ -15,8 +17,8 @@ public class ConcreteClass implements ClassEntry {
 
     private Token classToken;
     private HashMap<String, Attribute> attributeHashMap;
-    private Constructor constructor;
-    private boolean hasUserDeclaredConstructor;
+//    private Constructor constructor;
+    private List<Constructor> constructorsList;
     private HashMap<String, Method> methodHashMap;
     private Token extendsClassToken;
     private HashMap<String,Token> interfacesHashMap;
@@ -25,16 +27,11 @@ public class ConcreteClass implements ClassEntry {
     public ConcreteClass(Token token){
         this.classToken = token;
         attributeHashMap = new HashMap<>();
-        createDefaultConstructor();
+        constructorsList = new ArrayList<>();
         methodHashMap = new HashMap<>();
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
         consolidated = false;
-    }
-
-    private void createDefaultConstructor() {
-        constructor = new Constructor(classToken);
-        hasUserDeclaredConstructor = false;
     }
 
     public String getName() {return classToken.lexeme;}
@@ -133,8 +130,18 @@ public class ConcreteClass implements ClassEntry {
     }
 
     private void checkConstructor() throws SemanticException {
-        constructor.correctlyDeclared();
+//        if (constructor != null)
+//            constructor.correctlyDeclared();
+//        else createDefaultConstructor();
+        if (constructorsList.size() != 0)
+            for (Constructor c : constructorsList)
+                c.correctlyDeclared();
+        else {
+            constructorsList.add(new Constructor(classToken));
+        }
     }
+
+//    private void createDefaultConstructor() {constructor = new Constructor(classToken);}
 
     private void checkMethods() throws SemanticException {
         for (Method method : methodHashMap.values())
@@ -222,13 +229,21 @@ public class ConcreteClass implements ClassEntry {
     private boolean alreadyHasAttributeWithName(String name) {return attributeHashMap.get(name) != null;}
 
     public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar MULTIPLES constructores solo en sintactico
+//        if (!constructor.getName().equals(classToken.lexeme))
+//            throw new SemanticException("Constructor mal declarado", constructor.getName(),constructor.getLine());
+//        else if (this.constructor != null) {
+//            throw new SemanticException("Una clase no puede declarar mas de un constructor",constructor.getName(), constructor.getLine());
+//        } else {
+//            this.constructor = constructor;
         if (!constructor.getName().equals(classToken.lexeme))
             throw new SemanticException("Constructor mal declarado", constructor.getName(),constructor.getLine());
-        else if (hasUserDeclaredConstructor) {
-            throw new SemanticException("Una clase no puede declarar mas de un constructor",constructor.getName(), constructor.getLine());
-        } else {
-            this.constructor = constructor;
-            hasUserDeclaredConstructor = true;
+        else {
+            for (Constructor c : constructorsList) {
+                if (c.getParametersList().size() == constructor.getParametersList().size())
+                    if (constructor.hasSameSignature(c))
+                        throw new SemanticException("No se puede declarar dos constructores con los mismos parametros", constructor.getName(), constructor.getLine());
+            }
+            constructorsList.add(constructor);
         }
     }
 }
