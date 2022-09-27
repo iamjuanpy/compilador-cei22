@@ -76,7 +76,7 @@ public class ConcreteClass implements ClassEntry {
         else if (classExtendsNonExistent())
             throw new SemanticException("No se puede extender a la clase " + extendsClassToken.lexeme + ", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         else if (classExtendsAnInterface())
-            throw new SemanticException("Clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
+            throw new SemanticException("Una clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         checkCircularInheritance(new HashMap<>());
     }
 
@@ -153,7 +153,7 @@ public class ConcreteClass implements ClassEntry {
         for (Attribute attr : symbolTable.getClass(extendsClassToken.lexeme).getAttributeHashMap().values()) {
             if (attributeHashMap.get(attr.getName()) == null) {
                 attributeHashMap.put(attr.getName(), attr);
-            } else throw new SemanticException("No se puede declarar un atributo con el mismo nombre que un atributo de clase padre", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
+            } else throw new SemanticException("Una clase no puede declarar un atributo con el mismo nombre que otro en su línea de herencia", attr.getName(), attributeHashMap.get(attr.getName()).getLine());
         }
     }
 
@@ -192,13 +192,13 @@ public class ConcreteClass implements ClassEntry {
 
     public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
         if (interfacesHashMap.get(interfaceToken.lexeme) != null) {
-            throw new SemanticException("No se puede implementar dos veces la interface "+ interfaceToken.lexeme, interfaceToken.lexeme, interfaceToken.lineNumber);
+            throw new SemanticException("Una clase no puede implementar dos veces una interface ("+ interfaceToken.lexeme+")", interfaceToken.lexeme, interfaceToken.lineNumber);
         } else interfacesHashMap.put(interfaceToken.lexeme, interfaceToken);
     }
 
     public void addMethod(Method method) throws SemanticException {
         if (alreadyHasMethodWithName(method.getName())) {
-            throw new SemanticException("Hay dos métodos llamados "+method.getName(), method.getName(), method.getLine());
+            throw new SemanticException("Una clase no puede declarar mas de un método con el mismo nombre ("+method.getName()+")", method.getName(), method.getLine());
         } else {
             methodHashMap.put(method.getName(), method);
             checkForMainMethod(method);
@@ -215,7 +215,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void addAttribute(Attribute attribute) throws SemanticException {
         if (alreadyHasAttributeWithName(attribute.getName())) {
-            throw new SemanticException("Hay dos atributos llamados "+attribute.getName(), attribute.getName(), attribute.getLine());
+            throw new SemanticException("Una clase no puede tener mas de un atributo con el mismo nombre ("+attribute.getName()+")", attribute.getName(), attribute.getLine());
         } else attributeHashMap.put(attribute.getName(), attribute);
     }
 
@@ -223,9 +223,9 @@ public class ConcreteClass implements ClassEntry {
 
     public void addConstructor(Constructor constructor) throws SemanticException { // Comentar bloque del metodo para probar MULTIPLES constructores solo en sintactico
         if (!constructor.getName().equals(classToken.lexeme))
-            throw new SemanticException("Un constructor tiene que ser del tipo de la clase", constructor.getName(),constructor.getLine());
+            throw new SemanticException("Constructor mal declarado", constructor.getName(),constructor.getLine());
         else if (hasUserDeclaredConstructor) {
-            throw new SemanticException("No se puede declarar mas de un constructor",constructor.getName(), constructor.getLine());
+            throw new SemanticException("Una clase no puede declarar mas de un constructor",constructor.getName(), constructor.getLine());
         } else {
             this.constructor = constructor;
             hasUserDeclaredConstructor = true;

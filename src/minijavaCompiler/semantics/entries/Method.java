@@ -41,7 +41,7 @@ public class Method implements Unit {
         if (parameterHashMap.get(parameter.getName()) == null){
             parameterHashMap.put(parameter.getName(),parameter);
             parameterList.add(parameter);
-        } else throw new SemanticException("No puede haber mas de un parámetro con el mismo nombre, "+parameter.getName(),parameter.getName(), parameter.getLine());
+        } else throw new SemanticException("No se puede declarar mas de un parámetro con el mismo nombre, "+parameter.getName(),parameter.getName(), parameter.getLine());
     }
 
     public void correctlyDeclared() throws SemanticException {

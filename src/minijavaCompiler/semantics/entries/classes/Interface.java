@@ -131,10 +131,10 @@ public class Interface implements ClassEntry {
 
     public void addMethod(Method method) throws SemanticException {
         if (method.isStatic())
-            throw new SemanticException("Una interfaz no puede tener métodos estáticos", method.getName(), method.getLine());
+            throw new SemanticException("Una interface no puede declarar métodos estáticos", method.getName(), method.getLine());
         else if (methodHashMap.get(method.getName()) == null)
             methodHashMap.put(method.getName(), method);
-        else throw new SemanticException("Hay dos metodos llamados "+method.getName(), method.getName(), method.getLine());
+        else throw new SemanticException("Una interface no puede declarar mas de un método con el mismo nombre ("+method.getName()+")", method.getName(), method.getLine());
     }
 
 }
