@@ -1,11 +1,11 @@
-///[Error:A|10]
+///[Error:A|8]
 class A {
 
     A(int a){
 
     }
 
-    A() {}
+    A() {} //solo puedo declarar un constructor
 
     A(int a){
 

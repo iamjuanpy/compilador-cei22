@@ -1,0 +1,19 @@
+///[Error:B|14]
+// Dos interfaces que no se pueden implementar a la vez, porque coincide nombre y no signatura
+interface A {
+
+    void m1();
+
+}
+
+interface B{
+
+    void m1(int i);
+}
+
+class Clase implements A,B {
+
+    void m1(){
+    }
+
+}

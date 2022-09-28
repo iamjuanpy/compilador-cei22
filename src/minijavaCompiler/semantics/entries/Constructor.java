@@ -23,17 +23,6 @@ public class Constructor implements Unit {
     public int getLine() {return constructorToken.lineNumber;}
     public List<Parameter> getParametersList() {return parameterList;}
 
-    public boolean hasSameSignature(Constructor constructor){
-        if (parameterList.size() != constructor.getParametersList().size())
-            return false;                                                           // difiere cantidad de parametros
-        List<Parameter> otherConstructorParameters = constructor.getParametersList();
-        for (int i = 0; i < parameterList.size(); i++)
-            if (!parameterList.get(i).equals(otherConstructorParameters.get(i)))     // difiere un parametro
-                return false;
-        return true;
-
-    }
-
     public void addParameter(Parameter parameter) throws SemanticException {
         if (parameterHashMap.get(parameter.getName()) == null){
             parameterHashMap.put(parameter.getName(),parameter);
