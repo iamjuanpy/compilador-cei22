@@ -76,7 +76,7 @@ public class Interface implements ClassEntry {
                 symbolTable.getClass(interfaceExtend.lexeme).checkCircularInheritance(inheritanceMap);
             } else {                                                                                            // Si la tengo, reporto el error con la ultima linea que genere el problema
                 Token lastToken = getLastInheritanceDeclaration(inheritanceMap, interfaceExtend);
-                throw new SemanticException("No puede haber herencia circular en una interface", lastToken.lexeme, lastToken.lineNumber);
+                throw new SemanticException("No puede haber herencia circular en interfaces", lastToken.lexeme, lastToken.lineNumber);
             }
         }
     }
@@ -123,7 +123,7 @@ public class Interface implements ClassEntry {
     public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
         if (interfaceExtendsHashMap.get(interfaceToken.lexeme) == null)
             interfaceExtendsHashMap.put(interfaceToken.lexeme, interfaceToken);
-        else throw new SemanticException(interfaceToken.lexeme, interfaceToken.lineNumber);
+        else throw new SemanticException("Una interface no puede extender dos veces la misma interface ("+interfaceToken.lexeme+")",interfaceToken.lexeme, interfaceToken.lineNumber);
     }
 
     public void addAttribute(Attribute attribute) throws SemanticException {} // NO LLEGA
@@ -131,7 +131,7 @@ public class Interface implements ClassEntry {
 
     public void addMethod(Method method) throws SemanticException {
         if (method.isStatic())
-            throw new SemanticException("Una interface no puede declarar métodos estáticos", method.getName(), method.getLine());
+            throw new SemanticException("Una interface no puede declarar métodos estáticos ("+method.getName()+")", method.getName(), method.getLine());
         else if (methodHashMap.get(method.getName()) == null)
             methodHashMap.put(method.getName(), method);
         else throw new SemanticException("Una interface no puede declarar mas de un método con el mismo nombre ("+method.getName()+")", method.getName(), method.getLine());

@@ -52,7 +52,7 @@ public class Method implements Unit {
 
     private void isReturnTypeCorrectlyDeclared() throws SemanticException {
         if (!returnType.isPrimitive() && !symbolTable.classExists(returnType.getTypeName())) // Tipo clase con clase no existente
-            throw new SemanticException("No se puede declarar un parametro de tipo "+returnType.getTypeName()+", la clase no existe", returnType.getTypeName(), returnType.getLine());
+            throw new SemanticException("No se puede declarar un metodo con retorno de tipo "+returnType.getTypeName()+", la clase no existe", returnType.getTypeName(), returnType.getLine());
     }
 
     public boolean hasSameSignature(Method method) {

@@ -9,7 +9,7 @@ class Variables {
         Variables.main().v;
         Variables.main().m1();
         Variables.main().m2(123,"asd");
-        Variables.main() += 2; // ver informe
+        Variables.main() += Variables.main().m2(123,"asd");
         Variables.main().v -= 2;
         Variables.main().m2() = null;
         // tipo primitivo

@@ -37,9 +37,7 @@ public class ConcreteClass implements ClassEntry {
     public boolean isConcreteClass(){return true;}
     public HashMap<String, Attribute> getAttributeHashMap(){return attributeHashMap;}
     public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
-    private boolean notObjectClass() {
-        return extendsClassToken != null;
-    }
+    private boolean notObjectClass() {return extendsClassToken != null;}
 
     // Chequeo declaraciones
 
@@ -89,7 +87,7 @@ public class ConcreteClass implements ClassEntry {
             symbolTable.getClass(extendsClassToken.lexeme).checkCircularInheritance(inheritanceMap);
         } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
             Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
-            throw new SemanticException("No puede haber herencia circular en una clase", lastToken.lexeme, lastToken.lineNumber);
+            throw new SemanticException("No puede haber herencia circular en clases", lastToken.lexeme, lastToken.lineNumber);
         }
     }
 
