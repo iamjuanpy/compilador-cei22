@@ -6,9 +6,7 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.classID;
@@ -43,7 +41,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void correctlyDeclared() throws SemanticException {
         if (notObjectClass())
-            checkInheritance();
+            checkCorrectlyDeclaredInheritance();
         checkInterfaces();
         checkAttributes();
         checkMethods();
@@ -53,6 +51,7 @@ public class ConcreteClass implements ClassEntry {
     public void consolidate() throws SemanticException {
         if (!consolidated){
             if (notObjectClass()) {
+                checkCircularInheritance();
                 consolidateAncestors();
                 consolidateMethods();
                 copyInheritedAttributes();
@@ -63,14 +62,13 @@ public class ConcreteClass implements ClassEntry {
 
     // Chequeo correctamente declarado
 
-    private void checkInheritance() throws SemanticException {
+    private void checkCorrectlyDeclaredInheritance() throws SemanticException {
         if (classExtendsItself())
             throw new SemanticException("La clase " + extendsClassToken.lexeme + " no se puede extender a si misma", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         else if (classExtendsNonExistent())
             throw new SemanticException("No se puede extender a la clase " + extendsClassToken.lexeme + ", no existe", extendsClassToken.lexeme, extendsClassToken.lineNumber);
         else if (classExtendsAnInterface())
             throw new SemanticException("Una clase concreta no puede extender una interface ", extendsClassToken.lexeme, extendsClassToken.lineNumber);
-        checkCircularInheritance(new HashMap<>());
     }
 
     private boolean classExtendsItself() {return (extendsClassToken.lexeme).equals(classToken.lexeme);}
@@ -78,30 +76,6 @@ public class ConcreteClass implements ClassEntry {
     private boolean classExtendsNonExistent() {return !symbolTable.classExists(extendsClassToken.lexeme);}
 
     private boolean classExtendsAnInterface() {return !symbolTable.getClass(extendsClassToken.lexeme).isConcreteClass();}
-
-    public void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
-        if (classToken.lexeme.equals("Object"))                                                                     // Si llegue a object no hay herencia circular
-            return;
-        else if (inheritanceMap.get(extendsClassToken.lexeme) == null) {                                            // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
-            inheritanceMap.put(classToken.lexeme, extendsClassToken);
-            symbolTable.getClass(extendsClassToken.lexeme).checkCircularInheritance(inheritanceMap);
-        } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
-            Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
-            throw new SemanticException("No puede haber herencia circular en clases", lastToken.lexeme, lastToken.lineNumber);
-        }
-    }
-
-    private Token getLastInheritanceDeclaration(HashMap<String, Token> inheritanceList, Token lastAncestor) {
-        Token lastToken = null;
-        for (Token extendsClass : inheritanceList.values()) {
-            if (lastToken == null || extendsClass.lineNumber >= lastToken.lineNumber)
-                lastToken = extendsClass;
-        }
-
-        if (lastAncestor.lineNumber >= lastToken.lineNumber)
-            return lastAncestor;
-        else return lastToken;
-    }
 
     private void checkInterfaces() throws SemanticException {
         for (Token impInterface : interfacesHashMap.values()) {
@@ -139,6 +113,34 @@ public class ConcreteClass implements ClassEntry {
     }
 
     // Consolidacion
+
+    private void checkCircularInheritance() throws SemanticException { checkCircularInheritance(new HashMap<>());}
+
+    public void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
+        if (classToken.lexeme.equals("Object"))                                                                     // Si llegue a object no hay herencia circular
+            return;
+        else {
+            if (inheritanceMap.get(extendsClassToken.lexeme) == null) {                                            // Si no estoy en object, reviso si ya tengo en la lista recorrida la misma clase
+                inheritanceMap.put(classToken.lexeme, extendsClassToken);
+                symbolTable.getClass(extendsClassToken.lexeme).checkCircularInheritance(inheritanceMap);
+            } else {                                                                                                    // Si la tengo, reporto el error con la ultima linea que genere el problema
+                Token lastToken = getLastInheritanceDeclaration(inheritanceMap, extendsClassToken);
+                throw new SemanticException("No puede haber herencia circular en clases", lastToken.lexeme, lastToken.lineNumber);
+            }
+        }
+    }
+
+    private Token getLastInheritanceDeclaration(HashMap<String, Token> inheritanceList, Token lastAncestor) {
+        Token lastToken = null;
+        for (Token extendsClass : inheritanceList.values()) {
+            if (lastToken == null || extendsClass.lineNumber >= lastToken.lineNumber)
+                lastToken = extendsClass;
+        }
+
+        if (lastAncestor.lineNumber >= lastToken.lineNumber)
+            return lastAncestor;
+        else return lastToken;
+    }
 
     private void consolidateAncestors() throws SemanticException {
         symbolTable.getClass(extendsClassToken.lexeme).consolidate();

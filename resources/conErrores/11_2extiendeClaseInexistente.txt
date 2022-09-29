@@ -1,0 +1,7 @@
+///[Error:C|3]
+
+class B extends C{}
+
+class A extends B{
+
+}

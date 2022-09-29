@@ -37,12 +37,13 @@ public class Interface implements ClassEntry {
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {
-        checkInheritance();
+        checkCorrectlyDeclaredInheritance();
         checkMethods();
     }
 
     public void consolidate() throws SemanticException {
         if (!consolidated){
+            checkCircularInheritance();
             consolidateAncestors();
             copyInheritedMethods();
             consolidated = true;
@@ -51,7 +52,7 @@ public class Interface implements ClassEntry {
 
     //Chequeo correctamente declarado
 
-    private void checkInheritance() throws SemanticException {
+    private void checkCorrectlyDeclaredInheritance() throws SemanticException {
         for (Token extendsToken : interfaceExtendsHashMap.values()) {
             if (interfaceExtendsItself(extendsToken))
                 throw new SemanticException("No se puede extender a si misma como interface", extendsToken.lexeme, extendsToken.lineNumber);
@@ -60,7 +61,6 @@ public class Interface implements ClassEntry {
             else if (interfaceExtendsConcreteClass(extendsToken))
                 throw new SemanticException("No se puede extender "+extendsToken.lexeme+", es una clase concreta", extendsToken.lexeme, extendsToken.lineNumber);
         }
-        checkCircularInheritance(new HashMap<>());
     }
 
     private boolean interfaceExtendsItself(Token extInterface) {return interfaceToken.lexeme.equals(extInterface.lexeme);}
@@ -69,8 +69,17 @@ public class Interface implements ClassEntry {
 
     private boolean interfaceExtendsConcreteClass(Token extInterface) {return symbolTable.getClass(extInterface.lexeme).isConcreteClass();}
 
+    private void checkMethods() throws SemanticException {
+        for (Method method : methodHashMap.values())
+            method.correctlyDeclared();
+    }
+
+    // Consolidacion
+
+    private void checkCircularInheritance() throws SemanticException { checkCircularInheritance(new HashMap<>());}
+
     public void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
-        for (Token interfaceExtend : interfaceExtendsHashMap.values()) {                                       // Chequeo arbol de herencia de a un implement
+        for (Token interfaceExtend : interfaceExtendsHashMap.values()) {// Chequeo arbol de herencia de a un implement
             if (inheritanceMap.get(interfaceExtend.lexeme) == null) {                                          // Reviso si ya tengo en la lista recorrida la misma interface
                 inheritanceMap.put(interfaceToken.lexeme, interfaceExtend);
                 symbolTable.getClass(interfaceExtend.lexeme).checkCircularInheritance(inheritanceMap);
@@ -92,13 +101,6 @@ public class Interface implements ClassEntry {
             return lastAncestor;
         else return lastToken;
     }
-
-    private void checkMethods() throws SemanticException {
-        for (Method method : methodHashMap.values())
-            method.correctlyDeclared();
-    }
-
-    // Consolidacion
 
     private void consolidateAncestors() throws SemanticException {
         for (Token interfaceID : interfaceExtendsHashMap.values())
