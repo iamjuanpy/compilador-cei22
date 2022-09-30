@@ -1,0 +1,15 @@
+
+class Clase {
+
+    static void main() {
+    }
+
+    Clase(){}
+
+}
+
+class Clase2 extends Clase{
+
+    Clase2(int i, char c){}
+
+}

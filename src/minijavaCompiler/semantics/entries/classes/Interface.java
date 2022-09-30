@@ -24,26 +24,22 @@ public class Interface implements ClassEntry {
         consolidated = false;
     }
 
-    public String getName() {
-        return interfaceToken.lexeme;
-    }
-    public int getLine() {
-        return interfaceToken.lineNumber;
-    }
-    public HashMap<String, Attribute> getAttributeHashMap() {return null;}   // No llega
-    public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
+    public String getName() { return interfaceToken.lexeme;}
+    public int getLine() { return interfaceToken.lineNumber;}
+    public HashMap<String, Attribute> getAttributeHashMap() { return null;}   // No llega
+    public HashMap<String, Method> getMethodHashMap() { return methodHashMap;}
     public boolean isConcreteClass() { return false;}
 
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {
-        checkCorrectlyDeclaredInheritance();
+        checkInheritanceDeclaration();
         checkMethods();
     }
 
     public void consolidate() throws SemanticException {
         if (!consolidated){
-            checkCircularInheritance();
+            checkInheritanceCircularity();
             consolidateAncestors();
             copyInheritedMethods();
             consolidated = true;
@@ -52,10 +48,10 @@ public class Interface implements ClassEntry {
 
     //Chequeo correctamente declarado
 
-    private void checkCorrectlyDeclaredInheritance() throws SemanticException {
+    private void checkInheritanceDeclaration() throws SemanticException {
         for (Token extendsToken : interfaceExtendsHashMap.values()) {
             if (interfaceExtendsItself(extendsToken))
-                throw new SemanticException("No se puede extender a si misma como interface", extendsToken.lexeme, extendsToken.lineNumber);
+                throw new SemanticException("La interface "+extendsToken.lexeme+" no se puede extender a si misma", extendsToken.lexeme, extendsToken.lineNumber);
             else if (interfaceExtendsNonExistent(extendsToken))
                 throw new SemanticException("No se puede extender la interface "+extendsToken.lexeme+", no existe", extendsToken.lexeme, extendsToken.lineNumber);
             else if (interfaceExtendsConcreteClass(extendsToken))
@@ -76,13 +72,13 @@ public class Interface implements ClassEntry {
 
     // Consolidacion
 
-    private void checkCircularInheritance() throws SemanticException { checkCircularInheritance(new HashMap<>());}
+    private void checkInheritanceCircularity() throws SemanticException { checkInheritanceCircularity(new HashMap<>());}
 
-    public void checkCircularInheritance(HashMap<String, Token> inheritanceMap) throws SemanticException {
-        for (Token interfaceExtend : interfaceExtendsHashMap.values()) {// Chequeo arbol de herencia de a un implement
+    public void checkInheritanceCircularity(HashMap<String, Token> inheritanceMap) throws SemanticException {
+        for (Token interfaceExtend : interfaceExtendsHashMap.values()) { // Chequeo arbol de herencia de a un implement
             if (inheritanceMap.get(interfaceExtend.lexeme) == null) {                                          // Reviso si ya tengo en la lista recorrida la misma interface
                 inheritanceMap.put(interfaceToken.lexeme, interfaceExtend);
-                symbolTable.getClass(interfaceExtend.lexeme).checkCircularInheritance(inheritanceMap);
+                symbolTable.getClass(interfaceExtend.lexeme).checkInheritanceCircularity(inheritanceMap);
             } else {                                                                                            // Si la tengo, reporto el error con la ultima linea que genere el problema
                 Token lastToken = getLastInheritanceDeclaration(inheritanceMap, interfaceExtend);
                 throw new SemanticException("No puede haber herencia circular en interfaces", lastToken.lexeme, lastToken.lineNumber);
@@ -103,8 +99,8 @@ public class Interface implements ClassEntry {
     }
 
     private void consolidateAncestors() throws SemanticException {
-        for (Token interfaceID : interfaceExtendsHashMap.values())
-            symbolTable.getClass(interfaceID.lexeme).consolidate();
+        for (Token interfaceExtend : interfaceExtendsHashMap.values())
+            symbolTable.getClass(interfaceExtend.lexeme).consolidate();
     }
 
 

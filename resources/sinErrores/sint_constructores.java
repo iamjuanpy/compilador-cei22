@@ -10,6 +10,7 @@ class Clase {
     int met1(){
     }
     static void main(){
+        // invocaciones con parametros ACTUALES
         new Clase(1);
         new Clase("",0);
     }

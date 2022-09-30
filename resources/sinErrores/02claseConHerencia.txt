@@ -10,7 +10,7 @@ class Clase extends Padre{
 
     public int a;
     private boolean e;
-    boolean f;
+    public boolean f;
 
     static void main(){
     }

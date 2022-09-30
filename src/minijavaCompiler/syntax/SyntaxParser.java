@@ -18,6 +18,7 @@ import minijavaCompiler.semantics.entries.types.Type;
 import minijavaCompiler.semantics.entries.types.primitives.BoolType;
 import minijavaCompiler.semantics.entries.types.primitives.CharType;
 import minijavaCompiler.semantics.entries.types.primitives.IntType;
+import minijavaCompiler.semantics.entries.types.primitives.VoidType;
 import minijavaCompiler.syntax.exceptions.SyntacticException;
 
 import java.util.Arrays;
@@ -307,7 +308,7 @@ public class SyntaxParser {
             return tipo();
         } else if (currentToken.tokenType == r_void){
             match(r_void);
-            return new PrimitiveType("void");
+            return new VoidType();
         } else throw new SyntacticException("Se esperaba identificador de tipo del método", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 
