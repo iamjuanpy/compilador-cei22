@@ -1,10 +1,16 @@
 package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
+import minijavaCompiler.semantics.entries.Method;
+import minijavaCompiler.semantics.entries.Unit;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class NodeBlock implements NodeSentence {
 
     public List<NodeSentence> sentencesList;
+    public HashMap<String, NodeVariable> variableHashMap;
+    public Unit unit;
     public NodeBlock nestingIn;
 
     public NodeBlock(){

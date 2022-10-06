@@ -1,4 +1,18 @@
 package minijavaCompiler.semantics.ast_nodes.literal_nodes;
 
-public class NodeNull {
+import minijavaCompiler.lexical.Token;
+import minijavaCompiler.semantics.types.Type;
+
+public class NodeNull implements NodeLiteral{
+
+    private Token token;
+
+    public NodeNull (Token literal){
+
+    }
+
+    public Type check(){
+        return null;
+    }
+
 }
