@@ -28,11 +28,13 @@ public class Main {
                 lexicalAnalyser = new LexicalAnalyser(sourceFileReader);    // Etapa 1
 
                 syntaxParser = new SyntaxParser(lexicalAnalyser);
+
                 symbolTable = new SymbolTable();
                 DefaultClasses.instanceSymbolTableDefaults();
 
-                syntaxParser.startParse();                                  // Etapa 2/3
-                symbolTable.checkDeclarations();                            // Etapa 3, linea a comentar para probar constructores/variables clasicas
+                syntaxParser.startParse();                                  // Etapa 2/3/4
+                symbolTable.checkDeclarations();                            // Etapa 3
+                symbolTable.checkSentences();                               // Etapa 4
 
                 System.out.println("\n"+"Compilación exitosa");
                 System.out.println("\n"+"[SinErrores]");

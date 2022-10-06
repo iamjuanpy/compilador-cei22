@@ -4,11 +4,11 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.entries.classes.ConcreteClass;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
-import minijavaCompiler.semantics.entries.types.*;
-import minijavaCompiler.semantics.entries.types.primitives.BoolType;
-import minijavaCompiler.semantics.entries.types.primitives.CharType;
-import minijavaCompiler.semantics.entries.types.primitives.IntType;
-import minijavaCompiler.semantics.entries.types.primitives.VoidType;
+import minijavaCompiler.semantics.types.*;
+import minijavaCompiler.semantics.types.primitives.BoolType;
+import minijavaCompiler.semantics.types.primitives.CharType;
+import minijavaCompiler.semantics.types.primitives.IntType;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.classID;

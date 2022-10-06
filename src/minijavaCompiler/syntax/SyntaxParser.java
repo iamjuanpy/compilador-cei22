@@ -6,22 +6,25 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
 import minijavaCompiler.lexical.exceptions.LexicalException;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeSentence;
 import minijavaCompiler.semantics.entries.classes.ConcreteClass;
 import minijavaCompiler.semantics.entries.classes.Interface;
 import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
-import minijavaCompiler.semantics.entries.types.PrimitiveType;
-import minijavaCompiler.semantics.entries.types.ReferenceType;
-import minijavaCompiler.semantics.entries.types.Type;
-import minijavaCompiler.semantics.entries.types.primitives.BoolType;
-import minijavaCompiler.semantics.entries.types.primitives.CharType;
-import minijavaCompiler.semantics.entries.types.primitives.IntType;
-import minijavaCompiler.semantics.entries.types.primitives.VoidType;
+import minijavaCompiler.semantics.types.ReferenceType;
+import minijavaCompiler.semantics.types.Type;
+import minijavaCompiler.semantics.types.primitives.BoolType;
+import minijavaCompiler.semantics.types.primitives.CharType;
+import minijavaCompiler.semantics.types.primitives.IntType;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 import minijavaCompiler.syntax.exceptions.SyntacticException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.*;
@@ -76,6 +79,7 @@ public class SyntaxParser {
     private void claseConcreta() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(r_class);
         symbolTable.setCurrentClass(new ConcreteClass(currentToken));
+        symbolTable.currentBlock = null;
         match(classID);
         heredaDe();
         implementaA();
@@ -203,7 +207,7 @@ public class SyntaxParser {
             constructorOAttrOMetodo(tipo, tokenIdentificador); // Guardo el id de clase como tipo y como constructor
         }else if (currentToken.tokenType == r_void || currentToken.tokenType == r_static) {
             encabezadoMetodo();
-            bloque();
+            symbolTable.currentUnit.addBlock(bloque());
             symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
@@ -212,7 +216,7 @@ public class SyntaxParser {
         if (currentToken.tokenType == openBr){
             symbolTable.currentUnit = new Constructor(tokenIdentificador);
             argsFormales();
-            bloque();
+            symbolTable.currentUnit.addBlock(bloque());
             symbolTable.currentClass.addConstructor((Constructor) symbolTable.currentUnit);
         } else if (currentToken.tokenType == mvID) {
             Token nombreMetodoOAttr = currentToken;
@@ -229,7 +233,7 @@ public class SyntaxParser {
         } else if (currentToken.tokenType == openBr) {
             symbolTable.currentUnit = new Method(false, tipo, tokenIdentificador);
             argsFormales();
-            bloque();
+            symbolTable.currentUnit.addBlock(bloque());
             symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
         } else throw new SyntacticException("Se esperaba declaración de atributo o método o constructor", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
@@ -350,25 +354,30 @@ public class SyntaxParser {
 
     // Sentencias
 
-    private void bloque() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+    private NodeBlock bloque() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(openCurly);
-        listaSentencias();
+        NodeBlock bloque = new NodeBlock();
+        bloque.nestingIn = symbolTable.currentBlock;                // Instancia el padre del nuevo bloque con el bloque actual
+        symbolTable.currentBlock = bloque;                          // Cambia el bloque actual al bloque nuevo
+        bloque.sentencesList = listaSentencias(new ArrayList<>());  // Lee las sentencias del bloque
+        symbolTable.currentBlock = bloque.nestingIn;                // Antes de retornar vuelve el bloque actual al anterior
         match(closeCurly);
+        return bloque;
     }
 
-    private void listaSentencias() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+    private List<NodeSentence> listaSentencias(List<NodeSentence> lista) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         TokenType[] primerosSentencia = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, r_int, r_char, r_boolean};
         if (Arrays.asList(primerosSentencia).contains(currentToken.tokenType)) {
-            sentencia();
-            listaSentencias();
+            lista.add(sentencia());
+            return listaSentencias(lista);
         } else {
             if (currentToken.tokenType == closeCurly) { // Siguientes(...) = { } }
-                //Nada
+                return lista;
             } else throw new SyntacticException("Se esperaba una sentencia o fin de bloque", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
 
-    private void sentencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+    private NodeSentence sentencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == semicolon){
             match(semicolon);
         } else if (currentToken.tokenType == mvID || currentToken.tokenType == openBr || currentToken.tokenType == r_this || currentToken.tokenType == r_new){
@@ -390,6 +399,7 @@ public class SyntaxParser {
         } else if (currentToken.tokenType == openCurly){
             bloque();
         } else throw new SyntacticException("Se esperaba una sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        return null;
     }
     private void asignacionOLlamada() throws LexicalException, SourceFileReaderException, SyntacticException {
         acceso();
@@ -432,7 +442,7 @@ public class SyntaxParser {
             match(mvID);
             argsActuales();
             encadenadoOpt();
-            asignacionOLlamadaFactorizada();    // esto semánticamente SOBRA
+            asignacionOLlamadaFactorizada();    
         } else if (currentToken.tokenType == mvID) {
             varLocalClasica();
         } else throw new SyntacticException("Se esperaba una declaración de variable o sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);

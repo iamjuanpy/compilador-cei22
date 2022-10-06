@@ -1,6 +1,0 @@
-///[Error:EstaClaseNoExiste|4]
-class A {
-
-    private EstaClaseNoExiste a;
-
-}

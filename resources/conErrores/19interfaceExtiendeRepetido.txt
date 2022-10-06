@@ -1,8 +1,0 @@
-///[Error:B|6]
-
-interface B {
-}
-
-interface A extends B,B{
-
-}

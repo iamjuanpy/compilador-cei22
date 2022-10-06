@@ -3,7 +3,7 @@ package minijavaCompiler.semantics.entries;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
-import minijavaCompiler.semantics.entries.types.Type;
+import minijavaCompiler.semantics.types.Type;
 
 import static minijavaCompiler.Main.symbolTable;
 

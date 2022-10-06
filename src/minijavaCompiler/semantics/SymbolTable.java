@@ -1,6 +1,7 @@
 package minijavaCompiler.semantics;
 
 import minijavaCompiler.lexical.Token;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.Unit;
 
@@ -10,6 +11,7 @@ public class SymbolTable {
 
     public ClassEntry currentClass;
     public Unit currentUnit;
+    public NodeBlock currentBlock;
     public Unit mainMethod;
     public Token eofToken;
 
@@ -24,6 +26,10 @@ public class SymbolTable {
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
         if (mainMethod == null)                                                 // Paso 3: Ver que exista un metodo main
             throw new SemanticException("No se encontró clase con metodo main", eofToken.lexeme, eofToken.lineNumber);
+    }
+
+    public void checkSentences() throws SemanticException{
+
     }
 
     public boolean classExists(String className){

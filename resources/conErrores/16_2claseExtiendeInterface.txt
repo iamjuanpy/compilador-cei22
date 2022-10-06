@@ -1,9 +1,0 @@
-///[Error:C|6]
-interface C {
-
-}
-
-class D extends C{
-
-}
-

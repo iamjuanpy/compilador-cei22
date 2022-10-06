@@ -1,9 +1,0 @@
-///[Error:a|7]
-
-interface A {
-
-    boolean a();
-
-    boolean a();
-
-}

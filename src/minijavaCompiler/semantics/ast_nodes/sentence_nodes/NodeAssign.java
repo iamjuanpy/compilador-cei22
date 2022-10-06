@@ -1,0 +1,9 @@
+package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
+
+public class NodeAssign implements NodeSentence{
+
+    public void check() {
+
+    }
+
+}

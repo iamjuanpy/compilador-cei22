@@ -1,8 +1,0 @@
-///[Error:EstaClaseNoExiste|4]
-class A {
-
-    EstaClaseNoExiste m1() {
-        return null;
-    }
-
-}

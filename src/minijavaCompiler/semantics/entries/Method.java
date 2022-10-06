@@ -2,9 +2,10 @@ package minijavaCompiler.semantics.entries;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
-import minijavaCompiler.semantics.entries.types.Type;
-import minijavaCompiler.semantics.entries.types.primitives.VoidType;
+import minijavaCompiler.semantics.types.Type;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class Method implements Unit {
     private Type returnType;
     private HashMap<String,Parameter> parameterHashMap;
     private List<Parameter> parameterList;
+    private NodeBlock block;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
         this.classDeclared = symbolTable.currentClass;
@@ -43,6 +45,8 @@ public class Method implements Unit {
             parameterList.add(parameter);
         } else throw new SemanticException("No se puede declarar mas de un parámetro con el mismo nombre, "+parameter.getName(),parameter.getName(), parameter.getLine());
     }
+
+    public void addBlock(NodeBlock block){this.block = block;}
 
     public void correctlyDeclared() throws SemanticException {
         isReturnTypeCorrectlyDeclared();

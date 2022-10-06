@@ -1,8 +1,0 @@
-///[Error:B|6]
-
-class B {
-}
-
-class A implements B{
-
-}
