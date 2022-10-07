@@ -10,16 +10,28 @@ public class NodeVariable implements NodeSentence{
     private Token token;
     private NodeExpression value;
 
-    public NodeVariable(Token token, Type type){
-
+    public NodeVariable(Type type, Token token){
+        this.token = token;
+        this.type = type;
     }
 
     public NodeVariable(Token token, NodeExpression value) {
+        this.token = token;
+        this.value = value;
+    }
 
+    public NodeVariable(Type type, Token token, NodeExpression value) {
+        this.token = token;
+        this.type = type;
+        this.value = value;
     }
 
     public void check() {
 
+    }
+
+    public boolean isVariableDeclaration() {
+        return true;
     }
 
 }

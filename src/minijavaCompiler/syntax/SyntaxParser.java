@@ -7,15 +7,16 @@ import minijavaCompiler.lexical.TokenType;
 import minijavaCompiler.lexical.exceptions.LexicalException;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.NodeAccess;
+import minijavaCompiler.semantics.ast_nodes.access_nodes.NodeStaticMethodCall;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
+import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeMethodChaining;
+import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeVarChaining;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeBinaryExpression;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeOperand;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeUnaryExpression;
 import minijavaCompiler.semantics.ast_nodes.literal_nodes.*;
-import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
-import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeReturn;
-import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeSentence;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.*;
 import minijavaCompiler.semantics.entries.classes.ConcreteClass;
 import minijavaCompiler.semantics.entries.classes.Interface;
 import minijavaCompiler.semantics.entries.Attribute;
@@ -224,6 +225,7 @@ public class SyntaxParser {
     private void constructorOAttrOMetodo(Type tipo, Token tokenIdentificador) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == openBr){
             symbolTable.currentUnit = new Constructor(tokenIdentificador);
+            symbolTable.currentBlock = null;
             argsFormales();
             symbolTable.currentUnit.addBlock(bloque());
             symbolTable.currentClass.addConstructor((Constructor) symbolTable.currentUnit);
@@ -241,6 +243,7 @@ public class SyntaxParser {
             match(semicolon);
         } else if (currentToken.tokenType == openBr) {
             symbolTable.currentUnit = new Method(false, tipo, tokenIdentificador);
+            symbolTable.currentBlock = null;
             argsFormales();
             symbolTable.currentUnit.addBlock(bloque());
             symbolTable.currentClass.addMethod((Method) symbolTable.currentUnit);
@@ -254,6 +257,7 @@ public class SyntaxParser {
         Token tokenMetodo = currentToken;
         match(mvID);
         symbolTable.currentUnit = new Method(esEstatico, tipo, tokenMetodo);
+        symbolTable.currentBlock = null;
         argsFormales();
     }
 
@@ -365,69 +369,70 @@ public class SyntaxParser {
 
     private NodeBlock bloque() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(openCurly);
-        NodeBlock bloque = new NodeBlock();
-        bloque.nestingIn = symbolTable.currentBlock;                // Instancia el padre del nuevo bloque con el bloque actual
+        NodeBlock bloque = new NodeBlock();                         // VER SI ESTO ES NECESARIO, O HEREDAR LAS COSAS VISIBLES
         symbolTable.currentBlock = bloque;                          // Cambia el bloque actual al bloque nuevo
-        bloque.sentencesList = listaSentencias(new ArrayList<>());  // Lee las sentencias del bloque
+        listaSentencias();                                          // Lee las sentencias del bloque
         symbolTable.currentBlock = bloque.nestingIn;                // Antes de retornar vuelve el bloque actual al anterior
         match(closeCurly);
         return bloque;
     }
 
-    private List<NodeSentence> listaSentencias(List<NodeSentence> lista) throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+    private void listaSentencias() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         TokenType[] primerosSentencia = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, r_int, r_char, r_boolean};
         if (Arrays.asList(primerosSentencia).contains(currentToken.tokenType)) {
-            lista.add(sentencia());
-            return listaSentencias(lista);
+            symbolTable.currentBlock.addSentence(sentencia());
         } else {
             if (currentToken.tokenType == closeCurly) { // Siguientes(...) = { } }
-                return lista;
+                // nada
             } else throw new SyntacticException("Se esperaba una sentencia o fin de bloque", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
 
     private NodeSentence sentencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+        NodeSentence sentence;
         if (currentToken.tokenType == semicolon){
+            sentence = new NodeEmptySentence();
             match(semicolon);
         } else if (currentToken.tokenType == mvID || currentToken.tokenType == openBr || currentToken.tokenType == r_this || currentToken.tokenType == r_new){
-            asignacionOLlamada();
+            sentence = asignacionOLlamada();
             match(semicolon);
         } else if (currentToken.tokenType == classID || currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
-            varLocalClasicaOMetodoEstatico();
+            sentence = varLocalClasicaOMetodoEstatico();
             match(semicolon);
         } else if (currentToken.tokenType == r_var){
-            varLocal();
+            sentence = varLocal();
             match(semicolon);
         } else if (currentToken.tokenType == r_return){
-            nt_return();
+            sentence = nt_return();
             match(semicolon);
         } else if (currentToken.tokenType == r_if){
-            nt_if();
+            sentence = nt_if();
         } else if (currentToken.tokenType == r_while){
-            nt_while();
+            sentence = nt_while();
         } else if (currentToken.tokenType == openCurly){
-            bloque();
+            sentence = bloque();
         } else throw new SyntacticException("Se esperaba una sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
-        return null;
+        return sentence;
     }
     private NodeSentence asignacionOLlamada() throws LexicalException, SourceFileReaderException, SyntacticException {
-        acceso();
-        asignacionOLlamadaFactorizada();
-        return null;
+        NodeAccess acceso = acceso();
+        NodeSentence asignacionOLlamada = asignacionOLlamadaFactorizada(acceso);
+        return asignacionOLlamada;
     }
-    private NodeSentence asignacionOLlamadaFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private NodeSentence asignacionOLlamadaFactorizada(NodeAccess nodoAcceso) throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == assign || currentToken.tokenType == addAssign || currentToken.tokenType == subAssign) {
-            tipoDeAsignacion();
-            expresion();
+            Token tipoAsignacion = tipoDeAsignacion();
+            NodeExpression expresion = expresion();
+            return new NodeAssign(nodoAcceso, tipoAsignacion, expresion);
         } else {
             if (currentToken.tokenType == semicolon) { // Siguientes(...) = { ; }
-                // Nada
+                return new NodeCall(nodoAcceso); // TODO PREGUNTAR ESTO
             } else throw new SyntacticException("Sentencia sin cerrar, se esperaba ;", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
-        return null;
     }
 
-    private void tipoDeAsignacion() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private Token tipoDeAsignacion() throws LexicalException, SourceFileReaderException, SyntacticException {
+        Token tipoAsignacion = currentToken;
         if (currentToken.tokenType == assign){
             match(assign);
         } else if (currentToken.tokenType == addAssign) {
@@ -435,68 +440,74 @@ public class SyntaxParser {
         } else if (currentToken.tokenType == subAssign) {
             match(subAssign);
         } else throw new SyntacticException("Se esperaba un operador de asignación", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
+        return tipoAsignacion;
     }
 
     private NodeSentence varLocalClasicaOMetodoEstatico() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
-            tipoPrimitivo();
-            varLocalClasica();
+            Type tipo = tipoPrimitivo();
+            varLocalClasica(tipo);
+            return new NodeEmptySentence(); // TODO PREGUNTAR
         } else if (currentToken.tokenType == classID) {
-            tipo();
-            varLocalClasicaOMetodoEstaticoFactorizado();
+            Token identificadorClase = currentToken;
+            Type tipo = tipo();
+            return varLocalClasicaOMetodoEstaticoFactorizado(identificadorClase, tipo);
         } else throw new SyntacticException("Se esperaba un tipo", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
-        return null;
     }
 
-    private NodeSentence varLocalClasicaOMetodoEstaticoFactorizado() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private NodeSentence varLocalClasicaOMetodoEstaticoFactorizado(Token idClase, Type tipo) throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == dot){
             match(dot);
+            Token idMetodo = currentToken;
             match(mvID);
-            argsActuales();
-            encadenadoOpt();
-            asignacionOLlamadaFactorizada();
+            NodeStaticMethodCall accesoMetStatic = new NodeStaticMethodCall(idClase, idMetodo);
+            accesoMetStatic.setParameterList(argsActuales());
+            accesoMetStatic.setChaining(encadenadoOpt());
+            return asignacionOLlamadaFactorizada(accesoMetStatic);
         } else if (currentToken.tokenType == mvID) {
-            varLocalClasica();
+            varLocalClasica(tipo);
+            return new NodeEmptySentence(); // TODO PREGUNTAR
         } else throw new SyntacticException("Se esperaba una declaración de variable o sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
-        return null;
     }
 
-    private NodeSentence varLocalClasica() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void varLocalClasica(Type tipo) throws LexicalException, SourceFileReaderException, SyntacticException {
+        Token idVariable = currentToken;
         match(mvID);
-        asignacionOpcional();
-        varLocalClasicaFactorizada();
-        return null;
+        NodeSentence variable = asignacionOpcional(tipo, idVariable);
+        symbolTable.currentBlock.addSentence(variable);
+        varLocalClasicaFactorizada(tipo);
     }
 
-    private void asignacionOpcional() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private NodeSentence asignacionOpcional(Type tipo, Token idVariable) throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == assign) {
             match(assign);
-            expresion();
+            NodeExpression valor = expresion();
+            return new NodeVariable(tipo, idVariable, valor);
         } else {
             if (currentToken.tokenType == comma || currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
-                // nada
+                return new NodeVariable(tipo, idVariable);
             } else throw new SyntacticException("Declaracion de variable sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
 
-    private NodeSentence varLocalClasicaFactorizada() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private void varLocalClasicaFactorizada(Type tipo) throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == comma){
             match(comma);
-            varLocalClasica();
+            varLocalClasica(tipo);
         } else {
             if (currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
-                //nada
+                // 
             } else throw new SyntacticException("Declaracion de variable sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
-        return null;
     }
 
     private NodeSentence varLocal() throws LexicalException, SourceFileReaderException, SyntacticException {
         match(r_var);
+        Token identificador = currentToken;
         match(mvID);
         match(assign);
-        expresion();
-        return null;
+        NodeExpression expresion = expresion();
+        return new NodeVariable(identificador, expresion);
     }
 
     private NodeSentence nt_return() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -537,12 +548,13 @@ public class SyntaxParser {
         return null;
     }
 
-    private void nt_while() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+    private NodeSentence nt_while() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(r_while);
         match(openBr);
         expresion();
         match(closeBr);
         sentencia();
+        return null;
     }
 
     private NodeExpression expresion() throws LexicalException, SourceFileReaderException, SyntacticException {
@@ -613,7 +625,7 @@ public class SyntaxParser {
         } else if (currentToken.tokenType == not){
             match(not);
         } else throw new SyntacticException("Se esperaba operador", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
-        return currentToken;
+        return operadorUnario;
     }
     private NodeOperand operando() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_null || currentToken.tokenType == r_true || currentToken.tokenType == r_false || currentToken.tokenType == intLit || currentToken.tokenType == charLit || currentToken.tokenType == strLit ){
@@ -647,9 +659,9 @@ public class SyntaxParser {
     }
 
     private NodeAccess acceso() throws LexicalException, SourceFileReaderException, SyntacticException {
-        primario();
-        encadenadoOpt();
-        return null;
+        NodeAccess acceso = primario();
+        acceso.setChaining(encadenadoOpt());
+        return acceso;
     }
     private NodeAccess primario() throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == r_this) {
@@ -748,20 +760,22 @@ public class SyntaxParser {
     }
     private NodeChaining varOMetEncadenado() throws LexicalException, SourceFileReaderException, SyntacticException {
         match(dot);
+        Token identificador = currentToken;
         match(mvID);
-        varOMetEncadenadoFactorizado();
-        encadenadoOpt();
-        return null;
+        NodeChaining encadenado = varOMetEncadenadoFactorizado(identificador);
+        encadenado.setChaining(encadenadoOpt());
+        return encadenado;
     }
-    private NodeChaining varOMetEncadenadoFactorizado() throws LexicalException, SourceFileReaderException, SyntacticException {
+    private NodeChaining varOMetEncadenadoFactorizado(Token identificador) throws LexicalException, SourceFileReaderException, SyntacticException {
         if (currentToken.tokenType == openBr) {
-            argsActuales();
+            NodeMethodChaining encadenadoMetodo = new NodeMethodChaining(identificador);
+            encadenadoMetodo.setParameterList(argsActuales());
+            return encadenadoMetodo;
         } else {
             TokenType[] siguientesVarOMetEncFact = {dot, semicolon, closeBr, comma, orOP, andOP, equals, notEquals, less, greater, lessOrEquals, greaterOrEquals, addOP, subOP, multOP, divOP, modOP, assign,addAssign, subAssign};
             if (Arrays.asList(siguientesVarOMetEncFact).contains(currentToken.tokenType)) { // Siguientes(...) = { . , ; , ), , ,Primeros(<OperadorBinario>) , Primeros(<TipoAsignacion>) }
-                //nada
+                return new NodeVarChaining(identificador);
             } else throw new SyntacticException("Encadenado mal formado", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
-        return null;
     }
 }

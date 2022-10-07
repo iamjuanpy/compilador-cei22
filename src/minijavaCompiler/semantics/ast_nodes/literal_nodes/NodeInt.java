@@ -8,7 +8,7 @@ public class NodeInt implements NodeLiteral{
     private Token token;
 
     public NodeInt(Token literal){
-
+        this.token = literal;
     }
 
     public Type check(){

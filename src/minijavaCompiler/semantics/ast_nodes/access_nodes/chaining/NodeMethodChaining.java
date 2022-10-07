@@ -8,7 +8,18 @@ import java.util.List;
 public class NodeMethodChaining implements NodeChaining{
 
     private Token methodToken;
-    private List<NodeExpression> parameterList;
+    public List<NodeExpression> parameterList;
     private NodeChaining optChaining;
 
+    public NodeMethodChaining(Token id){
+        this.methodToken = id;
+    }
+
+    public void setParameterList(List<NodeExpression> parameterList){
+        this.parameterList = parameterList;
+    }
+
+    public void setChaining(NodeChaining chaining) {
+
+    }
 }

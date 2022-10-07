@@ -4,4 +4,6 @@ public interface NodeSentence {
 
     void check();
 
+    boolean isVariableDeclaration();
+
 }

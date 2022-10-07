@@ -7,4 +7,11 @@ public class NodeVarChaining implements NodeChaining {
     private Token token;
     private NodeChaining optChaining;
 
+    public NodeVarChaining(Token id){
+        this.token = id;
+    }
+
+    public void setChaining(NodeChaining chaining) {
+
+    }
 }

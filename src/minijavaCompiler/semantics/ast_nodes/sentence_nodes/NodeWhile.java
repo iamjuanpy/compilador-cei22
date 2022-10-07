@@ -11,4 +11,8 @@ public class NodeWhile implements NodeSentence {
 
     }
 
+    public boolean isVariableDeclaration() {
+        return false;
+    }
+
 }

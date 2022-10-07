@@ -16,4 +16,8 @@ public class NodeReturn implements NodeSentence{
 
     }
 
+    public boolean isVariableDeclaration() {
+        return false;
+    }
+
 }

@@ -10,8 +10,22 @@ public class NodeAssign implements NodeSentence{
     private Token assignType;
     private NodeExpression expression;
 
+    public NodeAssign(){
+
+    }
+
+    public NodeAssign(NodeAccess access, Token assignType, NodeExpression expression){
+        this.access = access;
+        this.assignType = assignType;
+        this.expression = expression;
+    }
+
     public void check() {
 
+    }
+
+    public boolean isVariableDeclaration() {
+        return false;
     }
 
 }

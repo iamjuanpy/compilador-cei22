@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class Constructor implements Unit {
 
     private Token constructorToken;

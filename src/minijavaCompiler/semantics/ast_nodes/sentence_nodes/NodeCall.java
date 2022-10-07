@@ -1,0 +1,20 @@
+package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
+
+import minijavaCompiler.semantics.ast_nodes.access_nodes.NodeAccess;
+
+public class NodeCall implements NodeSentence{
+
+    private NodeAccess access;
+
+    public NodeCall(NodeAccess access){
+        this.access = access;
+    }
+
+    public void check() {
+
+    }
+
+    public boolean isVariableDeclaration() {
+        return false;
+    }
+}
