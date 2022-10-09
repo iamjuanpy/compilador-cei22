@@ -1,7 +1,6 @@
 package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
 import minijavaCompiler.semantics.SemanticException;
-import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Unit;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import static minijavaCompiler.Main.symbolTable;
 public class NodeBlock implements NodeSentence {
 
     public List<NodeSentence> sentencesList;
-    public HashMap<String, NodeVariable> variableHashMap;
+    public HashMap<String, NodeLocalVariable> variableHashMap;
     public Unit unit;
     public NodeBlock nestingIn;
 
@@ -30,20 +29,26 @@ public class NodeBlock implements NodeSentence {
     public void addSentence(NodeSentence sentence) throws SemanticException {
         sentencesList.add(sentence);
         if (sentence.isVariableDeclaration())
-            addVariable((NodeVariable) sentence);
+            addVariable((NodeLocalVariable) sentence);
     }
 
-    private void addVariable(NodeVariable variable) throws SemanticException {
+    private void addVariable(NodeLocalVariable variable) throws SemanticException {
         if (variableHashMap.get(variable.getName()) == null) {
             variableHashMap.put(variable.getName(), variable);
         } else throw new SemanticException("Ya hay una variable "+variable.getName()+" definida en el ambiente de referenciamiento", variable.getName(), variable.getLine());
     }
 
+    public boolean isLocalVariable(String identifier){return variableHashMap.get(identifier) != null;}
+    public NodeLocalVariable getLocalVariable(String identifier){return variableHashMap.get(identifier);}
+
     public void check(){
+        symbolTable.currentUnit = unit;
+        symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
         }
         // el return si el bloque es de metodo
+        symbolTable.currentBlock = nestingIn; // retorna al bloque padre una vez termina el check
     }
 
     public boolean isVariableDeclaration() {

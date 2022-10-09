@@ -29,7 +29,6 @@ import minijavaCompiler.semantics.types.primitives.CharType;
 import minijavaCompiler.semantics.types.primitives.IntType;
 import minijavaCompiler.semantics.types.primitives.VoidType;
 import minijavaCompiler.syntax.exceptions.SyntacticException;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -481,10 +480,10 @@ public class SyntaxParser {
         if (currentToken.tokenType == assign) {
             match(assign);
             NodeExpression valor = expresion();
-            return new NodeVariable(tipo, idVariable, valor);
+            return new NodeLocalVariable(tipo, idVariable, valor);
         } else {
             if (currentToken.tokenType == comma || currentToken.tokenType == semicolon){ // Siguientes(...) = { , , ;}
-                return new NodeVariable(tipo, idVariable);
+                return new NodeLocalVariable(tipo, idVariable);
             } else throw new SyntacticException("Declaracion de variable sin cerrar", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }
@@ -506,7 +505,7 @@ public class SyntaxParser {
         match(mvID);
         match(assign);
         NodeExpression expresion = expresion();
-        return new NodeVariable(identificador, expresion);
+        return new NodeLocalVariable(identificador, expresion);
     }
 
     private NodeSentence nt_return() throws LexicalException, SourceFileReaderException, SyntacticException {

@@ -18,6 +18,12 @@ public interface ClassEntry {
     HashMap<String, Method> getMethodHashMap();
     boolean isConcreteClass();
 
+    boolean isAttribute(String identifier);
+    Attribute getAtrribute(String identifier);
+    boolean isMethod(String identifier);
+    Method getMethod(String identifier);
+    Constructor getConstructor();
+
     void checkInheritanceCircularity(HashMap<String, Token> inheritanceMap) throws SemanticException;
 
     void addAttribute(Attribute attribute) throws SemanticException;

@@ -7,7 +7,7 @@ import minijavaCompiler.semantics.types.Type;
 
 import static minijavaCompiler.Main.symbolTable;
 
-public class Attribute {
+public class Attribute implements Variable {
 
     private ClassEntry classDeclared;
     private Token attributeToken;
@@ -27,6 +27,7 @@ public class Attribute {
     public int getLine() {
         return attributeToken.lineNumber;
     }
+    public Type getType() {return attributeType;}
     public boolean isPublic(){
         return isPublic;
     }

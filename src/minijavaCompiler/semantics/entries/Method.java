@@ -46,6 +46,11 @@ public class Method implements Unit {
         } else throw new SemanticException("No se puede declarar mas de un parámetro con el mismo nombre, "+parameter.getName(),parameter.getName(), parameter.getLine());
     }
 
+    public boolean isParameter(String identifier){return parameterHashMap.get(identifier) != null;}
+    public Parameter getParameter(String identifier){return parameterHashMap.get(identifier);}
+
+    public boolean isMethod() {return true;}
+
     public void addBlock(NodeBlock block){ this.block = block;}
 
     public void correctlyDeclared() throws SemanticException {

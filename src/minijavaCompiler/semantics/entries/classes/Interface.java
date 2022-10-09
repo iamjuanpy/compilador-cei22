@@ -30,6 +30,14 @@ public class Interface implements ClassEntry {
     public HashMap<String, Method> getMethodHashMap() { return methodHashMap;}
     public boolean isConcreteClass() { return false;}
 
+    public boolean isAttribute(String identifier) {return false;} // NO LLEGA
+    public Attribute getAtrribute(String identifier) { return null;} // NO LLEGA
+
+    public boolean isMethod(String identifier) {return methodHashMap.get(identifier) != null;}
+    public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
+
+    public Constructor getConstructor() {return null;} // no llega
+
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {

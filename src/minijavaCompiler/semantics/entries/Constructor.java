@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static minijavaCompiler.Main.symbolTable;
-
 public class Constructor implements Unit {
 
     private Token constructorToken;
@@ -27,12 +25,17 @@ public class Constructor implements Unit {
     public int getLine() {return constructorToken.lineNumber;}
     public List<Parameter> getParametersList() {return parameterList;}
 
+    public boolean isMethod() {return false;}
+
     public void addParameter(Parameter parameter) throws SemanticException {
         if (parameterHashMap.get(parameter.getName()) == null){
             parameterHashMap.put(parameter.getName(),parameter);
             parameterList.add(parameter);
         } else throw new SemanticException("No se puede declarar mas de un parámetro con el mismo nombre, "+parameter.getName(), parameter.getName(), parameter.getLine());
     }
+
+    public boolean isParameter(String identifier){return parameterHashMap.get(identifier) != null;}
+    public Parameter getParameter(String identifier){return parameterHashMap.get(identifier);}
 
     public void addBlock(NodeBlock block){this.block = block;}
 

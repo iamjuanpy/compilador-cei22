@@ -37,6 +37,14 @@ public class ConcreteClass implements ClassEntry {
     public HashMap<String, Method> getMethodHashMap() {return  methodHashMap;}
     private boolean notObjectClass() {return extendsClassToken != null;}
 
+    public boolean isAttribute(String identifier) {return attributeHashMap.get(identifier) != null;}
+    public Attribute getAtrribute(String identifier) { return attributeHashMap.get(identifier);}
+
+    public boolean isMethod(String identifier) {return methodHashMap.get(identifier) != null;}
+    public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
+
+    public Constructor getConstructor() {return constructor;}
+
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {
