@@ -1,6 +1,7 @@
 package minijavaCompiler.semantics.ast_nodes.access_nodes.chaining;
 
 import minijavaCompiler.lexical.Token;
+import minijavaCompiler.semantics.types.Type;
 
 public class NodeVarChaining implements NodeChaining {
 
@@ -13,5 +14,11 @@ public class NodeVarChaining implements NodeChaining {
 
     public void setChaining(NodeChaining chaining) {
 
+    }
+
+    public Type check() {return null;}
+
+    public Type check(Type previousAccessType) {
+        return null;
     }
 }

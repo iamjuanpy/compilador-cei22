@@ -705,7 +705,7 @@ public class SyntaxParser {
     private NodeAccess accesoThis() throws LexicalException, SourceFileReaderException, SyntacticException {
         Token tokenThis = currentToken;
         match(r_this);
-        return new NodeThisAccess(tokenThis);
+        return new NodeThisAccess(tokenThis, symbolTable.currentClass.getName());
     }
     private NodeAccess accesoConstructor() throws LexicalException, SourceFileReaderException, SyntacticException {
         match(r_new);

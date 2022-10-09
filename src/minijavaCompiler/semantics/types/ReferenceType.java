@@ -17,4 +17,8 @@ public class ReferenceType implements Type{
 
     public boolean equals(Type type) {return classToken.lexeme.equals(type.getTypeName());}
 
+    public boolean isSubtypeOf(Type type) {
+        return false;
+    }
+
 }

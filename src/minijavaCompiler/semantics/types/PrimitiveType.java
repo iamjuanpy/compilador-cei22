@@ -16,4 +16,6 @@ public class PrimitiveType implements Type{
 
     public boolean equals(Type type) {return primitiveTypeName.equals(type.getTypeName());}
 
+    public boolean isSubtypeOf(Type type) {return false;} // NO LLEGA
+
 }

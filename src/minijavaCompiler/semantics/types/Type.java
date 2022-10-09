@@ -7,4 +7,6 @@ public interface Type {
     boolean isPrimitive();
 
     boolean equals(Type type);
+
+    boolean isSubtypeOf(Type type);
 }
