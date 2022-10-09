@@ -20,25 +20,28 @@ public class NodeBlock implements NodeSentence {
     public NodeBlock(){
         sentencesList = new ArrayList<>();
         variableHashMap = new HashMap<>();
-        unit = symbolTable.currentUnit;
-        nestingIn = symbolTable.currentBlock;
+        unit = symbolTable.currentUnit;         // Usado para acceder a los atributos/variables de instancia
+        nestingIn = symbolTable.currentBlock;   // Usado para recuperar a donde volver cuando termino de leer este bloque
+        if (nestingIn != null) {
+            variableHashMap.putAll(nestingIn.variableHashMap);
+        }
     }
 
-    public void addSentence(NodeSentence sentence){
+    public void addSentence(NodeSentence sentence) throws SemanticException {
         sentencesList.add(sentence);
         if (sentence.isVariableDeclaration())
             addVariable((NodeVariable) sentence);
     }
 
-    private void addVariable(NodeVariable variable) /* throws SemanticException */{
-//        if (variableHashMap.get(variable.getName()) == null) {
-//            variableHashMap.put(variable.getName(), variable);
-//        } else throw new SemanticException();
+    private void addVariable(NodeVariable variable) throws SemanticException {
+        if (variableHashMap.get(variable.getName()) == null) {
+            variableHashMap.put(variable.getName(), variable);
+        } else throw new SemanticException("Ya hay una variable "+variable.getName()+" definida en el ambiente de referenciamiento", variable.getName(), variable.getLine());
     }
 
     public void check(){
-        for (NodeSentence s : sentencesList){
-            s.check();
+        for (NodeSentence sentence : sentencesList){
+            sentence.check();
         }
         // el return si el bloque es de metodo
     }

@@ -8,6 +8,12 @@ public class NodeIf implements NodeSentence{
     private NodeSentence thenSentence;
     private NodeSentence elseSentence;
 
+    public NodeIf(NodeExpression expression, NodeSentence thenSentence, NodeSentence elseSentence) {
+        this.condition = expression;
+        this.thenSentence = thenSentence;
+        this.elseSentence = elseSentence;
+    }
+
     public void check() {
 
     }

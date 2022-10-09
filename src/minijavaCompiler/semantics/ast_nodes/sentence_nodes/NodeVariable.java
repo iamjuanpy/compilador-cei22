@@ -10,21 +10,24 @@ public class NodeVariable implements NodeSentence{
     private Token token;
     private NodeExpression value;
 
-    public NodeVariable(Type type, Token token){
-        this.token = token;
-        this.type = type;
-    }
-
-    public NodeVariable(Token token, NodeExpression value) {
+    public NodeVariable(Token token, NodeExpression value) { // Constructor variable local (minijava)
         this.token = token;
         this.value = value;
     }
 
-    public NodeVariable(Type type, Token token, NodeExpression value) {
+    public NodeVariable(Type type, Token token){ // Constructor variable local clasica sin asignacion
+        this.token = token;
+        this.type = type;
+    }
+
+    public NodeVariable(Type type, Token token, NodeExpression value) { // Constructor variable local clasica con asignacion
         this.token = token;
         this.type = type;
         this.value = value;
     }
+
+    public String getName() { return token.lexeme;}
+    public int getLine() { return token.lineNumber;}
 
     public void check() {
 

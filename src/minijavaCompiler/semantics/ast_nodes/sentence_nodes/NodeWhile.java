@@ -7,6 +7,11 @@ public class NodeWhile implements NodeSentence {
     private NodeExpression condition;
     private NodeSentence sentence;
 
+    public NodeWhile(NodeExpression expression, NodeSentence sentence) {
+        this.condition = expression;
+        this.sentence = sentence;
+    }
+
     public void check() {
 
     }
