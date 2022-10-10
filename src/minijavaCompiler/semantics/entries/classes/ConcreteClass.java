@@ -68,6 +68,17 @@ public class ConcreteClass implements ClassEntry {
         }
     }
 
+    // Chequeo sentencias
+
+    public void checkSentences() throws SemanticException {
+        //constructor.checkSentences()
+        for (Method m : methodHashMap.values()) {
+            if (m.getClassDeclared() == this) { // TODO PREGUNTAR
+                m.checkSentences();
+            }
+        }
+    }
+
     // Chequeo correctamente declarado
 
     private void checkInheritanceDeclaration() throws SemanticException {

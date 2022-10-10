@@ -54,6 +54,9 @@ public class Interface implements ClassEntry {
         }
     }
 
+    // Chequeo sentencias, no llega
+    public void checkSentences(){}
+
     //Chequeo correctamente declarado
 
     private void checkInheritanceDeclaration() throws SemanticException {

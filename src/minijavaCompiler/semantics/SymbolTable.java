@@ -29,7 +29,11 @@ public class SymbolTable {
     }
 
     public void checkSentences() throws SemanticException{
-
+        for (ClassEntry c : classesHashMap.values()) {
+            if (c.isConcreteClass()) {
+                c.checkSentences(); // TODO PREGUNTAR
+            }
+        }
     }
 
     public boolean classExists(String className){

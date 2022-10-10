@@ -11,6 +11,7 @@ import java.util.HashMap;
 public interface ClassEntry {
     void correctlyDeclared() throws SemanticException;
     void consolidate() throws SemanticException;
+    void checkSentences() throws SemanticException;
 
     String getName();
     int getLine();

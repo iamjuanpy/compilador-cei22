@@ -36,6 +36,7 @@ public class Method implements Unit {
     public int getLine() {return methodToken.lineNumber;}
     public boolean isStatic() {return isStatic;}
     public List<Parameter> getParametersList() {return parameterList;}
+    public ClassEntry getClassDeclared() {return classDeclared;}
     public Type getReturnType() {return returnType;}
     public boolean isMain() {return isStatic && returnType.equals(new VoidType()) && methodToken.lexeme.equals("main") && parameterHashMap.size() == 0;}
 
@@ -86,4 +87,7 @@ public class Method implements Unit {
         return true;
     }
 
+    public void checkSentences() throws SemanticException{
+        block.check();
+    }
 }

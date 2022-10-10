@@ -11,4 +11,6 @@ public interface Unit {
 
     boolean isParameter(String identifier);
     Parameter getParameter(String identifier);
+
+    void checkSentences() throws SemanticException;
 }

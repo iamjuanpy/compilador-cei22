@@ -28,8 +28,9 @@ public class NodeBlock implements NodeSentence {
 
     public void addSentence(NodeSentence sentence) throws SemanticException {
         sentencesList.add(sentence);
-        if (sentence.isVariableDeclaration())
-            addVariable((NodeLocalVariable) sentence);
+        // ESTO VA EN EL CHECK????
+//        if (sentence.isVariableDeclaration())
+//            addVariable((NodeLocalVariable) sentence);
     }
 
     private void addVariable(NodeLocalVariable variable) throws SemanticException {

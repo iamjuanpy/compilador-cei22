@@ -43,4 +43,9 @@ public class Constructor implements Unit {
         for (Parameter p : parameterHashMap.values())
             p.correctlyDeclared();
     }
+
+    public void checkSentences() throws SemanticException {
+        block.check();
+    }
+
 }
