@@ -24,8 +24,6 @@ public class NodeMethodChaining implements NodeChaining{
 
     }
 
-    public Type check() {return null;}
-
     public Type check(Type previousAccessType) {
         return null;
     }

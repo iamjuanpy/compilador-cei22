@@ -13,10 +13,8 @@ public class NodeVarChaining implements NodeChaining {
     }
 
     public void setChaining(NodeChaining chaining) {
-
+        this.optChaining = chaining;
     }
-
-    public Type check() {return null;}
 
     public Type check(Type previousAccessType) {
         return null;

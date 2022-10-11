@@ -22,7 +22,7 @@ public class NodeMethodCall implements NodeAccess {
     }
 
     public void setChaining(NodeChaining chaining) {
-
+        this.optChaining = chaining;
     }
 
     public Type check() {

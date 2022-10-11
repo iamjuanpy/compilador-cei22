@@ -20,7 +20,7 @@ public class NodeThisAccess implements NodeAccess {
     }
 
     public void setChaining(NodeChaining chaining) {
-
+        this.optChaining = chaining;
     }
 
     public Type check() {

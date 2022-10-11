@@ -7,6 +7,7 @@ import minijavaCompiler.semantics.types.Type;
 public class NodeParenthesizedExp implements NodeAccess{
 
     private NodeExpression expression;
+    private NodeChaining optChaining;
 
     public NodeParenthesizedExp(NodeExpression expression) {
         this.expression = expression;
@@ -17,6 +18,6 @@ public class NodeParenthesizedExp implements NodeAccess{
     }
 
     public void setChaining(NodeChaining chaining) {
-
+        this.optChaining = chaining;
     }
 }
