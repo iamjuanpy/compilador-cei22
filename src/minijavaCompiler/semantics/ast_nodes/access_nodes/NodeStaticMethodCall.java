@@ -25,6 +25,12 @@ public class NodeStaticMethodCall implements NodeAccess{
         else return false;
     }
 
+    public boolean isMethodAccess() {
+        if (optChaining == null)
+            return true;
+        else return optChaining.isMethodAccess();
+    }
+
     public void setParameterList(List<NodeExpression> parameterList){
         this.parameterList = parameterList;
     }

@@ -25,6 +25,12 @@ public class NodeVariableAccess implements NodeAccess {
         else return optChaining.isVariableAccess();
     }
 
+    public boolean isMethodAccess() {
+        if (optChaining != null)
+            return optChaining.isMethodAccess();
+        else return false;
+    }
+
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }

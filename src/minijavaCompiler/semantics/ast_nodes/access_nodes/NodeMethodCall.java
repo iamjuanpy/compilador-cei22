@@ -32,6 +32,12 @@ public class NodeMethodCall implements NodeAccess {
         else return false;
     }
 
+    public boolean isMethodAccess() {
+        if (optChaining == null)
+            return true;
+        else return optChaining.isMethodAccess();
+    }
+
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }

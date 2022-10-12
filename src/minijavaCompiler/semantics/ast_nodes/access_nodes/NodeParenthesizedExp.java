@@ -19,6 +19,11 @@ public class NodeParenthesizedExp implements NodeAccess{
             return optChaining.isVariableAccess();
         else return false;
     }
+    public boolean isMethodAccess() {
+        if (optChaining != null)
+            return optChaining.isMethodAccess();
+        else return false;
+    }
 
     public Type check() throws SemanticException {
         if (optChaining != null) {

@@ -6,6 +6,7 @@ import minijavaCompiler.semantics.types.Type;
 public interface NodeChaining {
 
     boolean isVariableAccess();
+    boolean isMethodAccess();
 
     void setChaining (NodeChaining chaining);
 
