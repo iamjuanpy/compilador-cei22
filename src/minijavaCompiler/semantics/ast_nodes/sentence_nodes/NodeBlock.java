@@ -27,7 +27,10 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void addSentence(NodeSentence sentence) throws SemanticException {
-        sentencesList.add(sentence);
+        if (sentence != null) {
+            sentencesList.add(sentence);
+            sentence.toString();
+        }
     }
 
     public void addVariable(NodeLocalVariable variable) throws SemanticException {
@@ -57,15 +60,12 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void check() throws SemanticException {
-        // No se si sobra???
         symbolTable.currentClass = ownerClass;
         symbolTable.currentUnit = unit;
-        //
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
         }
-        // TODO - Señalizar que hay return valido en el metodo
         symbolTable.currentBlock = nestingIn; // retorna al bloque padre una vez termina el check
     }
 

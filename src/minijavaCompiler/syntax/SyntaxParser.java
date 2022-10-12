@@ -446,7 +446,7 @@ public class SyntaxParser {
         if (currentToken.tokenType == r_int || currentToken.tokenType == r_char || currentToken.tokenType == r_boolean) {
             Type tipo = tipoPrimitivo();
             varLocalClasica(tipo);
-            return new NodeEmptySentence(); // TODO PREGUNTAR
+            return null;
         } else if (currentToken.tokenType == classID) {
             Token identificadorClase = currentToken;
             Type tipo = tipo();
@@ -465,7 +465,7 @@ public class SyntaxParser {
             return asignacionOLlamadaFactorizada(accesoMetStatic);
         } else if (currentToken.tokenType == mvID) {
             varLocalClasica(tipo);
-            return new NodeEmptySentence(); // TODO PREGUNTAR
+            return null;
         } else throw new SyntacticException("Se esperaba una declaración de variable o sentencia", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
     }
 

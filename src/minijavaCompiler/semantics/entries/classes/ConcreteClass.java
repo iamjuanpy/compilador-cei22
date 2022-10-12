@@ -73,7 +73,7 @@ public class ConcreteClass implements ClassEntry {
     public void checkSentences() throws SemanticException {
         //constructor.checkSentences()
         for (Method m : methodHashMap.values()) {
-            if (m.getClassDeclared() == this) { // TODO PREGUNTAR
+            if (m.getClassDeclared() == this) {
                 m.checkSentences();
             }
         }

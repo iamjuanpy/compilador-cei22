@@ -25,7 +25,8 @@ public class NodeReturn implements NodeSentence{
             else if (expression != null && !expression.check().isSubtypeOf(symbolTable.currentUnit.getReturnType())) // return <exp> exp conforma con returnType
                 throw new SemanticException("Un metodo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar un tipo "+expression.check().getTypeName(), token.lexeme, token.lineNumber);
 
-        } else throw new SemanticException("Un constructor no puede tener return",token.lexeme, token.lineNumber);
+        } else if (expression != null)
+            throw new SemanticException("Un constructor no puede tener return no vacio",token.lexeme, token.lineNumber);
     }
 
     public boolean isVariableDeclaration() {

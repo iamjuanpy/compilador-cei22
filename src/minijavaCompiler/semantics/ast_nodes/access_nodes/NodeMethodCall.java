@@ -65,6 +65,5 @@ public class NodeMethodCall implements NodeAccess {
             if (!parameterValue.check().isSubtypeOf(formalParameter.getType()))
                 throw new SemanticException("La llamada a metodo "+methodToken.lexeme+" no se realizo con parametros de tipo correcto", methodToken.lexeme, methodToken.lineNumber);
         }
-
     }
 }
