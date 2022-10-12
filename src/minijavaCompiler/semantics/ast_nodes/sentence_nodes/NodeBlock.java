@@ -2,6 +2,7 @@ package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.Unit;
+import minijavaCompiler.semantics.entries.classes.ClassEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,42 +14,58 @@ public class NodeBlock implements NodeSentence {
 
     public List<NodeSentence> sentencesList;
     public HashMap<String, NodeLocalVariable> variableHashMap;
+    public ClassEntry ownerClass;
     public Unit unit;
     public NodeBlock nestingIn;
 
     public NodeBlock(){
         sentencesList = new ArrayList<>();
         variableHashMap = new HashMap<>();
-        unit = symbolTable.currentUnit;         // Usado para acceder a los atributos/variables de instancia
-        nestingIn = symbolTable.currentBlock;   // Usado para recuperar a donde volver cuando termino de leer este bloque
-        if (nestingIn != null) {
-            variableHashMap.putAll(nestingIn.variableHashMap);
-        }
+        ownerClass = symbolTable.currentClass;  // Usado para acceder a atributos
+        unit = symbolTable.currentUnit;         // Usado para acceder a los parametros
+        nestingIn = symbolTable.currentBlock;   // Usado para recuperar a donde volver cuando termino de leer este bloque/ acceder a variables locales
     }
 
     public void addSentence(NodeSentence sentence) throws SemanticException {
         sentencesList.add(sentence);
-        // ESTO VA EN EL CHECK????
-//        if (sentence.isVariableDeclaration())
-//            addVariable((NodeLocalVariable) sentence);
     }
 
-    private void addVariable(NodeLocalVariable variable) throws SemanticException {
-        if (variableHashMap.get(variable.getName()) == null) {
-            variableHashMap.put(variable.getName(), variable);
-        } else throw new SemanticException("Ya hay una variable "+variable.getName()+" definida en el ambiente de referenciamiento", variable.getName(), variable.getLine());
+    public void addVariable(NodeLocalVariable variable) throws SemanticException {
+        if (unit.isParameter(variable.getName()))
+            throw new SemanticException("Ya hay un parametro "+variable.getName()+" en el ambiente de referenciamiento", variable.getName(), variable.getLine());
+
+        if (isLocalVariable(variable.getName()))
+            throw new SemanticException("Ya hay una variable "+variable.getName()+" definida en el ambiente de referenciamiento", variable.getName(), variable.getLine());
+
+        variableHashMap.put(variable.getName(), variable);
     }
 
-    public boolean isLocalVariable(String identifier){return variableHashMap.get(identifier) != null;}
-    public NodeLocalVariable getLocalVariable(String identifier){return variableHashMap.get(identifier);}
+    public boolean isLocalVariable(String identifier) {
+        if (variableHashMap.get(identifier) == null){
+            if (nestingIn != null)
+                return nestingIn.isLocalVariable(identifier);
+            else return false;
+        } else return true;
+    }
 
-    public void check(){
+    public NodeLocalVariable getLocalVariable(String identifier){
+        if (variableHashMap.get(identifier) == null){
+            if (nestingIn != null)
+                return nestingIn.getLocalVariable(identifier);
+            else return null;
+        } else return variableHashMap.get(identifier) ;
+    }
+
+    public void check() throws SemanticException {
+        // No se si sobra???
+        symbolTable.currentClass = ownerClass;
         symbolTable.currentUnit = unit;
+        //
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
         }
-        // el return si el bloque es de metodo
+        // TODO - Señalizar que hay return valido en el metodo
         symbolTable.currentBlock = nestingIn; // retorna al bloque padre una vez termina el check
     }
 

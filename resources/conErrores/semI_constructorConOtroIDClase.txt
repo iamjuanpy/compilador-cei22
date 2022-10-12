@@ -1,0 +1,8 @@
+///[Error:ClaseNOA|4]
+class A {
+
+    ClaseNOA(){
+
+    }
+
+}

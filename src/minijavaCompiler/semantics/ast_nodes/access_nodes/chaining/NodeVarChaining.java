@@ -12,6 +12,12 @@ public class NodeVarChaining implements NodeChaining {
         this.token = id;
     }
 
+    public boolean isVariableAccess() {
+        if (optChaining == null)
+            return true;
+        else return optChaining.isVariableAccess();
+    }
+
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }

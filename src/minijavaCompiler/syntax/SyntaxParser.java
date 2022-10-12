@@ -379,6 +379,7 @@ public class SyntaxParser {
         TokenType[] primerosSentencia = {semicolon, mvID, r_return, r_var, r_if, r_while, openCurly, classID, openBr, r_this, r_new, r_int, r_char, r_boolean};
         if (Arrays.asList(primerosSentencia).contains(currentToken.tokenType)) {
             symbolTable.currentBlock.addSentence(sentencia());
+            listaSentencias();
         } else {
             if (currentToken.tokenType == closeCurly) { // Siguientes(...) = { } }
                 // nada
@@ -509,8 +510,9 @@ public class SyntaxParser {
     }
 
     private NodeSentence nt_return() throws LexicalException, SourceFileReaderException, SyntacticException {
+        Token tokenRetorno = currentToken;
         match(r_return);
-        return new NodeReturn(expresionOpt());
+        return new NodeReturn(tokenRetorno, expresionOpt());
     }
 
     private NodeExpression expresionOpt() throws LexicalException, SourceFileReaderException, SyntacticException {

@@ -19,10 +19,15 @@ public class NodeStaticMethodCall implements NodeAccess{
         this.methodToken = methodID;
     }
 
+    public boolean isVariableAccess() {
+        if (optChaining != null)
+            return optChaining.isVariableAccess();
+        else return false;
+    }
+
     public void setParameterList(List<NodeExpression> parameterList){
         this.parameterList = parameterList;
     }
-
 
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;

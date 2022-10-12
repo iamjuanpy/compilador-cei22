@@ -34,7 +34,7 @@ public class Main {
 
                 syntaxParser.startParse();                                  // Etapa 2/3/4
                 symbolTable.checkDeclarations();                            // Etapa 3
-                symbolTable.checkSentences();                               // Etapa 4
+                //symbolTable.checkSentences();                               // Etapa 4
 
                 System.out.println("\n"+"Compilación exitosa");
                 System.out.println("\n"+"[SinErrores]");

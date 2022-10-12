@@ -5,6 +5,8 @@ import minijavaCompiler.semantics.types.Type;
 
 public interface NodeChaining {
 
+    boolean isVariableAccess();
+
     void setChaining (NodeChaining chaining);
 
     Type check(Type previousAccessType);

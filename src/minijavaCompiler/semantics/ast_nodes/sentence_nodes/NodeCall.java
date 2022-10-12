@@ -1,5 +1,6 @@
 package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
+import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.NodeAccess;
 
 public class NodeCall implements NodeSentence{
@@ -10,8 +11,10 @@ public class NodeCall implements NodeSentence{
         this.access = access;
     }
 
-    public void check() {
-
+    public void check() throws SemanticException {
+        access.check();
+        if (access.isVariableAccess())
+            throw new SemanticException("???","", 0);
     }
 
     public boolean isVariableDeclaration() {

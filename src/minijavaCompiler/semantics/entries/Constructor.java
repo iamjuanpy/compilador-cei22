@@ -3,6 +3,7 @@ package minijavaCompiler.semantics.entries;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
+import minijavaCompiler.semantics.types.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class Constructor implements Unit {
 
     public String getName() {return constructorToken.lexeme;}
     public int getLine() {return constructorToken.lineNumber;}
+    public Type getReturnType() {return null;}
     public List<Parameter> getParametersList() {return parameterList;}
 
     public boolean isMethod() {return false;}

@@ -19,6 +19,12 @@ public class NodeThisAccess implements NodeAccess {
         this.className = className;
     }
 
+    public boolean isVariableAccess() {
+        if (optChaining != null)
+            return optChaining.isVariableAccess();
+        else return false;
+    }
+
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }
