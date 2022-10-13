@@ -3,7 +3,6 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
-import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeLocalVariable;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Variable;
 import minijavaCompiler.semantics.types.Type;
@@ -12,11 +11,11 @@ import static minijavaCompiler.Main.symbolTable;
 
 public class NodeVariableAccess implements NodeAccess {
 
-    private Token token;
+    private Token variableToken;
     private NodeChaining optChaining;
 
     public NodeVariableAccess(Token id){
-        this.token = id;
+        this.variableToken = id;
     }
 
     public boolean isVariableAccess() {
@@ -25,29 +24,30 @@ public class NodeVariableAccess implements NodeAccess {
         else return optChaining.isVariableAccess();
     }
 
-    public boolean isMethodAccess() {
+    public void isMethodCall() throws SemanticException {
         if (optChaining != null)
-            return optChaining.isMethodAccess();
-        else return false;
+            optChaining.isMethodCall();
+        else throw new SemanticException("Se esperaba una llamada a método", variableToken.lexeme, variableToken.lineNumber);
     }
-
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }
 
     public Type check() throws SemanticException {
         Variable variable;
-        if (symbolTable.currentUnit.isParameter(token.lexeme))
-            variable = symbolTable.currentUnit.getParameter(token.lexeme);
-        else if (symbolTable.currentBlock.isLocalVariable(token.lexeme))
-            variable = symbolTable.currentBlock.getLocalVariable(token.lexeme);
-        else if (symbolTable.currentClass.isAttribute(token.lexeme) && isMethodOrConstructor())
-            variable = symbolTable.currentClass.getAtrribute(token.lexeme);
-        else throw new SemanticException("No se encuentra variable "+token.lexeme+" en el ambiente de referenciamiento",token.lexeme, token.lineNumber);
+        if (symbolTable.currentUnit.isParameter(variableToken.lexeme))
+            variable = symbolTable.currentUnit.getParameter(variableToken.lexeme);
+        else if (symbolTable.currentBlock.isLocalVariable(variableToken.lexeme))
+            variable = symbolTable.currentBlock.getLocalVariable(variableToken.lexeme);
+        else if (symbolTable.currentClass.isAttribute(variableToken.lexeme) && isMethodOrConstructor())
+            variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
+        else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
 
-        if (optChaining == null)
+        if (optChaining == null) {
+            if (variable.getType().isPrimitive())
+                throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
             return variable.getType();
-        else return optChaining.check(variable.getType());
+        } else return optChaining.check(variable.getType());
     }
 
     private boolean isMethodOrConstructor() {

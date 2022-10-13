@@ -7,7 +7,7 @@ import minijavaCompiler.semantics.types.Type;
 public interface NodeChaining {
 
     boolean isVariableAccess();
-    boolean isMethodAccess();
+    void isMethodCall() throws SemanticException;
 
     void setChaining (NodeChaining chaining);
 

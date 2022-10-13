@@ -13,8 +13,7 @@ public class NodeCall implements NodeSentence{
 
     public void check() throws SemanticException {
         access.check();
-        if (access.isVariableAccess())
-            throw new SemanticException("???","", 0);
+        access.isMethodCall(); // Throwea excepcion con la ultima expresion de la sentencia si no es llamada a metodo.
     }
 
     public boolean isVariableDeclaration() {

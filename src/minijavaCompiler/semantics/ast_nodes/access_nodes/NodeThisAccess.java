@@ -2,6 +2,7 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
+import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
 import minijavaCompiler.semantics.types.ReferenceType;
 import minijavaCompiler.semantics.types.Type;
@@ -25,18 +26,22 @@ public class NodeThisAccess implements NodeAccess {
         else return false;
     }
 
-    public boolean isMethodAccess() {
+    public void isMethodCall() throws SemanticException {
         if (optChaining != null)
-            return optChaining.isMethodAccess();
-        else return false;
+            optChaining.isMethodCall();
+        else throw new SemanticException("Se esperaba una llamada a método", token.lexeme, token.lineNumber);
     }
 
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }
 
-    public Type check() {
+    public Type check() throws SemanticException {
         Type thisType = new ReferenceType(new Token(TokenType.classID,className,0));
-        return null;
+
+        if (optChaining != null) {
+            return optChaining.check(thisType);
+        }
+        else return thisType;
     }
 }

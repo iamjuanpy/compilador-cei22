@@ -27,6 +27,7 @@ public class Attribute implements Variable {
     public int getLine() {
         return attributeToken.lineNumber;
     }
+    public ClassEntry getClassDeclared() {return classDeclared;}
     public Type getType() {return attributeType;}
     public boolean isPublic(){
         return isPublic;

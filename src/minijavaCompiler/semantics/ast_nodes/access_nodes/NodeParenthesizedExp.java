@@ -19,16 +19,19 @@ public class NodeParenthesizedExp implements NodeAccess{
             return optChaining.isVariableAccess();
         else return false;
     }
-    public boolean isMethodAccess() {
+    public void isMethodCall() throws SemanticException {
         if (optChaining != null)
-            return optChaining.isMethodAccess();
-        else return false;
+            optChaining.isMethodCall();
+        else throw new SemanticException("Se esperaba una llamada a método", "", 0); // TODO Que hacer
     }
 
     public Type check() throws SemanticException {
+        Type expressionType = expression.check();
         if (optChaining != null) {
-            return optChaining.check(expression.check());
-        } else return expression.check();
+            if (expressionType.isPrimitive())
+                throw new SemanticException("No se puede encadenar a tipo primitivo", "", 0); // MISMO
+            return optChaining.check(expressionType);
+        } else return expressionType;
     }
 
     public void setChaining(NodeChaining chaining) {

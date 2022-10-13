@@ -33,11 +33,11 @@ public class NodeConstructorCall implements NodeAccess{
         else return false;
     }
 
-    public boolean isMethodAccess() {
-        if (optChaining == null)
-            return true;
-        else return optChaining.isMethodAccess();
+    public void isMethodCall() throws SemanticException {
+        if (optChaining != null)
+            optChaining.isMethodCall();
     }
+
 
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
@@ -48,7 +48,10 @@ public class NodeConstructorCall implements NodeAccess{
             checkParameters();
         else throw new SemanticException("No existe constructor para una clase "+token.lexeme+" accesible", token.lexeme, token.lineNumber);
 
-        return new ReferenceType(token);
+        Type objectType = new ReferenceType(token);
+        if (optChaining == null)
+            return objectType;
+        else return optChaining.check(objectType);
     }
 
     private void checkParameters() throws SemanticException {

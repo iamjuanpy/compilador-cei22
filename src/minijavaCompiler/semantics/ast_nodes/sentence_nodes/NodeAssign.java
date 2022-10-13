@@ -26,7 +26,7 @@ public class NodeAssign implements NodeSentence{
         Type expressionType = expression.check();
 
         if (!access.isVariableAccess())
-            throw new SemanticException("El operador asignacion solo puede usarse <VARIABLE> "+assignType.lexeme+" <EXPRESSION>", assignType.lexeme, assignType.lineNumber);
+            throw new SemanticException("El operador asignacion solo puede usarse <VARIABLE> "+assignType.lexeme+" <EXPRESION>", assignType.lexeme, assignType.lineNumber);
 
         if (assignType.tokenType == addAssign || assignType.tokenType == subAssign) {
             if (!accessType.equals(new IntType()) || !expression.check().equals(new IntType()))
