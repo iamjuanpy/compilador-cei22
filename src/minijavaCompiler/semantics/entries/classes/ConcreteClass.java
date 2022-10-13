@@ -7,6 +7,8 @@ import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.classID;
@@ -44,6 +46,17 @@ public class ConcreteClass implements ClassEntry {
     public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
 
     public Constructor getConstructor() {return constructor;}
+
+    public Set<String> getInheritanceSet() {
+        HashSet<String> inheritanceSet = new HashSet<>();
+        inheritanceSet.add(classToken.lexeme);
+        if (!classToken.lexeme.equals("Object")){
+            inheritanceSet.addAll(symbolTable.getClass(extendsClassToken.lexeme).getInheritanceSet());
+            for (String intToken : interfacesHashMap.keySet())
+                inheritanceSet.addAll(symbolTable.getClass(intToken).getInheritanceSet());
+        }
+        return inheritanceSet;
+    }
 
     // Chequeo declaraciones
 

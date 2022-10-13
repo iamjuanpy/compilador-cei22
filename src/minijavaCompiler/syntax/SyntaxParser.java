@@ -527,13 +527,14 @@ public class SyntaxParser {
     }
 
     private NodeSentence nt_if() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+        Token ifToken = currentToken;
         match(r_if);
         match(openBr);
         NodeExpression condicion = expresion();
         match(closeBr);
         NodeSentence sentenciaThen = sentencia();
         NodeSentence sentenciaElse = nt_else();
-        return new NodeIf(condicion, sentenciaThen, sentenciaElse);
+        return new NodeIf(ifToken, condicion, sentenciaThen, sentenciaElse);
     }
     private NodeSentence nt_else() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         if (currentToken.tokenType == r_else){
@@ -548,12 +549,13 @@ public class SyntaxParser {
     }
 
     private NodeSentence nt_while() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
+        Token whileToken = currentToken;
         match(r_while);
         match(openBr);
         NodeExpression condicion = expresion();
         match(closeBr);
         NodeSentence sentencia = sentencia();
-        return new NodeWhile(condicion, sentencia);
+        return new NodeWhile(whileToken, condicion, sentencia);
     }
 
     private NodeExpression expresion() throws LexicalException, SourceFileReaderException, SyntacticException {

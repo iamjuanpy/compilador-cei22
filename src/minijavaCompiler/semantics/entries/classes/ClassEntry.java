@@ -6,7 +6,9 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 public interface ClassEntry {
     void correctlyDeclared() throws SemanticException;
@@ -33,4 +35,6 @@ public interface ClassEntry {
 
     void setAncestorClass(Token classToken);
     void addMultipleInheritence(Token interfaceToken) throws SemanticException;
+
+    Set<String> getInheritanceSet();
 }

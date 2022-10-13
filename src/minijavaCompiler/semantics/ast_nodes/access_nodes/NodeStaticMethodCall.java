@@ -46,7 +46,9 @@ public class NodeStaticMethodCall implements NodeAccess{
     public Type check() throws SemanticException {
         if (symbolTable.classExists(classToken.lexeme)) {
             if (symbolTable.getClass(classToken.lexeme).isMethod(methodToken.lexeme))
-                checkParameters();
+                if (symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).isStatic())
+                    checkParameters();
+                else throw new SemanticException("El metodo "+methodToken.lexeme+" no es estático", methodToken.lexeme, methodToken.lineNumber);
             else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
 
             Type methodType = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getReturnType();

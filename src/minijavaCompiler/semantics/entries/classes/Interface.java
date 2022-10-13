@@ -7,6 +7,8 @@ import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static minijavaCompiler.Main.symbolTable;
 
@@ -37,6 +39,15 @@ public class Interface implements ClassEntry {
     public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
 
     public Constructor getConstructor() {return null;} // no llega
+
+    public Set<String> getInheritanceSet() {
+        HashSet<String> inheritanceSet = new HashSet<>();
+        inheritanceSet.add(interfaceToken.lexeme);
+        for (String intToken : interfaceExtendsHashMap.keySet())
+            inheritanceSet.addAll(symbolTable.getClass(intToken).getInheritanceSet());
+        return inheritanceSet;
+    }
+
 
     // Chequeo declaraciones
 
