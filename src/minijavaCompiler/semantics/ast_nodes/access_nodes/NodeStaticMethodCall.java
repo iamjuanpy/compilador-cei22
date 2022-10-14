@@ -62,7 +62,7 @@ public class NodeStaticMethodCall implements NodeAccess{
     }
 
     private void checkParameters() throws SemanticException {
-        List<Parameter> formalParameters = symbolTable.currentClass.getMethod(methodToken.lexeme).getParametersList();
+        List<Parameter> formalParameters = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getParametersList();
 
         if (formalParameters.size() != actualParameters.size())
             throw new SemanticException("La llamada a metodo estático "+methodToken.lexeme+" no se realizo con la cantidad de parametros correctos", methodToken.lexeme, methodToken.lineNumber);

@@ -43,14 +43,18 @@ public class NodeVariableAccess implements NodeAccess {
             variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
         else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
 
-        if (optChaining == null) {
+        if (optChaining != null) {
             if (variable.getType().isPrimitive())
                 throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
-            return variable.getType();
-        } else return optChaining.check(variable.getType());
+            return optChaining.check(variable.getType());
+        } else return variable.getType();
     }
 
     private boolean isMethodOrConstructor() {
-        return (!symbolTable.currentUnit.isMethod() || !((Method) symbolTable.currentUnit).isStatic()); // Constructor o metodo no estatico puede usar var de instancia
+        return (isConstructor() || isDynamicMethod());
     }
+
+    private boolean isConstructor() {return !symbolTable.currentUnit.isMethod();}
+    private boolean isDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
+
 }

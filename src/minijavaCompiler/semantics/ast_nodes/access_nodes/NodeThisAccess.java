@@ -4,6 +4,7 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.lexical.TokenType;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
+import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.types.ReferenceType;
 import minijavaCompiler.semantics.types.Type;
 
@@ -38,6 +39,10 @@ public class NodeThisAccess implements NodeAccess {
 
     public Type check() throws SemanticException {
         Type thisType = new ReferenceType(new Token(TokenType.classID,className,0));
+
+        if (symbolTable.currentUnit.isMethod())
+            if (((Method) symbolTable.currentUnit).isStatic())
+                throw new SemanticException("No se puede tener accesos this en metodo estático", token.lexeme, token.lineNumber);
 
         if (optChaining != null) {
             return optChaining.check(thisType);

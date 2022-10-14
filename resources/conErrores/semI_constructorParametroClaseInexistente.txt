@@ -1,8 +1,0 @@
-///[Error:EstaClaseNoExiste|4]
-class A {
-
-    A(EstaClaseNoExiste x, int a) {
-
-    }
-
-}

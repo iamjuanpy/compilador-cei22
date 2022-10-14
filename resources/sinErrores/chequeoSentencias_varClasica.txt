@@ -1,0 +1,19 @@
+interface B {
+
+}
+
+class A implements B{
+
+    static void main() {
+        int variable = 0, cero = variable, sinInstanciar;
+        variable = 1;
+        variable += 1;
+        variable -= 1;
+
+        A variable2 = new A();
+        B variable3 = new A();
+
+        int test = cero;
+    }
+
+}

@@ -4,6 +4,7 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
+import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
 import minijavaCompiler.semantics.types.Type;
 
@@ -45,6 +46,10 @@ public class NodeMethodCall implements NodeAccess {
         if (symbolTable.currentClass.isMethod(methodToken.lexeme))
             checkParameters();
         else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
+
+        if (symbolTable.currentUnit.isMethod())
+            if (((Method) symbolTable.currentUnit).isStatic())
+                throw new SemanticException("No se puede tener accesos a metodo dinamico en metodo estático", methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.currentClass.getMethod(methodToken.lexeme).getReturnType();
 

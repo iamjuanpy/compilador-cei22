@@ -1,0 +1,14 @@
+class A {
+
+    static void main() {
+        var variable = 0;
+        variable = 1;
+        variable += 1;
+        variable -= 1;
+
+        var variable2 = new A();
+
+        var variable3 = variable;
+    }
+
+}

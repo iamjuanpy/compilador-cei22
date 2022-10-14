@@ -1,0 +1,36 @@
+interface Test {
+
+    void m1(int a);
+
+}
+
+class B implements Test{
+
+    void m1(int arg){
+        return;
+    }
+
+}
+
+class A extends B {
+
+    public int a;
+    private int b;
+
+    Test m2(){
+        return this;
+    }
+
+    void m3(){
+        var x = a; // referencia a atributo
+        var y = b;
+        var z = x;
+    }
+
+    void test(){
+        m3();
+    }
+
+    static void main(){}
+
+}

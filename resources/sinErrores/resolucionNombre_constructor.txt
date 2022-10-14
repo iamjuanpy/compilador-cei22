@@ -1,0 +1,25 @@
+
+class B {
+
+    B () {
+
+    }
+
+}
+
+class A extends B {
+
+    A(int a, B cl) {
+
+    }
+
+    boolean m2(){
+        return true;
+    }
+
+    static void main(){
+        new A(1, new B());
+        new B();
+    }
+
+}
