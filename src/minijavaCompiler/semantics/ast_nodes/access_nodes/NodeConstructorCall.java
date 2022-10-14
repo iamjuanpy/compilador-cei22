@@ -46,7 +46,7 @@ public class NodeConstructorCall implements NodeAccess{
     public Type check() throws SemanticException {
         if (symbolTable.getClass(token.lexeme) != null && symbolTable.getClass(token.lexeme).isConcreteClass())
             checkParameters();
-        else throw new SemanticException("No existe constructor para una clase "+token.lexeme+" accesible", token.lexeme, token.lineNumber);
+        else throw new SemanticException("No existe constructor para una clase "+token.lexeme, token.lexeme, token.lineNumber);
 
         Type objectType = new ReferenceType(token);
         if (optChaining == null)

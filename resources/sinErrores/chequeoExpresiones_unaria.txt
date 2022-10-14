@@ -1,0 +1,19 @@
+class A {
+
+    private int a,b;
+
+    boolean m1(){
+        a = 1;
+        b = +a;
+        b = -a;
+        a = +5;
+        a = -5 + -b; // chequeo binaria tmb
+
+        return !true && !m1() || !false || m1(); // idem
+    }
+
+    static void main(){
+
+    }
+
+}

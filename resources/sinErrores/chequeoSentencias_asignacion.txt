@@ -1,10 +1,19 @@
-class A {
+interface B {
+
+}
+
+class A implements B{
 
     public int numPub;
     private int variable;
+    public A otroA;
+    public B unB;
 
     static void main() {
 
+    }
+
+    A m0(int a) {
     }
 
     void m1() {
@@ -16,9 +25,22 @@ class A {
 
         variable = x;
 
+        // asignacion mas compleja
         new A().numPub = 1;
         new A().numPub += 1;
         new A().numPub -= 1;
+
+        new A().otroA.numPub = 1;
+        new A().otroA.numPub += 1;
+        new A().otroA.numPub -= 1;
+
+        new A().m0(1).otroA.numPub = 1;
+        new A().m0(1).otroA.numPub += 1;
+        new A().m0(1).otroA.numPub -= 1;
+
+        new A().m0(1).otroA = new A().m0(1).otroA; // mismo Tipo
+        new A().m0(1).unB = new A().m0(1); // conforma Subtipo
+        this.unB = this.m0( (5+3) * 7 - (-x)); // accesos this, expresiones complejas en arg
     }
 
 }

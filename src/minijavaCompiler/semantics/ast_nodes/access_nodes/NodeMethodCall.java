@@ -43,13 +43,12 @@ public class NodeMethodCall implements NodeAccess {
     }
 
     public Type check() throws SemanticException {
-        if (symbolTable.currentClass.isMethod(methodToken.lexeme))
+        if (symbolTable.currentClass.isMethod(methodToken.lexeme)) {
+            if (methodCalledIsDynamic())
+                checkNotCalledInStaticMethod();
             checkParameters();
+        }
         else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
-
-        if (symbolTable.currentUnit.isMethod())
-            if (((Method) symbolTable.currentUnit).isStatic())
-                throw new SemanticException("No se puede tener accesos a metodo dinamico en metodo estático", methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.currentClass.getMethod(methodToken.lexeme).getReturnType();
 
@@ -58,6 +57,16 @@ public class NodeMethodCall implements NodeAccess {
                 throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
             else return optChaining.check(methodType);
         } else return methodType;
+    }
+
+    private boolean methodCalledIsDynamic() {
+        return !symbolTable.currentClass.getMethod(methodToken.lexeme).isStatic();
+    }
+
+    private void checkNotCalledInStaticMethod() throws SemanticException {
+        if (symbolTable.currentUnit.isMethod())
+            if (((Method) symbolTable.currentUnit).isStatic())
+                throw new SemanticException("No se puede tener accesos a metodo dinamico en metodo estático", methodToken.lexeme, methodToken.lineNumber);
     }
 
     private void checkParameters() throws SemanticException {

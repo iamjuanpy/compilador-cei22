@@ -39,8 +39,11 @@ public class NodeVariableAccess implements NodeAccess {
             variable = symbolTable.currentUnit.getParameter(variableToken.lexeme);
         else if (symbolTable.currentBlock.isLocalVariable(variableToken.lexeme))
             variable = symbolTable.currentBlock.getLocalVariable(variableToken.lexeme);
-        else if (symbolTable.currentClass.isAttribute(variableToken.lexeme) && isMethodOrConstructor())
-            variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
+        else if (symbolTable.currentClass.isAttribute(variableToken.lexeme)) {
+            if (currentUnitIsConstructor() || currentUnitIsDynamicMethod())
+                variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
+            else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
+        }
         else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
 
         if (optChaining != null) {
@@ -50,11 +53,7 @@ public class NodeVariableAccess implements NodeAccess {
         } else return variable.getType();
     }
 
-    private boolean isMethodOrConstructor() {
-        return (isConstructor() || isDynamicMethod());
-    }
-
-    private boolean isConstructor() {return !symbolTable.currentUnit.isMethod();}
-    private boolean isDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
+    private boolean currentUnitIsConstructor() {return !symbolTable.currentUnit.isMethod();}
+    private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
 
 }

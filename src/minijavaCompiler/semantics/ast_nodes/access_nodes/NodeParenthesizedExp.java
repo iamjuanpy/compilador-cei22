@@ -22,14 +22,14 @@ public class NodeParenthesizedExp implements NodeAccess{
     public void isMethodCall() throws SemanticException {
         if (optChaining != null)
             optChaining.isMethodCall();
-        else throw new SemanticException("Se esperaba una llamada a método", "", 0); // TODO Que hacer
+        else throw new SemanticException("Se esperaba una llamada a método", "", 0); // TODO Que hacer    sentencia: this.m1().(a);
     }
 
     public Type check() throws SemanticException {
         Type expressionType = expression.check();
         if (optChaining != null) {
             if (expressionType.isPrimitive())
-                throw new SemanticException("No se puede encadenar a tipo primitivo", "", 0); // MISMO
+                throw new SemanticException("No se puede encadenar a tipo primitivo", "", 0); // MISMO      5.(5+3);
             return optChaining.check(expressionType);
         } else return expressionType;
     }
