@@ -367,7 +367,7 @@ public class SyntaxParser {
 
     private NodeBlock bloque() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         match(openCurly);
-        NodeBlock bloque = new NodeBlock();                         // VER SI ESTO ES NECESARIO, O HEREDAR LAS COSAS VISIBLES
+        NodeBlock bloque = new NodeBlock();                         // Crea bloque en el scope actual (clase, método/constructor, bloque padre)
         symbolTable.currentBlock = bloque;                          // Cambia el bloque actual al bloque nuevo
         listaSentencias();                                          // Lee las sentencias del bloque
         symbolTable.currentBlock = bloque.nestingIn;                // Antes de retornar vuelve el bloque actual al anterior

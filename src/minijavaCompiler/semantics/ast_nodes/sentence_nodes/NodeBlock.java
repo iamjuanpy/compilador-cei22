@@ -26,10 +26,9 @@ public class NodeBlock implements NodeSentence {
         nestingIn = symbolTable.currentBlock;   // Usado para recuperar a donde volver cuando termino de leer este bloque/ acceder a variables locales
     }
 
-    public void addSentence(NodeSentence sentence) throws SemanticException {
+    public void addSentence(NodeSentence sentence) {
         if (sentence != null) {
             sentencesList.add(sentence);
-            sentence.toString();
         }
     }
 
@@ -60,13 +59,14 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void check() throws SemanticException {
+        // Los checks de cada sentencia miran los valores de la tabla de simbolos
         symbolTable.currentClass = ownerClass;
         symbolTable.currentUnit = unit;
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
         }
-        symbolTable.currentBlock = nestingIn; // retorna al bloque padre una vez termina el check
+        symbolTable.currentBlock = nestingIn; // Retorna al bloque padre una vez termina el check
     }
 
     public boolean isVariableDeclaration() {
