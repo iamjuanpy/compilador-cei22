@@ -30,9 +30,10 @@ public class NodeStaticMethodCall implements NodeAccess{
         else return false;
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
+            return optChaining.isMethodCall();
+        else return true;
     }
 
     public void setParameterList(List<NodeExpression> actualParameters){
@@ -54,10 +55,9 @@ public class NodeStaticMethodCall implements NodeAccess{
             Type methodType = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getReturnType();
 
             if (optChaining != null) {
-                if (methodType.isPrimitive())
-                    throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
-                else return optChaining.check(methodType);
+                return optChaining.check(methodType);
             } else return methodType;
+
         } else throw new SemanticException("No existe clase "+classToken.lexeme, classToken.lexeme, classToken.lineNumber);
     }
 

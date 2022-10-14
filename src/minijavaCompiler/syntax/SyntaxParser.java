@@ -425,7 +425,7 @@ public class SyntaxParser {
             return new NodeAssign(nodoAcceso, tipoAsignacion, expresion);
         } else {
             if (currentToken.tokenType == semicolon) { // Siguientes(...) = { ; }
-                return new NodeCall(nodoAcceso); // TODO PREGUNTAR ESTO
+                return new NodeCall(nodoAcceso, currentToken);
             } else throw new SyntacticException("Sentencia sin cerrar, se esperaba ;", currentToken.tokenType, currentToken.lexeme, currentToken.lineNumber);
         }
     }

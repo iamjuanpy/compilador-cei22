@@ -24,10 +24,10 @@ public class NodeVariableAccess implements NodeAccess {
         else return optChaining.isVariableAccess();
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
-        else throw new SemanticException("Se esperaba una llamada a método", variableToken.lexeme, variableToken.lineNumber);
+            return optChaining.isMethodCall();
+        else return false;
     }
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
@@ -47,8 +47,6 @@ public class NodeVariableAccess implements NodeAccess {
         else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
 
         if (optChaining != null) {
-            if (variable.getType().isPrimitive())
-                throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
             return optChaining.check(variable.getType());
         } else return variable.getType();
     }

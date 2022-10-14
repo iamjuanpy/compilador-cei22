@@ -33,9 +33,10 @@ public class NodeConstructorCall implements NodeAccess{
         else return false;
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
+            return optChaining.isMethodCall();
+        else return true;
     }
 
 

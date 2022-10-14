@@ -1,0 +1,16 @@
+///[Error:;|9]
+
+class A{
+
+    private A a;
+
+    void m1(){
+        a = new A();
+        this.a;
+    }
+
+    static void main(){
+
+    }
+
+}

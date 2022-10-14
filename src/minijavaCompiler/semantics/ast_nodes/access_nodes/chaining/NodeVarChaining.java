@@ -21,10 +21,10 @@ public class NodeVarChaining implements NodeChaining {
         else return optChaining.isVariableAccess();
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
-        else throw new SemanticException("Se esperaba una llamada a método", variableToken.lexeme, variableToken.lineNumber);
+            return optChaining.isMethodCall();
+        else return false;
     }
 
     public void setChaining(NodeChaining chaining) {
@@ -33,14 +33,14 @@ public class NodeVarChaining implements NodeChaining {
 
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
+        if (previousAccessType.isPrimitive())
+            throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
 
         if (attributeExistsInClass(className) && (attributeIsPublic(className) || attributeIsDeclaredInCurrentClass(className))) {
             Type variableType = symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getType();
-            if (optChaining != null) {
-                if (variableType.isPrimitive())
-                    throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
+            if (optChaining != null)
                 return optChaining.check(variableType);
-            } else return variableType;
+            else return variableType;
         } else throw new SemanticException("El atributo "+variableToken.lexeme+" no existe o no es accesible", variableToken.lexeme, variableToken.lineNumber);
     }
 

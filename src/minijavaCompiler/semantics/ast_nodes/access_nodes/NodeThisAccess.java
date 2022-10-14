@@ -27,10 +27,10 @@ public class NodeThisAccess implements NodeAccess {
         else return false;
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
-        else throw new SemanticException("Se esperaba una llamada a método", token.lexeme, token.lineNumber);
+            return optChaining.isMethodCall();
+        else return false;
     }
 
     public void setChaining(NodeChaining chaining) {
@@ -46,7 +46,6 @@ public class NodeThisAccess implements NodeAccess {
 
         if (optChaining != null) {
             return optChaining.check(thisType);
-        }
-        else return thisType;
+        } else return thisType;
     }
 }

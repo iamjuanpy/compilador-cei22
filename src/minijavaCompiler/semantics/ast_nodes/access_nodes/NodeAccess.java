@@ -10,7 +10,7 @@ public interface NodeAccess extends NodeOperand {
     void setChaining (NodeChaining chaining);
 
     boolean isVariableAccess();
-    void isMethodCall() throws SemanticException;
+    boolean isMethodCall();
 
 
 }

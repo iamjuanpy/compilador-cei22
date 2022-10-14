@@ -27,9 +27,10 @@ public class NodeMethodChaining implements NodeChaining{
         else return false;
     }
 
-    public void isMethodCall() throws SemanticException {
+    public boolean isMethodCall() {
         if (optChaining != null)
-            optChaining.isMethodCall();
+            return optChaining.isMethodCall();
+        else return true;
     }
 
     public void setParameterList(List<NodeExpression> parameterList){
@@ -42,16 +43,17 @@ public class NodeMethodChaining implements NodeChaining{
 
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
+        if (previousAccessType.isPrimitive())
+            throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
+
         if (symbolTable.getClass(className).isMethod(methodToken.lexeme))
             checkParameters(previousAccessType.getTypeName());
         else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.getClass(className).getMethod(methodToken.lexeme).getReturnType();
-        if (optChaining != null) {
-            if (methodType.isPrimitive())
-                throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
-            else return optChaining.check(methodType);
-        } else return methodType;
+        if (optChaining != null)
+            return optChaining.check(methodType);
+        else return methodType;
     }
 
     private void checkParameters(String className) throws SemanticException {
