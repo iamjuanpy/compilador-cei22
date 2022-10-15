@@ -49,7 +49,7 @@ public class NodeMethodCall implements NodeAccess {
                 checkNotCalledInStaticMethod();
             checkParameters();
         }
-        else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
+        else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe en "+symbolTable.currentClass.getName(), methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.currentClass.getMethod(methodToken.lexeme).getReturnType();
 

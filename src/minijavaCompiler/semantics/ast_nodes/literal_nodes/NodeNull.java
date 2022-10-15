@@ -12,6 +12,6 @@ public class NodeNull implements NodeLiteral{
         this.token = literal;
     }
 
-    public Type check(){return new NullType(token);}
+    public Type check(){return new NullType();}
 
 }

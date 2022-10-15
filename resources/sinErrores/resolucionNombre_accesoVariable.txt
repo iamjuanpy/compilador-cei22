@@ -16,19 +16,21 @@ class A extends B {
 
     public int a;
     private int b;
+    private boolean e;
 
     Test m2(){
         return this;
     }
 
-    void m3(){
+    void m3(int e){
         var x = a; // referencia a atributo
-        var y = b;
-        var z = x;
+        var b = 5;
+        var y = b; // accede a la variable local, no al atributo de instancia
+        x = e; // accede a parametro, si no, daría error porque atributo e es bool
     }
 
     void test(){
-        m3();
+        m3(1);
     }
 
     static void main(){}

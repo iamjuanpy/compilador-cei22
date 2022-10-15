@@ -20,14 +20,24 @@ public class NodeReturn implements NodeSentence{
     public void check() throws SemanticException {
         if (symbolTable.currentUnit.isMethod()) {
 
-            if (expression == null && !symbolTable.currentUnit.getReturnType().equals(new VoidType())) // return; solo valido en metodos void
-                throw new SemanticException("Un metodo void no puede retornar un valor",token.lexeme, token.lineNumber);
-            else if (expression != null && !expression.check().isSubtypeOf(symbolTable.currentUnit.getReturnType())) // return <exp> exp conforma con returnType
-                throw new SemanticException("Un metodo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar un tipo "+expression.check().getTypeName(), token.lexeme, token.lineNumber);
+            if (returnHasValue() && methodIsVoid())
+                throw new SemanticException("Un metodo tipo void no puede retornar un valor",token.lexeme, token.lineNumber);
 
-        } else if (expression != null)
+            if (!returnHasValue() && !methodIsVoid())
+                throw new SemanticException("Un metodo tipo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar nada",token.lexeme, token.lineNumber);
+
+            if (returnHasValue() && !expressionTypeIsSubtypeOfReturnType())
+                throw new SemanticException("Un metodo tipo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar un tipo "+expression.check().getTypeName(), token.lexeme, token.lineNumber);
+
+        } else if (returnHasValue())
             throw new SemanticException("Un constructor no puede tener return no vacio",token.lexeme, token.lineNumber);
     }
+
+    private boolean expressionTypeIsSubtypeOfReturnType() throws SemanticException {return expression.check().isSubtypeOf(symbolTable.currentUnit.getReturnType());}
+
+    private boolean methodIsVoid() {return symbolTable.currentUnit.getReturnType().equals(new VoidType());}
+
+    private boolean returnHasValue() {return expression != null;}
 
     public boolean isVariableDeclaration() {
         return false;

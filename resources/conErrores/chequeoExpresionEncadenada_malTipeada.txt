@@ -1,0 +1,9 @@
+///[Error:b|6]
+
+class A {
+
+    static void main(){
+        (b + 1).a;
+    }
+
+}

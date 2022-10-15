@@ -43,12 +43,13 @@ public class NodeMethodChaining implements NodeChaining{
 
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
+
         if (previousAccessType.isPrimitive())
             throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
 
         if (symbolTable.getClass(className).isMethod(methodToken.lexeme))
             checkParameters(previousAccessType.getTypeName());
-        else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
+        else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+previousAccessType.getTypeName(), methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.getClass(className).getMethod(methodToken.lexeme).getReturnType();
 

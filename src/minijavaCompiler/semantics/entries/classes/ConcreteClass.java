@@ -2,6 +2,7 @@ package minijavaCompiler.semantics.entries.classes;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
 import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
@@ -84,7 +85,7 @@ public class ConcreteClass implements ClassEntry {
     // Chequeo sentencias
 
     public void checkSentences() throws SemanticException {
-        //constructor.checkSentences()
+        constructor.checkSentences();
         for (Method m : methodHashMap.values()) {
             if (m.getClassDeclared() == this) {
                 m.checkSentences();
@@ -137,7 +138,10 @@ public class ConcreteClass implements ClassEntry {
         else createDefaultConstructor();
     }
 
-    private void createDefaultConstructor() {constructor = new Constructor(classToken);}
+    private void createDefaultConstructor() {
+        constructor = new Constructor(classToken);
+        constructor.addBlock(new NodeBlock());
+    }
 
     private void checkMethods() throws SemanticException {
         for (Method method : methodHashMap.values())

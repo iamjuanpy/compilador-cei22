@@ -1,0 +1,11 @@
+///[Error:A|8]
+class A {
+
+    A(int i, char c){
+    }
+
+    static void main(){
+        new A(1,"hola");
+    }
+
+}

@@ -1,0 +1,13 @@
+///[Error:return|7]
+
+class A {
+
+    A(){
+
+        return 1; // un constructor puede tener: return;
+    }
+
+    static void main(){
+    }
+
+}

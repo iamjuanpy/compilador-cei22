@@ -33,6 +33,7 @@ public class NodeVarChaining implements NodeChaining {
 
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
+
         if (previousAccessType.isPrimitive())
             throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
 
