@@ -51,6 +51,7 @@ public class NodeMethodChaining implements NodeChaining{
         else throw new SemanticException("No existe metodo "+methodToken.lexeme+" accesible", methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.getClass(className).getMethod(methodToken.lexeme).getReturnType();
+
         if (optChaining != null)
             return optChaining.check(methodType);
         else return methodType;

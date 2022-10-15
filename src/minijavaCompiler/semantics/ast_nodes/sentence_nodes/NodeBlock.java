@@ -27,9 +27,8 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void addSentence(NodeSentence sentence) {
-        if (sentence != null) {
+        if (sentence != null)
             sentencesList.add(sentence);
-        }
     }
 
     public void addVariable(NodeLocalVariable variable) throws SemanticException {
@@ -59,14 +58,15 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void check() throws SemanticException {
-        // Los checks de cada sentencia miran los valores de la tabla de simbolos
+        // Set los valores en la tabla de simbolos
         symbolTable.currentClass = ownerClass;
         symbolTable.currentUnit = unit;
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
         }
-        symbolTable.currentBlock = nestingIn; // Retorna al bloque padre una vez termina el check
+        // Retorna al bloque padre una vez termina el check
+        symbolTable.currentBlock = nestingIn;
     }
 
     public boolean isVariableDeclaration() {

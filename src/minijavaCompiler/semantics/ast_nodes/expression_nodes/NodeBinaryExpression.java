@@ -24,13 +24,13 @@ public class NodeBinaryExpression implements NodeExpression {
     public Type check() throws SemanticException {
         Type tipoIzq = leftSide.check();
         Type tipoDer = rightSide.check();
-        if (operatorIsInteger() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType()))
+        if (operatorIsInteger() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType())) // +, -, /, *, %
             return new IntType();
-        else if (operatorIsRelational() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType()))
+        else if (operatorIsRelational() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType())) // >, <, >=, <=
             return new BoolType();
-        else if (operatorIsBoolean() && tipoIzq.equals(new BoolType()) && tipoDer.equals(new BoolType()))
+        else if (operatorIsBoolean() && tipoIzq.equals(new BoolType()) && tipoDer.equals(new BoolType())) // ||, &&
             return new BoolType();
-        else if (operatorIsEquals() && (tipoIzq.isSubtypeOf(tipoDer) || tipoDer.isSubtypeOf(tipoIzq)))
+        else if (operatorIsEquals() && (tipoIzq.isSubtypeOf(tipoDer) || tipoDer.isSubtypeOf(tipoIzq))) // ==, !=
             return new BoolType();
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipos "+errorMsg, operator.lexeme, operator.lineNumber);
     }

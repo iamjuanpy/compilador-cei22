@@ -35,18 +35,22 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public Type getType(){ return type;}
 
     public void check() throws SemanticException {
-        symbolTable.currentBlock.addVariable(this);
+        symbolTable.currentBlock.addVariable(this); // Agregar la variable al bloque chequea los nombres repetidos
         checkVariableType();
-        if (classicDeclarationWithAssign()) { // Conforma la asignación con el tipo de la variable
-            value.check().isSubtypeOf(type);
-        } else if (miniJavaDeclaration()) { // Defino el tipo de la variable en base a la asignacion
-            type = value.check();
-        }
+        checkExpressionTypeIfExists();
     }
 
     private void checkVariableType() throws SemanticException {
         if (type != null && !type.isPrimitive() && (symbolTable.getClass(type.getTypeName()) == null))
             throw new SemanticException("No se puede declarar variable de tipo "+type.getTypeName()+", este no existe", type.getTypeName(), type.getLine());
+    }
+
+    private void checkExpressionTypeIfExists() throws SemanticException {
+        if (classicDeclarationWithAssign()) { // Conforma la asignación con el tipo de la variable
+            value.check().isSubtypeOf(type);
+        } else if (miniJavaDeclaration()) { // Defino el tipo de la variable en base a la asignacion
+            type = value.check();
+        }
     }
 
     private boolean miniJavaDeclaration() {return type == null && value != null;}
