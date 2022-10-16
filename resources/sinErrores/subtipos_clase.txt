@@ -1,0 +1,42 @@
+
+class C {
+    C m2(int a){
+        return new C();
+    }
+}
+
+
+interface B {
+    B m1();
+}
+
+class A extends C implements B{
+
+    static void main(){
+        var varA = new A();
+        var varC = new C();
+
+        varC = new A();
+
+        varA = new D();
+
+        varA.m1();
+        varA.main();
+        varC.m2(0); // puedo hacer esta llamada varC es tipo C con objeto A
+
+        varA = null;
+        varC = null;
+
+        var varOBJ = new Object();
+        varOBJ = null;
+    }
+
+    B m1(){
+        return this;
+    }
+
+}
+
+class D extends A{
+
+}

@@ -46,6 +46,9 @@ public class NodeStaticMethodCall implements NodeAccess{
 
     public Type check() throws SemanticException {
         if (symbolTable.classExists(classToken.lexeme)) {
+            if (!symbolTable.getClass(classToken.lexeme).isConcreteClass())
+                throw new SemanticException("No se puede llamar a métodos de "+classToken.lexeme+", es una interface", classToken.lexeme, classToken.lineNumber);
+
             if (symbolTable.getClass(classToken.lexeme).isMethod(methodToken.lexeme))
                 if (symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).isStatic())
                     checkParameters();

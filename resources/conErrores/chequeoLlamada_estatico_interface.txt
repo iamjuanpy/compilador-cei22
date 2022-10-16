@@ -1,0 +1,11 @@
+///[Error:B|9]
+interface B {
+
+
+}
+
+class A {
+    static void main(){
+        B.m1();
+    }
+}
