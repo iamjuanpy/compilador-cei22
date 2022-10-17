@@ -17,7 +17,7 @@ public class NodeCall implements NodeSentence{
     public void check() throws SemanticException {
         access.check();
         if (!access.isMethodCall())
-            throw new SemanticException("Se esperaba una llamada a método/constructor", semicolonToken.lexeme, semicolonToken.lineNumber);
+            throw new SemanticException("Se esperaba una llamada a método estático o dinámico/constructor", semicolonToken.lexeme, semicolonToken.lineNumber);
     }
 
     public boolean isVariableDeclaration() {

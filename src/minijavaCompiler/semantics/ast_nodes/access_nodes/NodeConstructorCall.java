@@ -39,21 +39,26 @@ public class NodeConstructorCall implements NodeAccess{
         else return true;
     }
 
-
     public void setChaining(NodeChaining chaining) {
         this.optChaining = chaining;
     }
 
     public Type check() throws SemanticException {
-        if (symbolTable.getClass(token.lexeme) != null && symbolTable.getClass(token.lexeme).isConcreteClass())
-            checkParameters();
+        if (classExists())
+            if (isConcreteClass())
+                checkParameters();
+            else throw new SemanticException("No existe constructor para "+token.lexeme+", es una interface", token.lexeme, token.lineNumber);
         else throw new SemanticException("No existe constructor para una clase "+token.lexeme, token.lexeme, token.lineNumber);
 
-        Type objectType = new ReferenceType(token);
+        Type objectType = new ReferenceType(token); // Tipo de la expresion, tipo clase del objeto
+
         if (optChaining == null)
             return objectType;
         else return optChaining.check(objectType);
     }
+
+    private boolean classExists() {return symbolTable.classExists(token.lexeme);}
+    private boolean isConcreteClass() {return symbolTable.getClass(token.lexeme).isConcreteClass();}
 
     private void checkParameters() throws SemanticException {
         List<Parameter> formalParameters = symbolTable.getClass(token.lexeme).getConstructor().getParametersList();

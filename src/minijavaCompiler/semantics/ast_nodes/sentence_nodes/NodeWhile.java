@@ -23,9 +23,7 @@ public class NodeWhile implements NodeSentence {
         } else throw new SemanticException("La condicion de un bloque while debe ser una expresión booleana", whileToken.lexeme, whileToken.lineNumber);
     }
 
-    private boolean conditionIsBooleanExpression() throws SemanticException {
-        return condition.check().equals(new BoolType());
-    }
+    private boolean conditionIsBooleanExpression() throws SemanticException {return condition.check().equals(new BoolType());}
 
     public boolean isVariableDeclaration() {
         return false;

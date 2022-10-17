@@ -45,23 +45,31 @@ public class NodeStaticMethodCall implements NodeAccess{
     }
 
     public Type check() throws SemanticException {
-        if (symbolTable.classExists(classToken.lexeme)) {
-            if (!symbolTable.getClass(classToken.lexeme).isConcreteClass())
-                throw new SemanticException("No se puede llamar a métodos de "+classToken.lexeme+", es una interface", classToken.lexeme, classToken.lineNumber);
+        if (classExists()) {
+            checkNotCallingInterface();
 
-            if (symbolTable.getClass(classToken.lexeme).isMethod(methodToken.lexeme))
-                if (symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).isStatic())
+            if (methodExists()) {
+                if (methodIsStatic())
                     checkParameters();
                 else throw new SemanticException("El metodo "+methodToken.lexeme+" no es estático", methodToken.lexeme, methodToken.lineNumber);
-            else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+classToken.lexeme, methodToken.lexeme, methodToken.lineNumber);
+            } else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+classToken.lexeme, methodToken.lexeme, methodToken.lineNumber);
 
             Type methodType = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getReturnType();
 
-            if (optChaining != null) {
-                return optChaining.check(methodType);
-            } else return methodType;
+            if (optChaining == null) {
+                return methodType;
+            } else return optChaining.check(methodType);
 
         } else throw new SemanticException("No existe clase "+classToken.lexeme, classToken.lexeme, classToken.lineNumber);
+    }
+
+    private boolean classExists() {return symbolTable.classExists(classToken.lexeme);}
+    private boolean methodExists() {return symbolTable.getClass(classToken.lexeme).isMethod(methodToken.lexeme);}
+    private boolean methodIsStatic() {return symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).isStatic();}
+
+    private void checkNotCallingInterface() throws SemanticException {
+        if (!symbolTable.getClass(classToken.lexeme).isConcreteClass())
+            throw new SemanticException("No se puede llamar a métodos de "+classToken.lexeme+", es una interface", classToken.lexeme, classToken.lineNumber);
     }
 
     private void checkParameters() throws SemanticException {

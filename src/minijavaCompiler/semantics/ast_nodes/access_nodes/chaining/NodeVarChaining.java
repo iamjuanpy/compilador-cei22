@@ -33,16 +33,19 @@ public class NodeVarChaining implements NodeChaining {
 
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
-
-        if (previousAccessType.isPrimitive())
-            throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
+        checkNotChainingPrimitiveType(previousAccessType);
 
         if (attributeExistsInClass(className) && (attributeIsPublic(className) || attributeIsDeclaredInCurrentClass(className))) {
             Type variableType = symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getType();
-            if (optChaining != null)
-                return optChaining.check(variableType);
-            else return variableType;
+            if (optChaining == null)
+                return variableType;
+            else return optChaining.check(variableType);
         } else throw new SemanticException("El atributo "+variableToken.lexeme+" no existe o no es accesible", variableToken.lexeme, variableToken.lineNumber);
+    }
+
+    private void checkNotChainingPrimitiveType(Type previousAccessType) throws SemanticException {
+        if (previousAccessType.isPrimitive())
+            throw new SemanticException("No se puede encadenar a tipo primitivo", variableToken.lexeme, variableToken.lineNumber);
     }
 
     private boolean attributeExistsInClass(String className) {return symbolTable.getClass(className).isAttribute(variableToken.lexeme);}

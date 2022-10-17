@@ -29,7 +29,7 @@ public class NodeReturn implements NodeSentence{
             if (returnHasValue() && !expressionTypeIsSubtypeOfReturnType())
                 throw new SemanticException("Un metodo tipo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar un tipo "+expression.check().getTypeName(), token.lexeme, token.lineNumber);
 
-        } else if (returnHasValue())
+        } else if (returnHasValue()) // Constructor
             throw new SemanticException("Un constructor no puede tener return no vacio",token.lexeme, token.lineNumber);
     }
 

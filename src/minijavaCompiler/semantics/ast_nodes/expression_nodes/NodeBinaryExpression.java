@@ -22,18 +22,21 @@ public class NodeBinaryExpression implements NodeExpression {
     }
 
     public Type check() throws SemanticException {
-        Type tipoIzq = leftSide.check();
-        Type tipoDer = rightSide.check();
-        if (operatorIsInteger() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType())) // +, -, /, *, %
+        Type leftType = leftSide.check();
+        Type rightType = rightSide.check();
+        if (operatorIsInteger() && bothSidesInteger(leftType,rightType)) // +, -, /, *, %
             return new IntType();
-        else if (operatorIsRelational() && tipoIzq.equals(new IntType()) && tipoDer.equals(new IntType())) // >, <, >=, <=
+        else if (operatorIsRelational() && bothSidesInteger(leftType,rightType)) // >, <, >=, <=
             return new BoolType();
-        else if (operatorIsBoolean() && tipoIzq.equals(new BoolType()) && tipoDer.equals(new BoolType())) // ||, &&
+        else if (operatorIsBoolean() && bothSidesBoolean(leftType, rightType)) // ||, &&
             return new BoolType();
-        else if (operatorIsEquals() && (tipoIzq.isSubtypeOf(tipoDer) || tipoDer.isSubtypeOf(tipoIzq))) // ==, !=
+        else if (operatorIsEquals() && (leftType.isSubtypeOf(rightType) || rightType.isSubtypeOf(leftType))) // ==, !=
             return new BoolType();
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipos "+errorMsg, operator.lexeme, operator.lineNumber);
     }
+
+    private boolean bothSidesInteger(Type leftSide, Type rightSide){return leftSide.equals(new IntType()) && rightSide.equals(new IntType());}
+    private boolean bothSidesBoolean(Type leftSide, Type rightSide){return leftSide.equals(new BoolType()) && rightSide.equals(new BoolType());}
 
     private boolean operatorIsInteger() {
         errorMsg = "int";

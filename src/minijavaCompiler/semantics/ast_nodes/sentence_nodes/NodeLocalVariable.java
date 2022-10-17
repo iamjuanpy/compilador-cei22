@@ -37,29 +37,38 @@ public class NodeLocalVariable implements NodeSentence, Variable {
 
     public void check() throws SemanticException {
         symbolTable.currentBlock.addVariable(this); // Agregar la variable al bloque chequea los nombres repetidos
-        checkVariableType();
-        checkExpressionTypeIfExists();
+        if (classicDeclaration())
+            checkVariableType();
+        else setVariableType();
     }
 
+    private boolean classicDeclaration() { return type != null;}
+
+    // Logro variable clasica
     private void checkVariableType() throws SemanticException {
-        if (type != null && !type.isPrimitive() && (symbolTable.getClass(type.getTypeName()) == null))
+        if (typeNotExists())
             throw new SemanticException("No se puede declarar variable de tipo "+type.getTypeName()+", este no existe", type.getTypeName(), type.getLine());
-    }
 
-    private void checkExpressionTypeIfExists() throws SemanticException {
-        if (classicDeclarationWithAssign()) { // Conforma la asignación con el tipo de la variable
-            if (!value.check().isSubtypeOf(type))
+        if (classicVariableWithAssign()) // Type x = exp, exp.type <= Type
+            if (notAssigningASubtype())
                 throw new SemanticException("No se puede asignar a una variable "+type.getTypeName()+" una expresión "+value.check().getTypeName(), token.lexeme, token.lineNumber);
-        } else if (miniJavaDeclaration()) { // Defino el tipo de la variable en base a la asignacion
-            type = value.check();
-            if (type.equals(new NullType()))
-                throw new SemanticException("No se puede declarar una variable de tipo null", token.lexeme, token.lineNumber);
-        }
     }
 
-    private boolean miniJavaDeclaration() {return type == null && value != null;}
+    private boolean typeNotExists() {return !type.isPrimitive() && !symbolTable.classExists(type.getTypeName());}
 
-    private boolean classicDeclarationWithAssign() {return type != null && value != null;}
+    private boolean classicVariableWithAssign() {return value != null;}
+    private boolean notAssigningASubtype() throws SemanticException {return !value.check().isSubtypeOf(type);}
+    //
+    
+    private void setVariableType() throws SemanticException { // var x = exp, var.type = exp.type
+        type = value.check();
+        checkNotDeclaringNullVariable();
+    }
+
+    private void checkNotDeclaringNullVariable() throws SemanticException {
+        if (type.equals(new NullType()))
+            throw new SemanticException("No se puede declarar una variable de tipo null", token.lexeme, token.lineNumber);
+    }
 
     public boolean isVariableDeclaration() {
         return true;

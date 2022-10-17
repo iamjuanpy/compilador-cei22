@@ -40,12 +40,16 @@ public class NodeThisAccess implements NodeAccess {
     public Type check() throws SemanticException {
         Type thisType = new ReferenceType(new Token(TokenType.classID,className,0));
 
+        checkNotCalledInStaticMethod();
+
+        if (optChaining == null) {
+            return thisType;
+        } else return optChaining.check(thisType);
+    }
+
+    private void checkNotCalledInStaticMethod() throws SemanticException {
         if (symbolTable.currentUnit.isMethod())
             if (((Method) symbolTable.currentUnit).isStatic())
                 throw new SemanticException("No se puede tener accesos this en metodo estático", token.lexeme, token.lineNumber);
-
-        if (optChaining != null) {
-            return optChaining.check(thisType);
-        } else return thisType;
     }
 }

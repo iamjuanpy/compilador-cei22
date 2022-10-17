@@ -28,9 +28,9 @@ public class NodeMethodChaining implements NodeChaining{
     }
 
     public boolean isMethodCall() {
-        if (optChaining != null)
-            return optChaining.isMethodCall();
-        else return true;
+        if (optChaining == null)
+            return true;
+        else return optChaining.isMethodCall();
     }
 
     public void setParameterList(List<NodeExpression> parameterList){
@@ -44,18 +44,24 @@ public class NodeMethodChaining implements NodeChaining{
     public Type check(Type previousAccessType) throws SemanticException {
         String className = previousAccessType.getTypeName();
 
-        if (previousAccessType.isPrimitive())
-            throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
+        checkNotChainingPrimitiveType(previousAccessType);
 
-        if (symbolTable.getClass(className).isMethod(methodToken.lexeme))
-            checkParameters(previousAccessType.getTypeName());
-        else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+previousAccessType.getTypeName(), methodToken.lexeme, methodToken.lineNumber);
+        if (methodExistsInClass(className))
+            checkParameters(className);
+        else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+className, methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.getClass(className).getMethod(methodToken.lexeme).getReturnType();
 
-        if (optChaining != null)
-            return optChaining.check(methodType);
-        else return methodType;
+        if (optChaining == null)
+            return methodType;
+        else return optChaining.check(methodType);
+    }
+
+    private boolean methodExistsInClass(String className) {return symbolTable.getClass(className).isMethod(methodToken.lexeme);}
+
+    private void checkNotChainingPrimitiveType(Type previousAccessType) throws SemanticException {
+        if (previousAccessType.isPrimitive())
+            throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
     }
 
     private void checkParameters(String className) throws SemanticException {

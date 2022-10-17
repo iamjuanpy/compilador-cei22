@@ -27,10 +27,11 @@ public class NodeParenthesizedExp implements NodeAccess{
     }
 
     public Type check() throws SemanticException {
-        Type expressionType = expression.check();
-        if (optChaining != null) {
-            return optChaining.check(expressionType);
-        } else return expressionType;
+        Type expressionType = expression.check(); // Tipo de expresion parentizada = tipo de la expresion
+
+        if (optChaining == null) {
+            return expressionType;
+        } else return optChaining.check(expressionType);
     }
 
     public void setChaining(NodeChaining chaining) {

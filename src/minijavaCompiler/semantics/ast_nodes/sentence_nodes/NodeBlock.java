@@ -58,7 +58,7 @@ public class NodeBlock implements NodeSentence {
     }
 
     public void check() throws SemanticException {
-        // Set los valores en la tabla de simbolos
+        // Set los valores actuales en la tabla de simbolos
         symbolTable.currentClass = ownerClass;
         symbolTable.currentUnit = unit;
         symbolTable.currentBlock = this;

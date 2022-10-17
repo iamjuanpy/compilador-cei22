@@ -21,13 +21,16 @@ public class NodeUnaryExpression implements NodeExpression {
     }
 
     public Type check() throws SemanticException {
-        Type tipoExpresion = expression.check();
-        if (operatorIsNot() && tipoExpresion.equals(new BoolType())) // !
+        Type expressionType = expression.check();
+        if (operatorIsNot() && isBoolean(expressionType)) // !
             return new BoolType();
-        else if (operatorIsInt() && tipoExpresion.equals(new IntType())) // +a -a
+        else if (operatorIsInt() && isInteger(expressionType)) // +a -a
             return new IntType();
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipo "+errorMsg, operator.lexeme, operator.lineNumber);
     }
+
+    private boolean isBoolean(Type expressionType) {return expressionType.equals(new BoolType());}
+    private boolean isInteger(Type expressionType) {return expressionType.equals(new IntType());}
 
     private boolean operatorIsInt() {
         errorMsg = "int";

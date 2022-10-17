@@ -27,9 +27,7 @@ public class NodeIf implements NodeSentence{
         } else throw new SemanticException("La condicion de un bloque if debe ser una expresión booleana", ifToken.lexeme, ifToken.lineNumber);
     }
 
-    private boolean conditionIsBooleanExpression() throws SemanticException {
-        return condition.check().equals(new BoolType());
-    }
+    private boolean conditionIsBooleanExpression() throws SemanticException {return condition.check().equals(new BoolType());}
 
     public boolean isVariableDeclaration() {
         return false;

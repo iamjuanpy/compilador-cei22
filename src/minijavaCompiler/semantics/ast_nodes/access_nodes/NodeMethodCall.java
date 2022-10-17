@@ -34,9 +34,9 @@ public class NodeMethodCall implements NodeAccess {
     }
 
     public boolean isMethodCall() {
-        if (optChaining != null)
-            return optChaining.isMethodCall();
-        else return true;
+        if (optChaining == null)
+            return true;
+        else return optChaining.isMethodCall();
     }
 
     public void setChaining(NodeChaining chaining) {
@@ -44,7 +44,7 @@ public class NodeMethodCall implements NodeAccess {
     }
 
     public Type check() throws SemanticException {
-        if (symbolTable.currentClass.isMethod(methodToken.lexeme)) {
+        if (methodCalledExistsInClass()) {
             if (methodCalledIsDynamic())
                 checkNotCalledInStaticMethod();
             checkParameters();
@@ -53,9 +53,13 @@ public class NodeMethodCall implements NodeAccess {
 
         Type methodType = symbolTable.currentClass.getMethod(methodToken.lexeme).getReturnType();
 
-        if (optChaining != null) {
-            return optChaining.check(methodType);
-        } else return methodType;
+        if (optChaining == null) {
+            return methodType;
+        } else return optChaining.check(methodType);
+    }
+
+    private boolean methodCalledExistsInClass() {
+        return symbolTable.currentClass.isMethod(methodToken.lexeme);
     }
 
     private boolean methodCalledIsDynamic() {
