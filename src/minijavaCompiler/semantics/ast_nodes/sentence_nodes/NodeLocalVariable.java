@@ -48,7 +48,8 @@ public class NodeLocalVariable implements NodeSentence, Variable {
 
     private void checkExpressionTypeIfExists() throws SemanticException {
         if (classicDeclarationWithAssign()) { // Conforma la asignación con el tipo de la variable
-            value.check().isSubtypeOf(type);
+            if (!value.check().isSubtypeOf(type))
+                throw new SemanticException("No se puede asignar a una variable "+type.getTypeName()+" una expresión "+value.check().getTypeName(), token.lexeme, token.lineNumber);
         } else if (miniJavaDeclaration()) { // Defino el tipo de la variable en base a la asignacion
             type = value.check();
             if (type.equals(new NullType()))

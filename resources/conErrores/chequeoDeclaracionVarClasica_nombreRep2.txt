@@ -1,0 +1,10 @@
+///[Error:a|7]
+
+class A {
+
+    static void main(){
+        int a = 1;
+        boolean a;
+    }
+
+}

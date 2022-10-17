@@ -2,18 +2,25 @@ interface B {
 
 }
 
-class A implements B{
+class A implements B {
 
     static void main() {
-        int variable = 0, cero = variable, sinInstanciar;
-        variable = 1;
-        variable += 1;
-        variable -= 1;
+        int v = 0;
+        v = 1;
+        v += 1;
+        v -= 1;
 
-        A variable2 = new A();
-        B variable3 = new A();
+        {
+            A v2 = new A();
+            B v3 = new A();
+        }
 
-        int test = cero;
+        Object v2 = new Object();
+        v2 = new A();
+        v2 = null;
+
+        int v3 = v, v4 = v3, v5, v6 = v5, v7 = 6;
+        v4 += 1;
     }
 
 }
