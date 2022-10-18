@@ -1,0 +1,20 @@
+///[Error:return|13]
+class A {
+
+    static void main(){
+        A a = new A();
+        a.m1();
+    }
+
+    boolean m1(){
+        var x = true;
+        {
+            {
+                return x;
+            }
+        }
+        return x;
+    }
+
+
+}

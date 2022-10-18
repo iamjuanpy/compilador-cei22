@@ -42,6 +42,9 @@ public class NodeLocalVariable implements NodeSentence, Variable {
         else setVariableType();
     }
 
+    public boolean isReturn() {return false;}
+    public Token getReturnToken() {return null;}
+
     private boolean classicDeclaration() { return type != null;}
 
     // Logro variable clasica
@@ -70,8 +73,6 @@ public class NodeLocalVariable implements NodeSentence, Variable {
             throw new SemanticException("No se puede declarar una variable de tipo null", token.lexeme, token.lineNumber);
     }
 
-    public boolean isVariableDeclaration() {
-        return true;
-    }
+    public Token getToken(){return token;}
 
 }

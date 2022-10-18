@@ -34,6 +34,10 @@ public class NodeAssign implements NodeSentence{
         }
     }
 
+    public boolean isReturn(){return false;}
+    public Token getReturnToken() {return null;}
+    public Token getToken(){return access.getToken();}
+
     private void checkLeftSideIsVariable() throws SemanticException {
         if (!access.isVariableAccess())
             throw new SemanticException("El operador asignacion solo puede usarse <VARIABLE> "+assignType.lexeme+" <EXPRESION>", assignType.lexeme, assignType.lineNumber);
@@ -49,10 +53,6 @@ public class NodeAssign implements NodeSentence{
     private void checkAssigningSubtypes(Type accessType, Type expressionType) throws SemanticException {
         if (!expressionType.isSubtypeOf(accessType))
             throw new SemanticException("No se puede asignar "+ expressionType.getTypeName()+" a una variable "+ accessType.getTypeName(), assignType.lexeme, assignType.lineNumber);
-    }
-
-    public boolean isVariableDeclaration() {
-        return false;
     }
 
 }

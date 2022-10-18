@@ -77,4 +77,6 @@ public class NodeConstructorCall implements NodeAccess{
         }
 
     }
+
+    public Token getToken(){return null;}
 }

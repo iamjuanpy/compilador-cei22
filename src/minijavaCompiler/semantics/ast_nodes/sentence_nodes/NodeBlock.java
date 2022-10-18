@@ -1,5 +1,6 @@
 package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
+import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.Unit;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
@@ -64,13 +65,22 @@ public class NodeBlock implements NodeSentence {
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
+            if (sentence.isReturn())
+                isLastSentenceInBlock(sentence);
         }
         // Retorna al bloque padre una vez termina el check
         symbolTable.currentBlock = nestingIn;
     }
 
-    public boolean isVariableDeclaration() {
-        return false;
+    private void isLastSentenceInBlock(NodeSentence sentence) throws SemanticException{
+        if (!getLastSentenceInBlock().equals(sentence))
+            throw new SemanticException("Codigo muerto luego de "+sentence.getReturnToken().lexeme, sentence.getReturnToken().lexeme, sentence.getReturnToken().lineNumber);
     }
+
+    public boolean isReturn() {return getLastSentenceInBlock().isReturn();}
+    public Token getReturnToken() {return getLastSentenceInBlock().getReturnToken();}
+    public Token getToken(){return null;}
+
+    private NodeSentence getLastSentenceInBlock() {return sentencesList.get(sentencesList.size() - 1);}
 
 }

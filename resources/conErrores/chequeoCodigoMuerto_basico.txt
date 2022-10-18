@@ -1,0 +1,12 @@
+///[Error:return|7]
+
+class A {
+
+    static void main(){
+        var x = 1;
+        return;
+        main();
+    }
+
+
+}

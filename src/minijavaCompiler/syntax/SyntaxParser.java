@@ -390,7 +390,7 @@ public class SyntaxParser {
     private NodeSentence sentencia() throws LexicalException, SourceFileReaderException, SyntacticException, SemanticException {
         NodeSentence sentence;
         if (currentToken.tokenType == semicolon){
-            sentence = new NodeEmptySentence();
+            sentence = new NodeEmptySentence(currentToken);
             match(semicolon);
         } else if (currentToken.tokenType == mvID || currentToken.tokenType == openBr || currentToken.tokenType == r_this || currentToken.tokenType == r_new){
             sentence = asignacionOLlamada();

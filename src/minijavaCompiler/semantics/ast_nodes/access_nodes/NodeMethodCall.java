@@ -88,4 +88,6 @@ public class NodeMethodCall implements NodeAccess {
                 throw new SemanticException("La llamada a metodo "+methodToken.lexeme+" no se realizo con parametros de tipo correcto", methodToken.lexeme, methodToken.lineNumber);
         }
     }
+
+    public Token getToken(){return methodToken;}
 }

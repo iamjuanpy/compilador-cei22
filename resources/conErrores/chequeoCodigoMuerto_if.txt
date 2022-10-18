@@ -1,0 +1,17 @@
+///[Error:return|13]
+class A {
+
+    static void main(){
+        A a = new A();
+        a.m1(10);
+        a.m1(4);
+    }
+
+    A m1(int a){
+        if (5 > a)
+            return new A();
+        else return null;
+        var x = 5;
+    }
+
+}
