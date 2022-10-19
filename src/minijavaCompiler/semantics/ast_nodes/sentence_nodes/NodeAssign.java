@@ -34,10 +34,6 @@ public class NodeAssign implements NodeSentence{
         }
     }
 
-    public boolean isReturn(){return false;}
-    public Token getReturnToken() {return null;}
-    public Token getToken(){return access.getToken();}
-
     private void checkLeftSideIsVariable() throws SemanticException {
         if (!access.isVariableAccess())
             throw new SemanticException("El operador asignacion solo puede usarse <VARIABLE> "+assignType.lexeme+" <EXPRESION>", assignType.lexeme, assignType.lineNumber);

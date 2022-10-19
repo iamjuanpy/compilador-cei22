@@ -89,5 +89,4 @@ public class NodeMethodCall implements NodeAccess {
         }
     }
 
-    public Token getToken(){return methodToken;}
 }

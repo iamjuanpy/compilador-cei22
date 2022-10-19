@@ -40,12 +40,12 @@ public class NodeVariableAccess implements NodeAccess {
             variable = symbolTable.currentUnit.getParameter(variableToken.lexeme);
         else if (accessIsLocalVariable())
             variable = symbolTable.currentBlock.getLocalVariable(variableToken.lexeme);
-        else if (accessIsAttribute()) {
+        else if (accessIsAttribute() && (attributeIsPublic() || attributeIsDeclaredInCurrentClass())) {
             if (currentUnitIsConstructor() || currentUnitIsDynamicMethod())
                 variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
             else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
         }
-        else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
+        else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento o no es accesible", variableToken.lexeme, variableToken.lineNumber);
 
         if (optChaining == null) {
             return variable.getType();
@@ -56,8 +56,10 @@ public class NodeVariableAccess implements NodeAccess {
     private boolean accessIsLocalVariable() {return symbolTable.currentBlock.isLocalVariable(variableToken.lexeme);}
     private boolean accessIsParameter() {return symbolTable.currentUnit.isParameter(variableToken.lexeme);}
 
+    private boolean attributeIsDeclaredInCurrentClass() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAtrribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
+    private boolean attributeIsPublic() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAtrribute(variableToken.lexeme).isPublic();}
+
     private boolean currentUnitIsConstructor() {return !symbolTable.currentUnit.isMethod();}
     private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
 
-    public Token getToken(){return variableToken;}
 }

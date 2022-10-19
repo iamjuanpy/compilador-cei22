@@ -51,6 +51,5 @@ public class NodeVarChaining implements NodeChaining {
     private boolean attributeExistsInClass(String className) {return symbolTable.getClass(className).isAttribute(variableToken.lexeme);}
 
     private boolean attributeIsPublic(String className) {return symbolTable.getClass(className).getAtrribute(variableToken.lexeme).isPublic();}
-
     private boolean attributeIsDeclaredInCurrentClass(String className) {return symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
 }

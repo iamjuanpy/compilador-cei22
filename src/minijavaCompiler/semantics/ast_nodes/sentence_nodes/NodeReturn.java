@@ -33,10 +33,6 @@ public class NodeReturn implements NodeSentence{
             throw new SemanticException("Un constructor no puede tener return no vacio",token.lexeme, token.lineNumber);
     }
 
-    public boolean isReturn() {return true;}
-    public Token getReturnToken() {return token;}
-    public Token getToken(){return token;}
-
     private boolean expressionTypeIsSubtypeOfReturnType() throws SemanticException {return expression.check().isSubtypeOf(symbolTable.currentUnit.getReturnType());}
 
     private boolean methodIsVoid() {return symbolTable.currentUnit.getReturnType().equals(new VoidType());}

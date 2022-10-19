@@ -20,8 +20,4 @@ public class NodeCall implements NodeSentence{
             throw new SemanticException("Se esperaba una llamada a método estático o dinámico/constructor", semicolonToken.lexeme, semicolonToken.lineNumber);
     }
 
-    public boolean isReturn() {return false;}
-    public Token getToken(){return access.getToken();}
-    public Token getReturnToken() {return null;}
-
 }

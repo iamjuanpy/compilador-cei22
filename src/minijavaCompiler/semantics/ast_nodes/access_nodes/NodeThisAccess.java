@@ -53,5 +53,4 @@ public class NodeThisAccess implements NodeAccess {
                 throw new SemanticException("No se puede tener accesos this en metodo estático", token.lexeme, token.lineNumber);
     }
 
-    public Token getToken(){return token;}
 }

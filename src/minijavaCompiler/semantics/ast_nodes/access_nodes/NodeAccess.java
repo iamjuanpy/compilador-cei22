@@ -13,6 +13,4 @@ public interface NodeAccess extends NodeOperand {
     boolean isVariableAccess();
     boolean isMethodCall();
 
-    Token getToken();
-
 }

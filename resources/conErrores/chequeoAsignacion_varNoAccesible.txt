@@ -1,0 +1,14 @@
+///[Error:x|11]
+class B {
+    private int x;
+}
+
+interface Int {}
+
+class A extends B implements Int{
+
+    static void main(){
+        x = null;
+    }
+
+}

@@ -20,7 +20,9 @@ public class ReferenceType implements Type{
     public boolean equals(Type type) {return classToken.lexeme.equals(type.getTypeName());}
 
     public boolean isSubtypeOf(Type type) {
-        return symbolTable.getClass(classToken.lexeme).getInheritanceSet().contains(type.getTypeName());
+        if (!type.isPrimitive())
+            return symbolTable.getClass(classToken.lexeme).getInheritanceSet().contains(type.getTypeName());
+        else return false; // sobra el if, en la linea de herencia no deberia estar ni bool, ni char, ni int
     }
 
 }

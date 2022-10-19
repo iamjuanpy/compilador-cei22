@@ -89,5 +89,4 @@ public class NodeStaticMethodCall implements NodeAccess{
         }
     }
 
-    public Token getToken(){return classToken;}
 }
