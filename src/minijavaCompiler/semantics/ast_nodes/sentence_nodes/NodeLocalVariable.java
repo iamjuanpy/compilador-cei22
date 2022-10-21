@@ -36,10 +36,11 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public Type getType(){ return type;}
 
     public void check() throws SemanticException {
-        symbolTable.currentBlock.addVariable(this); // Agregar la variable al bloque chequea los nombres repetidos
         if (classicDeclaration())
             checkVariableType();
         else setVariableType();
+        // Agrego la variable al final para que no se pueda usar en la expresión como un acceso (var x = x)
+        symbolTable.currentBlock.addVariable(this); // Agregar la variable al bloque chequea los nombres repetidos
     }
 
     private boolean classicDeclaration() { return type != null;}

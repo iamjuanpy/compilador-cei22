@@ -44,8 +44,7 @@ public class NodeVariableAccess implements NodeAccess {
             if (currentUnitIsConstructor() || currentUnitIsDynamicMethod())
                 variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
             else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
-        }
-        else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento o no es accesible", variableToken.lexeme, variableToken.lineNumber);
+        } else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento o no es accesible", variableToken.lexeme, variableToken.lineNumber);
 
         if (optChaining == null) {
             return variable.getType();

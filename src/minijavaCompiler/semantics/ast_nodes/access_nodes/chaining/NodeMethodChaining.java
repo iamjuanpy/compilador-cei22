@@ -61,7 +61,7 @@ public class NodeMethodChaining implements NodeChaining{
 
     private void checkNotChainingPrimitiveType(Type previousAccessType) throws SemanticException {
         if (previousAccessType.isPrimitive())
-            throw new SemanticException("No se puede encadenar a tipo primitivo", methodToken.lexeme, methodToken.lineNumber);
+            throw new SemanticException("No se puede encadenar a tipo primitivo o vacío", methodToken.lexeme, methodToken.lineNumber);
     }
 
     private void checkParameters(String className) throws SemanticException {

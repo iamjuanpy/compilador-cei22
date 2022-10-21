@@ -43,7 +43,7 @@ public class NodeAssign implements NodeSentence{
 
     private void checkAssigningIntegers(Type accessType, Type expressionType) throws SemanticException {
         if (!accessType.equals(new IntType()) || !expressionType.equals(new IntType()))
-            throw new SemanticException("El operador asignacion += o -= solo se puede usar sobre int", assignType.lexeme, assignType.lineNumber);
+            throw new SemanticException("Los operadores asignacion += o -= solo se pueden usar sobre int", assignType.lexeme, assignType.lineNumber);
     }
 
     private void checkAssigningSubtypes(Type accessType, Type expressionType) throws SemanticException {

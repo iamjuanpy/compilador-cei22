@@ -48,7 +48,7 @@ public class NodeConstructorCall implements NodeAccess{
             if (isConcreteClass())
                 checkParameters();
             else throw new SemanticException("No existe constructor para "+token.lexeme+", es una interface", token.lexeme, token.lineNumber);
-        else throw new SemanticException("No existe constructor para una clase "+token.lexeme, token.lexeme, token.lineNumber);
+        else throw new SemanticException("No existe clase "+token.lexeme, token.lexeme, token.lineNumber);
 
         Type objectType = new ReferenceType(token); // Tipo de la expresion, tipo clase del objeto
 
