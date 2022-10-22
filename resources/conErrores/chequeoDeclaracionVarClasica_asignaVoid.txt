@@ -1,0 +1,9 @@
+///[Error:a|6]
+
+class A {
+
+    static void main(){
+        int a = main();
+    }
+
+}

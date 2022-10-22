@@ -1,0 +1,12 @@
+///[Error:!=|9]
+class B {
+
+}
+
+class A {
+
+    static void main(){
+        var x = main() != main();
+    }
+
+}

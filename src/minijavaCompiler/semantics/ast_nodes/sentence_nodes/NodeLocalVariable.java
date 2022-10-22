@@ -6,6 +6,7 @@ import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.entries.Variable;
 import minijavaCompiler.semantics.types.NullType;
 import minijavaCompiler.semantics.types.Type;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 
 import static minijavaCompiler.Main.symbolTable;
 
@@ -48,7 +49,7 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     // Logro variable clasica
     private void checkVariableType() throws SemanticException {
         if (typeNotExists())
-            throw new SemanticException("No se puede declarar variable de tipo "+type.getTypeName()+", este no existe", type.getTypeName(), type.getLine());
+            throw new SemanticException("No se puede declarar variable de tipo "+type.getTypeName(), type.getTypeName(), type.getLine());
 
         if (classicVariableWithAssign()) // Type x = exp, exp.type <= Type
             if (notAssigningASubtype())
@@ -63,12 +64,14 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     
     private void setVariableType() throws SemanticException { // var x = exp, var.type = exp.type
         type = value.check();
-        checkNotDeclaringNullVariable();
+        checkNotDeclaringNullOrVoidVariable();
     }
 
-    private void checkNotDeclaringNullVariable() throws SemanticException {
+    private void checkNotDeclaringNullOrVoidVariable() throws SemanticException {
         if (type.equals(new NullType()))
             throw new SemanticException("No se puede declarar una variable de tipo null", token.lexeme, token.lineNumber);
+        if (type.equals(new VoidType()))
+            throw new SemanticException("No se puede declarar una variable de tipo void", token.lexeme, token.lineNumber);
     }
 
     public boolean isReturn(){return false;}
