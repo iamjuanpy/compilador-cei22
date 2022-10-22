@@ -1,0 +1,11 @@
+///[Error:m1|6]
+class A {
+
+    static void main() { return;}
+
+    int m1(){
+        return 5;
+        var x = 5;
+    }
+
+}

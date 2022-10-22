@@ -1,0 +1,14 @@
+///[Error:A|4]
+class A {
+
+    A () {
+        return;
+        var x = 5;
+    }
+
+    static void main() {}
+
+    int m1(){
+    }
+
+}

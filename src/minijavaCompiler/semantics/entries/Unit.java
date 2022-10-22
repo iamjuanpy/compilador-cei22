@@ -15,4 +15,7 @@ public interface Unit {
     Parameter getParameter(String identifier);
 
     void checkSentences() throws SemanticException;
+
+    String getName();
+    int getLine();
 }

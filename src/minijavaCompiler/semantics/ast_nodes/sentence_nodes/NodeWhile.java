@@ -25,4 +25,6 @@ public class NodeWhile implements NodeSentence {
 
     private boolean conditionIsBooleanExpression() throws SemanticException {return condition.check().equals(new BoolType());}
 
+    public boolean isReturn(){return false;}
+
 }

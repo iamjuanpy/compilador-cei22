@@ -35,7 +35,7 @@ public class NodeBinaryExpression implements NodeExpression {
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipos "+errorMsg, operator.lexeme, operator.lineNumber);
     }
 
-    private boolean bothSidesInteger(Type leftSide, Type rightSide){return leftSide.equals(new IntType()) && rightSide.equals(new IntType());}
+    private boolean bothSidesInteger(Type leftSide, Type rightSide){return leftSide.isSubtypeOf(new IntType()) && rightSide.isSubtypeOf(new IntType());}
     private boolean bothSidesBoolean(Type leftSide, Type rightSide){return leftSide.equals(new BoolType()) && rightSide.equals(new BoolType());}
 
     private boolean operatorIsInteger() {

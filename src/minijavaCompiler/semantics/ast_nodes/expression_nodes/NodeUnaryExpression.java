@@ -30,7 +30,7 @@ public class NodeUnaryExpression implements NodeExpression {
     }
 
     private boolean isBoolean(Type expressionType) {return expressionType.equals(new BoolType());}
-    private boolean isInteger(Type expressionType) {return expressionType.equals(new IntType());}
+    private boolean isInteger(Type expressionType) {return expressionType.isSubtypeOf(new IntType());}
 
     private boolean operatorIsInt() {
         errorMsg = "int";

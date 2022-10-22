@@ -39,4 +39,6 @@ public class NodeReturn implements NodeSentence{
 
     private boolean returnHasValue() {return expression != null;}
 
+    public boolean isReturn(){return true;}
+
 }

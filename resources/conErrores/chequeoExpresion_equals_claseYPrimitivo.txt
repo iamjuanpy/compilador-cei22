@@ -6,7 +6,7 @@ class B {
 class A {
 
     static void main(){
-        var a = 14;
+        var a = true;
         var b = "hola";
         var x = a != b;
     }

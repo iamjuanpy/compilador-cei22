@@ -71,4 +71,6 @@ public class NodeLocalVariable implements NodeSentence, Variable {
             throw new SemanticException("No se puede declarar una variable de tipo null", token.lexeme, token.lineNumber);
     }
 
+    public boolean isReturn(){return false;}
+
 }

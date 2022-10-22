@@ -7,4 +7,6 @@ public interface NodeSentence {
 
     void check() throws SemanticException;
 
+    boolean isReturn();
+
 }

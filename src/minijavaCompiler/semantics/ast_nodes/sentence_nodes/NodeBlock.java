@@ -65,9 +65,22 @@ public class NodeBlock implements NodeSentence {
         symbolTable.currentBlock = this;
         for (NodeSentence sentence : sentencesList){
             sentence.check();
+            checkDeadCode(sentence);
         }
         // Retorna al bloque padre una vez termina el check
         symbolTable.currentBlock = nestingIn;
     }
+
+    private void checkDeadCode(NodeSentence sentence) throws SemanticException {
+        if (sentence.isReturn() && notLastSentence(sentence))
+            if (unit.isMethod())
+                throw new SemanticException("Código inalacanzable en el código del método "+unit.getName(), unit.getName(), unit.getLine());
+            else throw new SemanticException("Código inalcanzable en el código del constructor de "+ownerClass.getName(), unit.getName(), unit.getLine());
+    }
+
+    public boolean isReturn(){ return getLastSentence().isReturn(); }
+
+    private NodeSentence getLastSentence() { return sentencesList.get(sentencesList.size()-1);}
+    private boolean notLastSentence(NodeSentence sentence) { return !sentence.equals(getLastSentence());}
 
 }

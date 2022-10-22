@@ -1,0 +1,18 @@
+///[Error:main|4]
+class A {
+
+    static void main() {
+        if (true && true) {
+            var y = 5;
+            var x = 8;
+            var z = 9;
+            return;
+        } else return;
+        var x = 5;
+    }
+
+    int m1(){
+        return 0;
+    }
+
+}

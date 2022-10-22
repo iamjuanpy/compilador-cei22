@@ -51,4 +51,6 @@ public class NodeAssign implements NodeSentence{
             throw new SemanticException("No se puede asignar "+ expressionType.getTypeName()+" a una variable "+ accessType.getTypeName(), assignType.lexeme, assignType.lineNumber);
     }
 
+    public boolean isReturn(){return false;}
+
 }

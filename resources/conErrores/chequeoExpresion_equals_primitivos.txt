@@ -7,7 +7,7 @@ class A {
 
     static void main(){
         var a = 14;
-        var b = 'a';
+        var b = true;
         var x = a != b;
     }
 

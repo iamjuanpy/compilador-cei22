@@ -1,0 +1,40 @@
+
+class A {
+
+    static void main(){
+        var entero = 5;
+        var caracter = 'a';
+        var string = "HOLA";
+        var booleano = true;
+
+        // char a int
+        entero = entero + caracter;
+        entero = 'b' + 5;
+        entero = caracter;
+        entero = 'z';
+        entero = -'z';
+        booleano = 'a' != 65;
+        booleano = 'A' == 65;
+        booleano = 'a' >= 65;
+        booleano = 'a' <= 'b';
+        metodoENT('A');
+
+        // char a string
+        string = caracter;
+        string = 'z';
+        booleano = "a" == 'a';
+        booleano = "A" != 'a';
+        metodoSTR('J');
+
+        // int a string
+        string = 15;
+        string = entero+entero;
+        booleano = "66" != 65;
+        booleano = "65" == 65;
+        metodoSTR(15);
+
+    }
+
+    static void metodoSTR(String s){}
+    static void metodoENT(int a){}
+}
