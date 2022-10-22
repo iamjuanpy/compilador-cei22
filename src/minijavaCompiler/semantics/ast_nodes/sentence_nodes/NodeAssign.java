@@ -53,4 +53,6 @@ public class NodeAssign implements NodeSentence{
 
     public boolean isReturn(){return false;}
 
+    public boolean isVariableDeclaration() {return false;}
+
 }

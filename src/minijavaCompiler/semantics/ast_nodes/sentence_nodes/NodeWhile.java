@@ -20,11 +20,13 @@ public class NodeWhile implements NodeSentence {
     public void check() throws SemanticException {
         if (conditionIsBooleanExpression()) {
             sentence.check();
+            if (sentence.isVariableDeclaration())
+                throw new SemanticException("No se puede solo declarar una variable en un while", whileToken.lexeme, whileToken.lineNumber);
         } else throw new SemanticException("La condicion de un bloque while debe ser una expresión booleana", whileToken.lexeme, whileToken.lineNumber);
     }
 
     private boolean conditionIsBooleanExpression() throws SemanticException {return condition.check().equals(new BoolType());}
 
     public boolean isReturn(){return false;}
-
+    public boolean isVariableDeclaration() {return false;}
 }

@@ -2,6 +2,7 @@
 class A {
 
     static void main(){
+        // defino variables de tipos
         var entero = 5;
         var caracter = 'a';
         var string = "HOLA";
@@ -18,23 +19,29 @@ class A {
         booleano = 'a' >= 65;
         booleano = 'a' <= 'b';
         metodoENT('A');
+        entero = metodoRETCHAR();
 
         // char a string
         string = caracter;
-        string = 'z';
+        string = 'z'; // esto en java no se puede
         booleano = "a" == 'a';
         booleano = "A" != 'a';
         metodoSTR('J');
+        string = metodoRETCHAR();
 
         // int a string
-        string = 15;
+        string = 15; // esto en java no se puede
         string = entero+entero;
         booleano = "66" != 65;
         booleano = "65" == 65;
         metodoSTR(15);
+        string = metodoRETINT();
 
     }
 
     static void metodoSTR(String s){}
     static void metodoENT(int a){}
+
+    static char metodoRETCHAR(){}
+    static int metodoRETINT() {}
 }

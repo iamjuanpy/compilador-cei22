@@ -22,7 +22,7 @@ public class ReferenceType implements Type{
     public boolean isSubtypeOf(Type type) {
         if (!type.isPrimitive())
             return symbolTable.getClass(classToken.lexeme).getInheritanceSet().contains(type.getTypeName());
-        else return false; // sobra el if, en la linea de herencia no deberia estar ni bool, ni char, ni int
+        else return false; // sobra el if, en la linea de herencia no deberia estar ni boolean, ni char, ni int
     }
 
 }

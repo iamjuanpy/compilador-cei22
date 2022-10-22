@@ -8,7 +8,7 @@ public class NullType implements Type{
     public int getLine() {return 0;}
     public boolean isPrimitive() {return false;}
 
-    public boolean equals(Type type) {return "null".equals(getTypeName());}
+    public boolean equals(Type type) {return "null".equals(type.getTypeName());}
 
     public boolean isSubtypeOf(Type type) {return !type.isPrimitive();}
 }

@@ -83,4 +83,6 @@ public class NodeBlock implements NodeSentence {
     private NodeSentence getLastSentence() { return sentencesList.get(sentencesList.size()-1);}
     private boolean notLastSentence(NodeSentence sentence) { return !sentence.equals(getLastSentence());}
 
+    public boolean isVariableDeclaration() {return false;}
+
 }

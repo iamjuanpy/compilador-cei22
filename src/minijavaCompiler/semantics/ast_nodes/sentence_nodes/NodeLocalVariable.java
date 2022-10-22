@@ -72,5 +72,6 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     }
 
     public boolean isReturn(){return false;}
+    public boolean isVariableDeclaration() {return true;}
 
 }

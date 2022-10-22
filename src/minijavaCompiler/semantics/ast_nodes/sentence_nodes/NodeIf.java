@@ -21,10 +21,23 @@ public class NodeIf implements NodeSentence{
 
     public void check() throws SemanticException {
         if (conditionIsBooleanExpression()) {
-            thenSentence.check();
-            if (elseSentence != null)
-                elseSentence.check();
+            checkThen();
+            checkElseIfExists();
         } else throw new SemanticException("La condicion de un bloque if debe ser una expresión booleana", ifToken.lexeme, ifToken.lineNumber);
+    }
+
+    private void checkThen() throws SemanticException {
+        thenSentence.check();
+        if (thenSentence.isVariableDeclaration())
+            throw new SemanticException("No se puede solo declarar una variable en un then", ifToken.lexeme, ifToken.lineNumber);
+    }
+
+    private void checkElseIfExists() throws SemanticException {
+        if (elseSentence != null) {
+            elseSentence.check();
+            if (elseSentence.isVariableDeclaration())
+                throw new SemanticException("No se puede solo declarar una variable en un else", ifToken.lexeme, ifToken.lineNumber);
+        }
     }
 
     private boolean conditionIsBooleanExpression() throws SemanticException {return condition.check().equals(new BoolType());}
@@ -34,4 +47,6 @@ public class NodeIf implements NodeSentence{
             return false;
         else return thenSentence.isReturn() && elseSentence.isReturn();
     }
+
+    public boolean isVariableDeclaration() {return false;}
 }
