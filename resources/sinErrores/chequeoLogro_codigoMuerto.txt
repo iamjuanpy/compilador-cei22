@@ -1,0 +1,30 @@
+
+class B {
+
+}
+
+class A extends B {
+
+    static void main(){
+        if (true) {
+            return;
+        }
+
+        if(false){
+            {}{}{}{}{{}{}}
+            {{{{return;}}}}
+        } else {
+            {}{}{}{}{{}{}}
+            {{{{return;}}}}
+        }
+    }
+
+    void m1(){
+        while(true){
+           {}{}{}{}{{}{}}
+           {{{{return;}}}}
+        }
+
+    }
+
+}

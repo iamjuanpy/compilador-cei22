@@ -78,7 +78,11 @@ public class NodeBlock implements NodeSentence {
             else throw new SemanticException("Código inalcanzable en el código del constructor de "+ownerClass.getName(), unit.getName(), unit.getLine());
     }
 
-    public boolean isReturn(){ return getLastSentence().isReturn(); }
+    public boolean isReturn(){
+        if (sentencesList.size() != 0)
+            return getLastSentence().isReturn();
+        else return false;
+    }
 
     private NodeSentence getLastSentence() { return sentencesList.get(sentencesList.size()-1);}
     private boolean notLastSentence(NodeSentence sentence) { return !sentence.equals(getLastSentence());}
