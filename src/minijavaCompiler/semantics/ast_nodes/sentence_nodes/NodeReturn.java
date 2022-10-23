@@ -20,16 +20,16 @@ public class NodeReturn implements NodeSentence{
     public void check() throws SemanticException {
         if (symbolTable.currentUnit.isMethod()) {
 
-            if (returnHasValue() && methodIsVoid())
+            if (returnHasValue() && methodIsVoid()) // void m(){ return 1;}
                 throw new SemanticException("Un metodo tipo void no puede retornar un valor",token.lexeme, token.lineNumber);
 
-            if (!returnHasValue() && !methodIsVoid())
+            if (!returnHasValue() && !methodIsVoid()) // int m(){ return;}
                 throw new SemanticException("Un metodo tipo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar nada",token.lexeme, token.lineNumber);
 
-            if (returnHasValue() && !expressionTypeIsSubtypeOfReturnType())
+            if (returnHasValue() && !expressionTypeIsSubtypeOfReturnType()) // boolean m(){ return "hola";}
                 throw new SemanticException("Un metodo tipo "+symbolTable.currentUnit.getReturnType().getTypeName()+" no puede retornar un tipo "+expression.check().getTypeName(), token.lexeme, token.lineNumber);
 
-        } else if (returnHasValue()) // Constructor
+        } else if (returnHasValue()) // Constructor() { return 'a';}
             throw new SemanticException("Un constructor no puede tener return no vacio",token.lexeme, token.lineNumber);
     }
 

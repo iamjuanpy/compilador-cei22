@@ -9,6 +9,11 @@ class A {
         a = +5;
         a = -5 + -b; // chequeo binaria tmb
 
+        var x = new A().m1();
+        x = m1();
+        x = x;
+        x = !x;
+
         return !true && !m1() || !false || m1(); // idem
     }
 

@@ -22,6 +22,7 @@ class A extends C implements B{
 
         varA.m1();
         varA.main();
+        varA.m2(0);
         varC.m2(0); // puedo hacer esta llamada varC es tipo C con objeto A
 
         varA = null;

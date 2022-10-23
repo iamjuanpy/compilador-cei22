@@ -51,8 +51,8 @@ public class NodeLocalVariable implements NodeSentence, Variable {
         if (typeNotExists())
             throw new SemanticException("No se puede declarar variable de tipo "+type.getTypeName(), type.getTypeName(), type.getLine());
 
-        if (classicVariableWithAssign()) // Type x = exp, exp.type <= Type
-            if (notAssigningASubtype())
+        if (classicVariableWithAssign()) // Type x = exp
+            if (notAssigningASubtype()) // Check exp.type <= Type
                 throw new SemanticException("No se puede asignar a una variable "+type.getTypeName()+" una expresión "+value.check().getTypeName(), token.lexeme, token.lineNumber);
     }
 
@@ -62,8 +62,8 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     private boolean notAssigningASubtype() throws SemanticException {return !value.check().isSubtypeOf(type);}
     //
     
-    private void setVariableType() throws SemanticException { // var x = exp, var.type = exp.type
-        type = value.check();
+    private void setVariableType() throws SemanticException { // var x = exp
+        type = value.check(); // var.type = exp.type
         checkNotDeclaringNullOrVoidVariable();
     }
 

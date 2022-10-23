@@ -40,11 +40,13 @@ public class NodeVariableAccess implements NodeAccess {
             variable = symbolTable.currentUnit.getParameter(variableToken.lexeme);
         else if (accessIsLocalVariable())
             variable = symbolTable.currentBlock.getLocalVariable(variableToken.lexeme);
-        else if (accessIsAttribute() && (attributeIsPublic() || attributeIsDeclaredInCurrentClass())) {
-            if (currentUnitIsConstructor() || currentUnitIsDynamicMethod())
-                variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
-            else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
-        } else throw new SemanticException("No se encuentra variable "+ variableToken.lexeme+" en el ambiente de referenciamiento o no es accesible", variableToken.lexeme, variableToken.lineNumber);
+        else if (accessIsAttribute()) {
+            if (currentUnitIsConstructor() || currentUnitIsDynamicMethod()) {
+                if (attributeIsPublic() || attributeIsDeclaredInCurrentClass())
+                    variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
+                else throw new SemanticException("La variable de instancia "+variableToken.lexeme+" no es accesible", variableToken.lexeme, variableToken.lineNumber);
+            } else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
+        } else throw new SemanticException("No se encuentra variable/parámetro "+variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
 
         if (optChaining == null) {
             return variable.getType();

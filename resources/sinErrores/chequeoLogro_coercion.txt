@@ -14,6 +14,8 @@ class A {
         entero = caracter;
         entero = 'z';
         entero = -'z';
+        entero += 'z';
+        entero -= 'z';
         booleano = 'a' != 65;
         booleano = 'A' == 65;
         booleano = 'a' >= 65;

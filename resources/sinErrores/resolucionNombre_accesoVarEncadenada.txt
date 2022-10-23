@@ -25,6 +25,7 @@ class A extends B {
         var x = m2().a;
         var y = obj.a;
         var z = x;
+        var t = this.obj;
         var w = obj.obj;
     }
 
