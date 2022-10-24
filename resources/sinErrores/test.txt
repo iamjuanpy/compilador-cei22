@@ -2,17 +2,12 @@
 interface A {}
 
 interface B extends A{
-
     void m1();
-
 }
 interface C extends B{
-
     void m1();
-
 }
 interface D extends B, C{
-
 }
 
 class E implements D, B {
