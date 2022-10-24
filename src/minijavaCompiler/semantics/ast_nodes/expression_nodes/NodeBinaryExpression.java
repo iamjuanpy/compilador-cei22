@@ -4,8 +4,10 @@ import minijavaCompiler.lexical.Token;
 import static minijavaCompiler.lexical.TokenType.*;
 
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.types.ReferenceType;
 import minijavaCompiler.semantics.types.Type;
 import minijavaCompiler.semantics.types.primitives.BoolType;
+import minijavaCompiler.semantics.types.primitives.CharType;
 import minijavaCompiler.semantics.types.primitives.IntType;
 
 public class NodeBinaryExpression implements NodeExpression {
@@ -24,9 +26,11 @@ public class NodeBinaryExpression implements NodeExpression {
     public Type check() throws SemanticException {
         Type leftType = leftSide.check();
         Type rightType = rightSide.check();
-        if (operatorIsInteger() && bothSidesInteger(leftType,rightType)) // +, -, /, *, %
+        if (operatorIsAdd() && oneSideString(leftType,rightType) && bothSidesStringOrCoercion(leftType,rightType)) { // +
+            return new ReferenceType(new Token(classID,"String",0));
+        } else if (operatorIsInteger() && bothSidesIntegerOrCoercion(leftType,rightType)) // +, -, /, *, %
             return new IntType();
-        else if (operatorIsRelational() && bothSidesInteger(leftType,rightType)) // >, <, >=, <=
+        else if (operatorIsRelational() && bothSidesIntegerOrCoercion(leftType,rightType)) // >, <, >=, <=
             return new BoolType();
         else if (operatorIsBoolean() && bothSidesBoolean(leftType, rightType)) // ||, &&
             return new BoolType();
@@ -35,12 +39,30 @@ public class NodeBinaryExpression implements NodeExpression {
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipos "+errorMsg, operator.lexeme, operator.lineNumber);
     }
 
-    private boolean bothSidesInteger(Type leftSide, Type rightSide){return leftSide.isSubtypeOf(new IntType()) && rightSide.isSubtypeOf(new IntType());} // Contempla coerción de char a int
+    private boolean bothSidesIntegerOrCoercion(Type leftSide, Type rightSide){return leftSide.isSubtypeOf(new IntType()) && rightSide.isSubtypeOf(new IntType());} // Contempla coerción de char a int
     private boolean bothSidesBoolean(Type leftSide, Type rightSide){return leftSide.equals(new BoolType()) && rightSide.equals(new BoolType());}
 
+    // Coercion de int/char a String
+    private boolean oneSideString(Type leftType, Type rightType) {return leftType.getTypeName().equals("String") || rightType.getTypeName().equals("String");}
+    private boolean bothSidesStringOrCoercion(Type leftType, Type rightType) {
+        if (leftType.getTypeName().equals("String"))
+            return rightType.equals(new IntType()) || rightType.equals(new CharType()) || rightType.getTypeName().equals("String");
+        else return leftType.equals(new IntType()) || leftType.equals(new CharType()) || leftType.getTypeName().equals("String");
+    }
+
+    private boolean operatorIsAdd() {
+        errorMsg = "String, int o char";
+        return operator.tokenType == addOP;
+    }
+
     private boolean operatorIsInteger() {
-        errorMsg = "int";
+        errorMsg = "int o char";
         return operator.tokenType == addOP || operator.tokenType == subOP || operator.tokenType == divOP || operator.tokenType == multOP || operator.tokenType == modOP;
+    }
+
+    private boolean operatorIsRelational() {
+        errorMsg = "int o char";
+        return operator.tokenType == greater || operator.tokenType == greaterOrEquals || operator.tokenType == less || operator.tokenType == lessOrEquals ;
     }
 
     private boolean operatorIsBoolean() {
@@ -53,8 +75,4 @@ public class NodeBinaryExpression implements NodeExpression {
         return operator.tokenType == equals || operator.tokenType == notEquals;
     }
 
-    private boolean operatorIsRelational() {
-        errorMsg = "int";
-        return operator.tokenType == greater || operator.tokenType == greaterOrEquals || operator.tokenType == less || operator.tokenType == lessOrEquals ;
-    }
 }

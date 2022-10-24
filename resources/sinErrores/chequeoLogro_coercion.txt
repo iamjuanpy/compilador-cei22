@@ -16,6 +16,8 @@ class A {
         entero = -'z';
         entero += 'z';
         entero -= 'z';
+        entero = -'a';
+        entero = +'a';
         booleano = 'a' != 65;
         booleano = 'A' == 65;
         booleano = 'a' >= 65;
@@ -24,20 +26,17 @@ class A {
         entero = metodoRETCHAR();
 
         // char a string
-        string = caracter;
-        string = 'z'; // esto en java no se puede
-        booleano = "a" == 'a';
-        booleano = "A" != 'a';
-        metodoSTR('J');
-        string = metodoRETCHAR();
+        booleano = "a" == ("" +'a');
+        booleano = "A" != ('a'+" ");
+        metodoSTR('J'+"");
+        string = "" + metodoRETCHAR();
 
         // int a string
-        string = 15; // esto en java no se puede
-        string = entero+entero;
-        booleano = "66" != 65;
-        booleano = "65" == 65;
-        metodoSTR(15);
-        string = metodoRETINT();
+        string = "hola"+(entero+entero);
+        booleano = "66" != ("" + 65);
+        booleano = "65" == ("" + 65+ "\easa");
+        metodoSTR(15+"hola");
+        string = " " + metodoRETINT();
 
     }
 

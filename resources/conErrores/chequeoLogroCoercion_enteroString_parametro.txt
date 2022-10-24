@@ -1,0 +1,13 @@
+///[Error:m1|10]
+
+class A {
+
+    public String s; public int i; public char c;
+
+    static void main(){}
+
+    void m1(String s){
+        m1(i);
+    }
+
+}

@@ -13,8 +13,6 @@ public class CharType extends PrimitiveType {
     public boolean isSubtypeOf(Type type) {
         if (type.equals(new IntType())) // Coercion char a int
             return true;
-        else if (type.getTypeName().equals("String")) // Coercion char a string
-            return true;
         else return super.isSubtypeOf(type); // Chequea si ambos son char
     }
 }
