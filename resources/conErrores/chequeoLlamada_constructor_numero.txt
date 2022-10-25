@@ -1,8 +1,0 @@
-///[Error:A|5]
-class A {
-
-    static void main(){
-        new A(1,"hola");
-    }
-
-}
