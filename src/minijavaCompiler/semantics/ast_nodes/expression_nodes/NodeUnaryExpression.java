@@ -24,16 +24,16 @@ public class NodeUnaryExpression implements NodeExpression {
         Type expressionType = expression.check();
         if (operatorIsNot() && isBoolean(expressionType)) // !
             return new BoolType();
-        else if (operatorIsInt() && isInteger(expressionType)) // +a -a
+        else if (operatorIsInt() && isIntegerOrCoercion(expressionType)) // +a -a
             return new IntType();
         else throw new SemanticException("El operador "+operator.lexeme+" funciona con tipo "+errorMsg, operator.lexeme, operator.lineNumber);
     }
 
     private boolean isBoolean(Type expressionType) {return expressionType.equals(new BoolType());}
-    private boolean isInteger(Type expressionType) {return expressionType.isSubtypeOf(new IntType());}
+    private boolean isIntegerOrCoercion(Type expressionType) {return expressionType.isSubtypeOf(new IntType());}
 
     private boolean operatorIsInt() {
-        errorMsg = "int";
+        errorMsg = "int o char";
         return operator.tokenType == addOP || operator.tokenType == subOP;
     }
 

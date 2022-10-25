@@ -8,4 +8,9 @@ public class IntType extends PrimitiveType {
         super("int");
     }
 
+    public boolean isSubtypeOf(Type type) {
+        if (type.equals(new CharType())) // Coercion int a char
+            return true;
+        else return super.isSubtypeOf(type); // Chequea si ambos son char
+    }
 }

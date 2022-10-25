@@ -25,24 +25,50 @@ class A {
         metodoENT('A');
         entero = metodoRETCHAR();
 
+        // int a char
+        caracter = entero;
+        caracter += entero;
+        caracter -= entero;
+        caracter = +entero;
+        caracter = -entero;
+
+        caracter = 10;
+        caracter += 3;
+        caracter -= 2;
+        caracter = +3;
+        caracter = -1;
+
+        caracter = 'a';
+        caracter += 'a';
+        caracter -= 'a';
+        caracter = +'a';
+        caracter = -'a';
+
+        booleano = 'a' != 'a';
+        booleano = 'A' == 'a';
+        booleano = 'a' >= 'a';
+        booleano = 'a' <= 'b';
+
         // char a string
         booleano = "a" == ("" +'a');
         booleano = "A" != ('a'+" ");
         metodoSTR('J'+"");
         string = "" + metodoRETCHAR();
+        string = new String() + 'a';
 
         // int a string
-        string = "hola"+(entero+entero);
+        string = "hola"+entero+entero;
         booleano = "66" != ("" + 65);
         booleano = "65" == ("" + 65+ "\easa");
         metodoSTR(15+"hola");
         string = " " + metodoRETINT();
+        string = new String() + 1;
 
     }
 
     static void metodoSTR(String s){}
     static void metodoENT(int a){}
 
-    static char metodoRETCHAR(){}
-    static int metodoRETINT() {}
+    static char metodoRETCHAR(){return 5;}
+    static int metodoRETINT() {return 'a';}
 }

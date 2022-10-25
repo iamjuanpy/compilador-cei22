@@ -28,7 +28,7 @@ public class NodeAssign implements NodeSentence{
         checkLeftSideIsVariable();
 
         if (arithmeticAssign()) {
-            checkAssigningIntegers(accessType, expressionType);
+            checkAssigningIntegersOrCoercion(accessType, expressionType);
         } else {
             checkAssigningSubtypes(accessType, expressionType);
         }
@@ -41,9 +41,9 @@ public class NodeAssign implements NodeSentence{
 
     private boolean arithmeticAssign() {return assignType.tokenType == addAssign || assignType.tokenType == subAssign;}
 
-    private void checkAssigningIntegers(Type accessType, Type expressionType) throws SemanticException {
-        if (!accessType.equals(new IntType()) || !expressionType.isSubtypeOf(new IntType())) // int (o char por el logro de coercion)
-            throw new SemanticException("Los operadores asignacion += o -= solo se pueden usar sobre variables int", assignType.lexeme, assignType.lineNumber);
+    private void checkAssigningIntegersOrCoercion(Type accessType, Type expressionType) throws SemanticException {
+        if (!accessType.isSubtypeOf(new IntType()) || !expressionType.isSubtypeOf(new IntType())) // int (o char por el logro de coercion)
+            throw new SemanticException("Los operadores asignacion += o -= solo se pueden usar sobre variables int o char", assignType.lexeme, assignType.lineNumber);
     }
 
     private void checkAssigningSubtypes(Type accessType, Type expressionType) throws SemanticException {
