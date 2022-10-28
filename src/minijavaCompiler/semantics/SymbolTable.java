@@ -5,7 +5,9 @@ import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.entries.Unit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SymbolTable {
 
@@ -17,7 +19,10 @@ public class SymbolTable {
 
     private HashMap<String, ClassEntry> classesHashMap;
 
+    public List<String> ceiASM_instructionList;
+
     public SymbolTable() {
+        ceiASM_instructionList = new ArrayList<>();
         classesHashMap = new HashMap<>();
     }
 
@@ -34,6 +39,11 @@ public class SymbolTable {
                 c.checkSentences();
             }
         }
+    }
+
+    public void generateCode() {
+        ceiASM_instructionList.add("HOLA");
+        ceiASM_instructionList.add("TEST");
     }
 
     public boolean classExists(String className){

@@ -15,7 +15,7 @@ public class SourceFileReader {
     private int lineNumber;
     private int colNumber;
 
-    public SourceFileReader(String filePath) throws SourceFileReaderException {
+    public SourceFileReader(String filePath) throws FileManagerException {
         try  {
             bufferedReader = new BufferedReader(new FileReader(filePath));
             lineNumber = 0;
@@ -23,11 +23,11 @@ public class SourceFileReader {
             newLine = null;
             currentLine = null;
         } catch (FileNotFoundException e){
-            throw new SourceFileReaderException("Error: el archivo con ese nombre no existe");
+            throw new FileManagerException("Error: el archivo con ese nombre no existe");
         }
     }
 
-    public char readCharacter() throws SourceFileReaderException {
+    public char readCharacter() throws FileManagerException {
         if (currentChar == EOF) return EOF;
         try {
             if (currentLine == null || currentChar == EOL) {
@@ -44,7 +44,7 @@ public class SourceFileReader {
             currentChar = currentLine.charAt(colNumber);
             colNumber++;
         } catch (IOException e){
-            throw new SourceFileReaderException("Error leyendo el archivo");
+            throw new FileManagerException("Error leyendo el archivo");
         }
         return currentChar;
     }

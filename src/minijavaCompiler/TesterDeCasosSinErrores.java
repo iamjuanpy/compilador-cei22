@@ -68,7 +68,8 @@ public class TesterDeCasosSinErrores {
      
     void probarExito(String name){
             String path = testFilesDirectoryPath+name;
-            String[] args = {path};
+            String outPath = testFilesDirectoryPath+"out_"+name;
+            String[] args = {path, outPath};
             init.main(args);
 
             assertThat("Mensaje Incorrecto en: " + path,  outContent.toString(), CoreMatchers.containsString(msgExito));
