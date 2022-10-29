@@ -42,8 +42,40 @@ public class SymbolTable {
     }
 
     public void generateCode() {
-        ceiASM_instructionList.add("HOLA");
-        ceiASM_instructionList.add("TEST");
+        generateMainCall();
+        generateHeapAllocCall();
+        //for (ClassEntry c : classesHashMap.values()) c.generateCode();
+    }
+
+    private void generateMainCall() {
+        ceiASM_instructionList.add(".code");
+        ceiASM_instructionList.add("    PUSH simple_heap_init");
+        ceiASM_instructionList.add("    CALL ; Inicializa heap");
+        ceiASM_instructionList.add("    PUSH "+mainMethod.getLabel()+" ; Pushea label del main");
+        ceiASM_instructionList.add("    CALL ; Llama a main");
+        ceiASM_instructionList.add("    HALT ; Finaliza la ejecucion del programa");
+        ceiASM_instructionList.add("");
+    }
+
+    private void generateHeapAllocCall() {
+        ceiASM_instructionList.add("simple_heap_init:");
+        ceiASM_instructionList.add("    RET 0 ; Init de heap");
+        ceiASM_instructionList.add("");
+        ceiASM_instructionList.add("simple_malloc:");
+        ceiASM_instructionList.add("    LOADFP ; Init unidad");
+        ceiASM_instructionList.add("    LOADSP");
+        ceiASM_instructionList.add("    STOREFP ; Fin de init");
+        ceiASM_instructionList.add("    LOADHL");
+        ceiASM_instructionList.add("    DUP");
+        ceiASM_instructionList.add("    PUSH 1 ; Principio de bloque sigue al final del heap");
+        ceiASM_instructionList.add("    ADD");
+        ceiASM_instructionList.add("    STORE 4 ; Puntero a principio de bloque");
+        ceiASM_instructionList.add("    LOAD 3 ; Cantidad de celdas a alojar");
+        ceiASM_instructionList.add("    ADD");
+        ceiASM_instructionList.add("    STOREHL ; Actualiza heap size");
+        ceiASM_instructionList.add("    STOREFP");
+        ceiASM_instructionList.add("    RET 1 ; Retorna, liberando parametro");
+        ceiASM_instructionList.add("");
     }
 
     public boolean classExists(String className){

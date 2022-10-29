@@ -23,6 +23,8 @@ public class Method implements Unit {
     private List<Parameter> parameterList;
     private NodeBlock block;
 
+    private String label;
+
     public Method(boolean isStatic, Type type, Token methodToken) {
         this.classDeclared = symbolTable.currentClass;
         this.methodToken = methodToken;
@@ -30,10 +32,12 @@ public class Method implements Unit {
         this.returnType = type;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();
+        label = classDeclared.getName()+"_"+methodToken.lexeme; // A_m1
     }
 
     public String getName() {return methodToken.lexeme;}
     public int getLine() {return methodToken.lineNumber;}
+    public String getLabel() {return label;}
     public boolean isStatic() {return isStatic;}
     public List<Parameter> getParametersList() {return parameterList;}
     public ClassEntry getClassDeclared() {return classDeclared;}

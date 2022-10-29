@@ -18,4 +18,6 @@ public interface Unit {
 
     String getName();
     int getLine();
+
+    String getLabel();
 }

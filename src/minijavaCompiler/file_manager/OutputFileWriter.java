@@ -23,11 +23,18 @@ public class OutputFileWriter {
 
     public void writeCodeToFile() throws FileManagerException {
         try {
+            //writeIntro();
             for (String line : symbolTable.ceiASM_instructionList)
                 fileWriter.write(line+"\n");
             fileWriter.close();
         } catch (IOException e) {
             throw new FileManagerException("Error: no se ha podido escribir el archivo");
         }
+    }
+
+    private void writeIntro() throws IOException {
+        fileWriter.write("# Codigo CeIASM para programa MiniJava "+file.getName()+"\n");
+        fileWriter.write("# Correr usando maquina CeIVM | UNS 2011 - 2022"+"\n");
+        fileWriter.write("\n");
     }
 }

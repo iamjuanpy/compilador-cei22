@@ -16,14 +16,18 @@ public class Constructor implements Unit {
     private List<Parameter> parameterList;
     private NodeBlock block;
 
+    private String label;
+
     public Constructor(Token constructorId) {
         constructorToken = constructorId;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();
+        label = "const_"+constructorToken.lexeme; // const_A
     }
 
     public String getName() {return constructorToken.lexeme;}
     public int getLine() {return constructorToken.lineNumber;}
+    public String getLabel() {return label;}
     public Type getReturnType() {return null;}
     public List<Parameter> getParametersList() {return parameterList;}
 
