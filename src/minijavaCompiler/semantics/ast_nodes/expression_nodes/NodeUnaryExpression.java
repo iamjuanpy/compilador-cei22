@@ -6,6 +6,7 @@ import minijavaCompiler.semantics.types.Type;
 import minijavaCompiler.semantics.types.primitives.BoolType;
 import minijavaCompiler.semantics.types.primitives.IntType;
 
+import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.*;
 
 public class NodeUnaryExpression implements NodeExpression {
@@ -45,6 +46,20 @@ public class NodeUnaryExpression implements NodeExpression {
     // Generacion de codigo
 
     public void generateCode() {
+        expression.generateCode();
+        generateOperatorCode(); // M[sp+1] op M[sp]
+    }
 
+    private void generateOperatorCode() {
+        switch (operator.tokenType) {
+            case addOP:
+                break;
+            case subOP:
+                symbolTable.ceiASM_instructionList.add("    NEG");
+                break;
+            case not:
+                symbolTable.ceiASM_instructionList.add("    NOT");
+                break;
+        }
     }
 }

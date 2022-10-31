@@ -1,6 +1,8 @@
 package minijavaCompiler.semantics.ast_nodes.expression_nodes;
 
 import minijavaCompiler.lexical.Token;
+
+import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.*;
 
 import minijavaCompiler.semantics.SemanticException;
@@ -78,6 +80,44 @@ public class NodeBinaryExpression implements NodeExpression {
     // Generacion de codigo
 
     public void generateCode() {
+        // De momento no hago logro de coercion
+        rightSide.generateCode();
+        leftSide.generateCode(); // Genero los valores al reves
+        generateOperatorCode(); // M[sp+1] op M[sp]
+    }
 
+    private void generateOperatorCode() {
+        switch (operator.tokenType) {
+
+            case addOP:
+                symbolTable.ceiASM_instructionList.add("    ADD"); break;
+            case subOP:
+                symbolTable.ceiASM_instructionList.add("    SUB"); break;
+            case multOP:
+                symbolTable.ceiASM_instructionList.add("    MUL"); break;
+            case divOP:
+                symbolTable.ceiASM_instructionList.add("    DIV"); break;
+            case modOP:
+                symbolTable.ceiASM_instructionList.add("    MOD"); break;
+
+            case greater:
+                symbolTable.ceiASM_instructionList.add("    GT"); break;
+            case greaterOrEquals:
+                symbolTable.ceiASM_instructionList.add("    GE"); break;
+            case less:
+                symbolTable.ceiASM_instructionList.add("    LT"); break;
+            case lessOrEquals:
+                symbolTable.ceiASM_instructionList.add("    LE"); break;
+
+            case andOP:
+                symbolTable.ceiASM_instructionList.add("    AND"); break;
+            case orOP:
+                symbolTable.ceiASM_instructionList.add("    OR"); break;
+
+            case equals:
+                symbolTable.ceiASM_instructionList.add("    EQ"); break;
+            case notEquals:
+                symbolTable.ceiASM_instructionList.add("    NE"); break;
+        }
     }
 }

@@ -1,0 +1,12 @@
+class A {
+
+    static void main (){
+        System.printIln(10+5);
+        System.printBln(true&&false);
+        System.printBln((true || false)&&true);
+        System.printIln(+15);
+        System.printIln(-15);
+        System.printBln(!true);
+    }
+
+}

@@ -39,7 +39,7 @@ public class NodeParenthesizedExp implements NodeAccess{
     }
 
     public void generateCode() {
-
+        expression.generateCode();
     }
 
 }

@@ -1,7 +1,11 @@
 class A {
 
     static void main (){
-        System.printI(15092000);
+        //System.printSln("juan");
+        System.printIln(15092000);
+        System.printCln('J');
+        System.printCln('\u2149');
+        System.printBln(true);
     }
 
 }
