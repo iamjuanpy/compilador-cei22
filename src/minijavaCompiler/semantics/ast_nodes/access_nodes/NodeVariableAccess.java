@@ -63,4 +63,8 @@ public class NodeVariableAccess implements NodeAccess {
     private boolean currentUnitIsConstructor() {return !symbolTable.currentUnit.isMethod();}
     private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
 
+    public void generateCode() {
+
+    }
+
 }

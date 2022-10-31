@@ -42,4 +42,8 @@ public class NodeReturn implements NodeSentence{
     public boolean isReturn(){return true;}
     public boolean isVariableDeclaration() {return false;}
 
+    public void generateCode() {
+
+    }
+
 }

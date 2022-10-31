@@ -89,4 +89,12 @@ public class NodeStaticMethodCall implements NodeAccess{
         }
     }
 
+    public void generateCode() {
+        String methodLabel = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getLabel();
+        for (NodeExpression p : actualParameters)
+            p.generateCode();
+        symbolTable.ceiASM_instructionList.add("    PUSH "+methodLabel+" ; Direccion del metodo en tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    CALL ; Llama al metodo");
+    }
+
 }

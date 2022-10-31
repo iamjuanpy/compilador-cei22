@@ -13,4 +13,6 @@ public interface NodeAccess extends NodeOperand {
     boolean isVariableAccess();
     boolean isMethodCall();
 
+    void generateCode();
+
 }

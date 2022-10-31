@@ -137,6 +137,12 @@ public class Interface implements ClassEntry {
             }
     }
 
+    // Generación de código
+
+    public void generateCode(){
+
+    }
+
     // Setters
 
     public void setAncestorClass(Token classToken) {} // NO LLEGA

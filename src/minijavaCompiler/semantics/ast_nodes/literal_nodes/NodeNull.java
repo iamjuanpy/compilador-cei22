@@ -14,4 +14,8 @@ public class NodeNull implements NodeLiteral{
 
     public Type check(){return new NullType();}
 
+    public void generateCode() {
+
+    }
+
 }

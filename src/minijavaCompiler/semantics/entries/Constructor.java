@@ -54,4 +54,8 @@ public class Constructor implements Unit {
         block.check();
     }
 
+    public void generateCode(){
+
+    }
+
 }

@@ -89,4 +89,8 @@ public class NodeMethodCall implements NodeAccess {
         }
     }
 
+    public void generateCode() {
+
+    }
+
 }

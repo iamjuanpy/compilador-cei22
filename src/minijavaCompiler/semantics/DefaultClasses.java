@@ -102,4 +102,126 @@ public class DefaultClasses {
         symbolTable.saveCurrentClass();
     }
 
+    public static void generateDefaultsMethodsCode(){
+        translateObjectMethods();
+        translateSystemMethods();
+    }
+
+    private static void translateObjectMethods() {
+        // static void debugPrint(int)
+        symbolTable.ceiASM_instructionList.add("Object_debugPrint:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1");
+        symbolTable.ceiASM_instructionList.add("");
+    }
+
+    private static void translateSystemMethods() {
+        // static int read()
+        symbolTable.ceiASM_instructionList.add("System_read:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    READ ; Lee tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    STORE 3 ; Guarda en retorno el tope");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 0");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printB(boolean)
+        symbolTable.ceiASM_instructionList.add("System_printB:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    BPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printC(char)
+        symbolTable.ceiASM_instructionList.add("System_printC:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    CPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printI(integer)
+        symbolTable.ceiASM_instructionList.add("System_printI:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    IPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printS(string)
+        symbolTable.ceiASM_instructionList.add("System_printS:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    SPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void println()
+        symbolTable.ceiASM_instructionList.add("System_println:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    PRNLN");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 0");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printBln(boolean)
+        symbolTable.ceiASM_instructionList.add("System_printBln:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    BPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    PRNLN");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printCln(char)
+        symbolTable.ceiASM_instructionList.add("System_printCln:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    CPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    PRNLN");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printIln(integer)
+        symbolTable.ceiASM_instructionList.add("System_printIln:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    IPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    PRNLN");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+        // static void printSln(string)
+        symbolTable.ceiASM_instructionList.add("System_printSln:");
+        symbolTable.ceiASM_instructionList.add("    LOADFP");
+        symbolTable.ceiASM_instructionList.add("    LOADSP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Pone en el tope la pila el parametro");
+        symbolTable.ceiASM_instructionList.add("    SPRINT ; Imprime el tope de la pila");
+        symbolTable.ceiASM_instructionList.add("    PRNLN");
+        symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    RET 1 ; Libera el parametro");
+        symbolTable.ceiASM_instructionList.add("");
+    }
+
 }

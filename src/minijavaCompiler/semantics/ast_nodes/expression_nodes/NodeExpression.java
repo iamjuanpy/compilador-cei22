@@ -7,4 +7,6 @@ public interface NodeExpression {
 
     Type check() throws SemanticException;
 
+    void generateCode();
+
 }

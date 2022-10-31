@@ -89,4 +89,10 @@ public class NodeBlock implements NodeSentence {
 
     public boolean isVariableDeclaration() {return false;}
 
+    public void generateCode() {
+        // TODO completar con variables y preguntar lo de bloques
+        for (NodeSentence s : sentencesList)
+            s.generateCode();
+    }
+
 }

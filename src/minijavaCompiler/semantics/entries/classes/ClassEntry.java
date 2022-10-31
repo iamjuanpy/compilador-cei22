@@ -37,4 +37,6 @@ public interface ClassEntry {
     void addMultipleInheritence(Token interfaceToken) throws SemanticException;
 
     Set<String> getInheritanceSet();
+
+    void generateCode();
 }

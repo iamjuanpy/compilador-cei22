@@ -38,4 +38,8 @@ public class NodeParenthesizedExp implements NodeAccess{
         this.optChaining = chaining;
     }
 
+    public void generateCode() {
+
+    }
+
 }

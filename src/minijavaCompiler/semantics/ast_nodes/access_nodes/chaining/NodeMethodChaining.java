@@ -81,4 +81,8 @@ public class NodeMethodChaining implements NodeChaining{
         }
     }
 
+    public void generateCode() {
+
+    }
+
 }

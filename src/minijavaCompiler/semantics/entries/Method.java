@@ -94,4 +94,20 @@ public class Method implements Unit {
     public void checkSentences() throws SemanticException{
         block.check();
     }
+
+    public void generateCode(){
+        int memToFree = isStatic ? parameterList.size() : parameterList.size() + 1; // Si es dinamico, tiene que borrar el this
+
+        symbolTable.ceiASM_instructionList.add(".code");
+        symbolTable.ceiASM_instructionList.add(label+":");
+        symbolTable.ceiASM_instructionList.add("    LOADFP ; Guarda ED");
+        symbolTable.ceiASM_instructionList.add("    LOADSP ; Guarda SP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP ; Corre FP al SP");
+
+        block.generateCode();
+
+        symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
+        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+    }
+
 }

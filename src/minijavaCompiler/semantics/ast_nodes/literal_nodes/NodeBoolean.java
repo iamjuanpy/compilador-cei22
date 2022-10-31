@@ -13,4 +13,8 @@ public class NodeBoolean implements NodeLiteral{
     }
 
     public Type check() {return new BoolType();}
+
+    public void generateCode() {
+
+    }
 }

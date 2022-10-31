@@ -22,7 +22,7 @@ public class SymbolTable {
     public List<String> ceiASM_instructionList;
 
     public SymbolTable() {
-        ceiASM_instructionList = new ArrayList<>();
+        ceiASM_instructionList = new ArrayList<>(500);
         classesHashMap = new HashMap<>();
     }
 
@@ -44,7 +44,8 @@ public class SymbolTable {
     public void generateCode() {
         generateMainCall();
         generateHeapAllocCall();
-        //for (ClassEntry c : classesHashMap.values()) c.generateCode();
+        DefaultClasses.generateDefaultsMethodsCode();
+        for (ClassEntry c : classesHashMap.values()) c.generateCode();
     }
 
     private void generateMainCall() {

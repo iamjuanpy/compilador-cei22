@@ -9,5 +9,6 @@ public interface NodeSentence {
 
     boolean isReturn();
     boolean isVariableDeclaration();
-    
+
+    void generateCode();
 }

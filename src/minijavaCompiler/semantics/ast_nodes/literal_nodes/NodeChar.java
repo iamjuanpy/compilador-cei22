@@ -13,4 +13,8 @@ public class NodeChar implements NodeLiteral{
     }
 
     public Type check(){return new CharType(); }
+
+    public void generateCode() {
+
+    }
 }

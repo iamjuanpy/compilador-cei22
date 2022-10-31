@@ -20,4 +20,5 @@ public interface Unit {
     int getLine();
 
     String getLabel();
+    void generateCode();
 }

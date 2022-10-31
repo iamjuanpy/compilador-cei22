@@ -49,4 +49,8 @@ public class NodeIf implements NodeSentence{
     }
 
     public boolean isVariableDeclaration() {return false;}
+
+    public void generateCode() {
+
+    }
 }

@@ -41,4 +41,10 @@ public class NodeUnaryExpression implements NodeExpression {
         errorMsg = "boolean";
         return operator.tokenType == not;
     }
+
+    // Generacion de codigo
+
+    public void generateCode() {
+
+    }
 }

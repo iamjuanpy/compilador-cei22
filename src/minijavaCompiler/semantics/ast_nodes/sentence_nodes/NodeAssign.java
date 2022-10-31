@@ -55,4 +55,8 @@ public class NodeAssign implements NodeSentence{
 
     public boolean isVariableDeclaration() {return false;}
 
+    public void generateCode() {
+
+    }
+
 }

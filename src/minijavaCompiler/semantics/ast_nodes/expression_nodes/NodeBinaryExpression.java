@@ -75,4 +75,9 @@ public class NodeBinaryExpression implements NodeExpression {
         return operator.tokenType == equals || operator.tokenType == notEquals;
     }
 
+    // Generacion de codigo
+
+    public void generateCode() {
+
+    }
 }

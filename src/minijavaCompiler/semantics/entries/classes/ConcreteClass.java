@@ -221,6 +221,27 @@ public class ConcreteClass implements ClassEntry {
         }
     }
 
+    // Generación de código
+
+    public void generateCode(){
+        //generateVT()
+        // TODO completar clase
+        generateConstructorAndMethodsCode();
+    }
+
+    private void generateConstructorAndMethodsCode() {
+        //constructor.generateCode();
+        if (notDefaultClass()) // El codigo de los metodos de las clases default ya esta creado
+            for (Method m : methodHashMap.values()) {
+                if (m.getClassDeclared().equals(this)) // Solo genera código para los métodos en su declaracion/redefinicion
+                    m.generateCode();
+            }
+    }
+
+    private boolean notDefaultClass(){
+        return !(classToken.lexeme.equals("String") || classToken.lexeme.equals("Object") || classToken.lexeme.equals("System"));
+    }
+
     // Setters
 
     public void setAncestorClass(Token classToken){this.extendsClassToken = classToken;}

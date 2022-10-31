@@ -78,4 +78,8 @@ public class NodeConstructorCall implements NodeAccess{
 
     }
 
+    public void generateCode() {
+
+    }
+
 }

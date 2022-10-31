@@ -23,4 +23,8 @@ public class NodeCall implements NodeSentence{
     public boolean isReturn(){return false;}
     public boolean isVariableDeclaration() {return false;}
 
+    public void generateCode() {
+        access.generateCode();
+    }
+
 }
