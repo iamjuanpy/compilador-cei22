@@ -41,4 +41,7 @@ public interface ClassEntry {
     void setOffsets();
     int getLastAttributeOffset();
     int getLastMethodOffset();
+
+    String getVTableLabel();
+
 }

@@ -15,6 +15,7 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     private Type type;
     private Token token;
     private NodeExpression value;
+    private int offset;
 
     public NodeLocalVariable(Token token, NodeExpression value) { // Constructor variable local (minijava)
         this.token = token;
@@ -78,15 +79,13 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public boolean isVariableDeclaration() {return true;}
 
     public void generateCode() {
-
+        if (value != null) {
+            value.generateCode();
+            symbolTable.ceiASM_instructionList.add("    LOAD "+offset+" ; Guardo variable local");
+        }
     }
 
-
-    public void setOffset(int offset) {
-
-    }
-    public int getOffset(){
-        return 0;
-    }
+    public void setOffset(int offset) {this.offset = offset;}
+    public int getOffset(){return offset;}
 
 }

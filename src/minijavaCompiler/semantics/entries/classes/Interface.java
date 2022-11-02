@@ -149,6 +149,8 @@ public class Interface implements ClassEntry {
 
     }
 
+    public String getVTableLabel() {return "VT_"+interfaceToken.lexeme;}
+
     // Setters
 
     public void setAncestorClass(Token classToken) {} // NO LLEGA

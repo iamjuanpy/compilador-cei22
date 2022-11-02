@@ -4,7 +4,9 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
+import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Parameter;
+import minijavaCompiler.semantics.entries.classes.ClassEntry;
 import minijavaCompiler.semantics.types.ReferenceType;
 import minijavaCompiler.semantics.types.Type;
 
@@ -18,7 +20,10 @@ public class NodeConstructorCall implements NodeAccess{
     private Token token;
     private List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+
     private boolean isLeftSideOfAssign;
+    private ClassEntry classBuilding;
+    private Constructor constructor;
 
     public NodeConstructorCall(Token id){
         this.token = id;
@@ -46,9 +51,11 @@ public class NodeConstructorCall implements NodeAccess{
 
     public Type check() throws SemanticException {
         if (classExists())
-            if (isConcreteClass())
+            if (isConcreteClass()) {
+                classBuilding = symbolTable.getClass(token.lexeme);
+                constructor = classBuilding.getConstructor();
                 checkParameters();
-            else throw new SemanticException("No existe constructor para "+token.lexeme+", es una interface", token.lexeme, token.lineNumber);
+            } else throw new SemanticException("No existe constructor para "+token.lexeme+", es una interface", token.lexeme, token.lineNumber);
         else throw new SemanticException("No existe clase "+token.lexeme, token.lexeme, token.lineNumber);
 
         Type objectType = new ReferenceType(token); // Tipo de la expresion, tipo clase del objeto
@@ -62,7 +69,7 @@ public class NodeConstructorCall implements NodeAccess{
     private boolean isConcreteClass() {return symbolTable.getClass(token.lexeme).isConcreteClass();}
 
     private void checkParameters() throws SemanticException {
-        List<Parameter> formalParameters = symbolTable.getClass(token.lexeme).getConstructor().getParametersList();
+        List<Parameter> formalParameters = constructor.getParametersList();
 
         if (formalParameters.size() != actualParameters.size())
             throw new SemanticException("La llamada a constructor "+token.lexeme+" no se realizo con la cantidad de parametros correctos", token.lexeme, token.lineNumber);
@@ -80,7 +87,16 @@ public class NodeConstructorCall implements NodeAccess{
     }
 
     public void generateCode() {
+        symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo puntero malloc");
+        symbolTable.ceiASM_instructionList.add("    PUSH "+(classBuilding.getLastAttributeOffset()+1)+" ; Cantidad de atributos + VT Ref");
+        symbolTable.ceiASM_instructionList.add("    PUSH simple_malloc");
+        symbolTable.ceiASM_instructionList.add("    CALL ; malloc()");
+        symbolTable.ceiASM_instructionList.add("    DUP");
+        symbolTable.ceiASM_instructionList.add("    PUSH "+classBuilding.getVTableLabel());
+        symbolTable.ceiASM_instructionList.add("    STOREREF 0 ; Guardo VT en CIR");
+        symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this, para metodo de constructor");
 
+        // TODO LOS PARAMETROS Y EL CODIGO
     }
 
     public void setIsLeftSideOfAssign(){

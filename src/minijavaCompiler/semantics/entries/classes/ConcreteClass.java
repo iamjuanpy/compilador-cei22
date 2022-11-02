@@ -68,6 +68,8 @@ public class ConcreteClass implements ClassEntry {
     public int getLastAttributeOffset() {return lastAttributeOffset;}
     public int getLastMethodOffset() {return lastMethodOffset;}
 
+    public String getVTableLabel() {return "VT_"+classToken.lexeme;}
+
     // Chequeo declaraciones
 
     public void correctlyDeclared() throws SemanticException {

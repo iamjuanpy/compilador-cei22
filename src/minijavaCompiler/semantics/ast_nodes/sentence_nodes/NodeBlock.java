@@ -19,6 +19,8 @@ public class NodeBlock implements NodeSentence {
     public Unit unit;
     public NodeBlock nestingIn;
 
+    private int lastVariableOffset;
+
     public NodeBlock(){
         sentencesList = new ArrayList<>();
         variableHashMap = new HashMap<>();
@@ -89,10 +91,20 @@ public class NodeBlock implements NodeSentence {
 
     public boolean isVariableDeclaration() {return false;}
 
-    public void generateCode() {
-        // TODO Si adentro tengo un bloque anidado, las variables van expandiendose para abajo?
-        for (NodeSentence s : sentencesList)
-            s.generateCode();
+    public void generateCode() { // TODO Dudas variables locales
+        if (nestingIn != null)
+            lastVariableOffset = nestingIn.lastVariableOffset;
+
+        symbolTable.ceiASM_instructionList.add("    RMEM "+variableHashMap.size()+" ; Reservo espacio variables locales");
+
+        for (NodeSentence s : sentencesList) {
+            if (s.isVariableDeclaration()) {
+                ((NodeLocalVariable) s).setOffset(lastVariableOffset--);
+                s.generateCode();
+            } else s.generateCode();
+        }
+
+        symbolTable.ceiASM_instructionList.add("    FMEM "+variableHashMap.size()+" ; Libera variables locales");
     }
 
 }

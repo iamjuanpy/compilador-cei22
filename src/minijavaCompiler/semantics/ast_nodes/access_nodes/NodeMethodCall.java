@@ -78,7 +78,7 @@ public class NodeMethodCall implements NodeAccess {
     }
 
     private void checkParameters() throws SemanticException {
-        List<Parameter> formalParameters = symbolTable.currentClass.getMethod(methodToken.lexeme).getParametersList();
+        List<Parameter> formalParameters = methodCalled.getParametersList();
 
         if (formalParameters.size() != actualParameters.size())
             throw new SemanticException("La llamada a metodo "+methodToken.lexeme+" no se realizo con la cantidad de parametros correctos", methodToken.lexeme, methodToken.lineNumber);
@@ -99,7 +99,7 @@ public class NodeMethodCall implements NodeAccess {
             if (!methodCalled.getReturnType().equals(new VoidType())){
                 symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
             }
-            for (NodeExpression p : actualParameters){
+            for (NodeExpression p : actualParameters){ // Genero codigo de los parametros
                 p.generateCode();
             }
             symbolTable.ceiASM_instructionList.add("    PUSH "+methodCalled.getLabel()+" ; Cargo la direccion estatica");
@@ -110,7 +110,7 @@ public class NodeMethodCall implements NodeAccess {
                 symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
                 symbolTable.ceiASM_instructionList.add("    SWAP");
             }
-            for (NodeExpression p : actualParameters){
+            for (NodeExpression p : actualParameters){ // Genero codigo de los parametros, corriendo el this
                 p.generateCode();
                 symbolTable.ceiASM_instructionList.add("    SWAP");
             }
