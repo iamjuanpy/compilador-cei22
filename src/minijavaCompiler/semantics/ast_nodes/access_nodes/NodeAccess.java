@@ -14,5 +14,6 @@ public interface NodeAccess extends NodeOperand {
     boolean isMethodCall();
 
     void generateCode();
+    void setIsLeftSideOfAssign();
 
 }

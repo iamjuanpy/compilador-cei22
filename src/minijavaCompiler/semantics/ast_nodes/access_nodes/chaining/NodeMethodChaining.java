@@ -16,6 +16,7 @@ public class NodeMethodChaining implements NodeChaining{
     private Token methodToken;
     public List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeMethodChaining(Token id){
         this.methodToken = id;
@@ -83,6 +84,12 @@ public class NodeMethodChaining implements NodeChaining{
 
     public void generateCode() {
 
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

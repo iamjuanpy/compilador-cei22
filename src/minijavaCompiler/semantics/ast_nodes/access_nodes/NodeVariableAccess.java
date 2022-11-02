@@ -14,6 +14,9 @@ public class NodeVariableAccess implements NodeAccess {
     private Token variableToken;
     private NodeChaining optChaining;
 
+    private boolean isLeftSideOfAssign;
+    private Variable variable;
+
     public NodeVariableAccess(Token id){
         this.variableToken = id;
     }
@@ -35,7 +38,6 @@ public class NodeVariableAccess implements NodeAccess {
     }
 
     public Type check() throws SemanticException {
-        Variable variable;
         if (accessIsParameter())
             variable = symbolTable.currentUnit.getParameter(variableToken.lexeme);
         else if (accessIsLocalVariable())
@@ -64,7 +66,28 @@ public class NodeVariableAccess implements NodeAccess {
     private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
 
     public void generateCode() {
+        if (accessIsAttribute()){
+            symbolTable.ceiASM_instructionList.add("    LOAD 3");
+            if (!isLeftSideOfAssign || optChaining != null){
+                symbolTable.ceiASM_instructionList.add("    LOADREF "+variable.getOffset());
+            } else {
+                symbolTable.ceiASM_instructionList.add("    SWAP");
+                symbolTable.ceiASM_instructionList.add("    STOREREF "+variable.getOffset());
+            }
+        } else {
+            if (!isLeftSideOfAssign || optChaining != null)
+                symbolTable.ceiASM_instructionList.add("    LOAD "+variable.getOffset());
+            else symbolTable.ceiASM_instructionList.add("    STORE "+variable.getOffset());
+        }
 
+        if (optChaining != null)
+            optChaining.generateCode();
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

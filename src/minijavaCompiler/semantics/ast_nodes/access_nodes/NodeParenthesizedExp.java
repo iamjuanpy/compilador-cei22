@@ -9,6 +9,7 @@ public class NodeParenthesizedExp implements NodeAccess{
 
     private NodeExpression expression;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeParenthesizedExp(NodeExpression expression) {
         this.expression = expression;
@@ -40,6 +41,12 @@ public class NodeParenthesizedExp implements NodeAccess{
 
     public void generateCode() {
         expression.generateCode();
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

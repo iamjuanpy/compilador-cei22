@@ -15,6 +15,7 @@ public class NodeThisAccess implements NodeAccess {
     private Token token;
     private String className;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeThisAccess(Token id, String className){
         this.token = id;
@@ -55,6 +56,12 @@ public class NodeThisAccess implements NodeAccess {
 
     public void generateCode() {
 
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

@@ -20,6 +20,7 @@ public class SymbolTable {
     private HashMap<String, ClassEntry> classesHashMap;
 
     public List<String> ceiASM_instructionList;
+    private int uniqueLabelNumber;
 
     public SymbolTable() {
         ceiASM_instructionList = new ArrayList<>(500);
@@ -96,6 +97,10 @@ public class SymbolTable {
 
     public void saveCurrentClass() {
         classesHashMap.put(currentClass.getName(), currentClass);
+    }
+
+    public String getUniqueLabel(){
+        return "E"+(uniqueLabelNumber++);
     }
 
 }

@@ -118,10 +118,7 @@ public class Method implements Unit {
         }
     }
 
-    public void setOffset(int offset){
-        this.offset = offset;
-    }
-
+    public void setOffset(int offset){this.offset = offset;}
     public int getOffset(){
         return offset;
     }

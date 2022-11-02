@@ -40,11 +40,7 @@ public class Attribute implements Variable {
             throw new SemanticException("No se puede declarar un atributo de tipo "+ attributeType.getTypeName()+", la clase no existe", attributeType.getTypeName(), attributeType.getLine());
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-    public int getOffset(){
-        return offset;
-    }
+    public void setOffset(int offset) {this.offset = offset;}
+    public int getOffset(){return offset;}
 
 }

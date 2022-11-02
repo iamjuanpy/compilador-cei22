@@ -13,5 +13,6 @@ public interface NodeChaining {
     Type check(Type previousAccessType) throws SemanticException;
 
     void generateCode();
+    void setIsLeftSideOfAssign();
 
 }

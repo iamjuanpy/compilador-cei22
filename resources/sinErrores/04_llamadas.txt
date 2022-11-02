@@ -1,0 +1,16 @@
+
+class A {
+
+    int a;
+
+    static void main(){
+        m1(1,true);
+    }
+
+    static void m1(int a, boolean b){
+        a += 1;
+        System.printI(a);
+        System.printB(b);
+    }
+
+}

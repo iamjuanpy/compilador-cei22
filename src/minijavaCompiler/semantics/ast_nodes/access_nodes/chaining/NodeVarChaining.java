@@ -10,6 +10,7 @@ public class NodeVarChaining implements NodeChaining {
 
     private Token variableToken;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeVarChaining(Token id){
         this.variableToken = id;
@@ -55,6 +56,12 @@ public class NodeVarChaining implements NodeChaining {
 
     public void generateCode() {
 
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

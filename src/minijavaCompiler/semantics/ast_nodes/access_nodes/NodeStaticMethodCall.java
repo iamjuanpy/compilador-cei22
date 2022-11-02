@@ -18,6 +18,7 @@ public class NodeStaticMethodCall implements NodeAccess{
     private Token methodToken;
     private List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeStaticMethodCall(Token classID, Token methodID){
         this.classToken = classID;
@@ -95,6 +96,12 @@ public class NodeStaticMethodCall implements NodeAccess{
             p.generateCode();
         symbolTable.ceiASM_instructionList.add("    PUSH "+methodLabel+" ; Direccion del metodo en tope de la pila");
         symbolTable.ceiASM_instructionList.add("    CALL ; Llama al metodo");
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

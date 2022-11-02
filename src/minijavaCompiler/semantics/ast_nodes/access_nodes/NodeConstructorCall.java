@@ -18,6 +18,7 @@ public class NodeConstructorCall implements NodeAccess{
     private Token token;
     private List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+    private boolean isLeftSideOfAssign;
 
     public NodeConstructorCall(Token id){
         this.token = id;
@@ -80,6 +81,12 @@ public class NodeConstructorCall implements NodeAccess{
 
     public void generateCode() {
 
+    }
+
+    public void setIsLeftSideOfAssign(){
+        isLeftSideOfAssign = true;
+        if (optChaining != null)
+            optChaining.setIsLeftSideOfAssign();
     }
 
 }

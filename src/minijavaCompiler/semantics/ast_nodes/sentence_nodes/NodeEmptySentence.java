@@ -15,8 +15,6 @@ public class NodeEmptySentence implements NodeSentence{
     public boolean isReturn(){return false;}
     public boolean isVariableDeclaration() {return false;}
 
-    public void generateCode() {
-
-    }
+    public void generateCode() {} // Nada
 
 }

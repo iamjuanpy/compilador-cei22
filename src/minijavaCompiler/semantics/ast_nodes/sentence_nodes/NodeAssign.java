@@ -7,6 +7,7 @@ import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.types.Type;
 import minijavaCompiler.semantics.types.primitives.IntType;
 
+import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.*;
 
 public class NodeAssign implements NodeSentence{
@@ -56,7 +57,19 @@ public class NodeAssign implements NodeSentence{
     public boolean isVariableDeclaration() {return false;}
 
     public void generateCode() {
-
+        if (assignType.tokenType == assign) {
+            access.setIsLeftSideOfAssign();
+            expression.generateCode();
+            access.generateCode();
+        } else {
+            expression.generateCode();
+            access.generateCode();
+            if (assignType.tokenType == addAssign)
+                symbolTable.ceiASM_instructionList.add("    ADD");
+            else symbolTable.ceiASM_instructionList.add("    SUB");
+            access.setIsLeftSideOfAssign();
+            access.generateCode();
+        }
     }
 
 }

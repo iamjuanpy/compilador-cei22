@@ -10,6 +10,7 @@ public class Parameter implements Variable {
 
     private Token parameterToken;
     private Type parameterType;
+    private int offset;
 
     public Parameter(Type type, Token token) {
         parameterToken = token;
@@ -31,6 +32,6 @@ public class Parameter implements Variable {
 
     public boolean equals(Parameter p) { return parameterType.equals(p.getType());}
 
-    public void setOffset(int offset) {}
-    public int getOffset(){return 0;}
+    public void setOffset(int offset) {this.offset = offset;}
+    public int getOffset(){return offset;}
 }
