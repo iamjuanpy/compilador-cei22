@@ -31,4 +31,6 @@ public class Parameter implements Variable {
 
     public boolean equals(Parameter p) { return parameterType.equals(p.getType());}
 
+    public void setOffset(int offset) {}
+    public int getOffset(){return 0;}
 }

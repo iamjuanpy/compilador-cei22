@@ -1,0 +1,33 @@
+class C{
+
+    private C c;
+    int a;
+
+    void m1(){}
+
+    void m2(){}
+
+}
+
+class B extends C{
+
+    int b;
+
+    void m3(){}
+
+    void m2(){}
+
+}
+
+class A extends B{
+
+    private String e;
+
+    static void main(){
+    }
+
+    void m4(){}
+
+    void m3(){}
+
+}

@@ -81,4 +81,12 @@ public class NodeLocalVariable implements NodeSentence, Variable {
 
     }
 
+
+    public void setOffset(int offset) {
+
+    }
+    public int getOffset(){
+        return 0;
+    }
+
 }

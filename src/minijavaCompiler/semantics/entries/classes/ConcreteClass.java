@@ -24,6 +24,11 @@ public class ConcreteClass implements ClassEntry {
     private HashMap<String,Token> interfacesHashMap;
     private boolean consolidated;
 
+    private HashMap<Integer, String> methodsLabelByOffset;
+    private boolean offsetsSet;
+    private int lastAttributeOffset;
+    private int lastMethodOffset;
+
     public ConcreteClass(Token token){
         this.classToken = token;
         attributeHashMap = new HashMap<>();
@@ -31,6 +36,7 @@ public class ConcreteClass implements ClassEntry {
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
         consolidated = false;
+        methodsLabelByOffset = new HashMap<>();
     }
 
     public String getName() {return classToken.lexeme;}
@@ -58,6 +64,9 @@ public class ConcreteClass implements ClassEntry {
         }
         return inheritanceSet;
     }
+
+    public int getLastAttributeOffset() {return lastAttributeOffset;}
+    public int getLastMethodOffset() {return lastMethodOffset;}
 
     // Chequeo declaraciones
 
@@ -224,23 +233,76 @@ public class ConcreteClass implements ClassEntry {
     // Generación de código
 
     public void generateCode(){
-        //generateVT()
-        // TODO completar clase
+        generateVT();
         generateConstructorAndMethodsCode();
     }
 
+    private void generateVT() {
+        symbolTable.ceiASM_instructionList.add(".data");
+        symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
+        if (methodsLabelByOffset.size() != 0) {
+            String methodsLabels = "";
+            for (int i = 0; i < methodsLabelByOffset.size(); i++) {
+                methodsLabels += methodsLabelByOffset.get(i);
+                if (i != methodsLabelByOffset.size()-1)
+                    methodsLabels += ",";
+            }
+            symbolTable.ceiASM_instructionList.add("    DW " + methodsLabels + " ; Etiquetas de metodo de " + classToken.lexeme);
+        }
+        symbolTable.ceiASM_instructionList.add("");
+    }
+
     private void generateConstructorAndMethodsCode() {
-        //constructor.generateCode();
+        constructor.generateCode();
         if (notDefaultClass()) // El codigo de los metodos de las clases default ya esta creado
             for (Method m : methodHashMap.values()) {
-                if (m.getClassDeclared().equals(this)) // Solo genera código para los métodos en su declaracion/redefinicion
+                if (m.getClassDeclared().equals(this)) { // Solo genera código para los métodos en su declaracion/redefinicion
                     m.generateCode();
+                    symbolTable.ceiASM_instructionList.add("");
+                }
             }
     }
 
     private boolean notDefaultClass(){
         return !(classToken.lexeme.equals("String") || classToken.lexeme.equals("Object") || classToken.lexeme.equals("System"));
     }
+
+    public void setOffsets() {
+        if (!offsetsSet){
+            if (notObjectClass()){
+                ClassEntry fatherClass = symbolTable.getClass(extendsClassToken.lexeme);
+                fatherClass.setOffsets();
+                lastAttributeOffset = fatherClass.getLastAttributeOffset(); // Cualquier otra clase arranca de los offsets del ancestro
+                lastMethodOffset = fatherClass.getLastMethodOffset();
+            } // Object arranca de 0/1 a settear offsets
+            setAttributeOffsets();
+            setMethodsOffsets();
+            constructor.setParametersOffsets();
+            offsetsSet = true;
+        }
+    }
+
+    private void setAttributeOffsets() {
+        for (Attribute a : attributeHashMap.values())
+            if (a.getClassDeclared().equals(this))
+                a.setOffset(++lastAttributeOffset);
+    }
+
+    private void setMethodsOffsets() {
+        for (Method m : methodHashMap.values()) {
+            m.setParametersOffsets();
+            if (!m.isStatic()) {
+                if (m.getClassDeclared().equals(this)) {
+                    if (methodIsRedefined(m))
+                        m.setOffset(symbolTable.getClass(extendsClassToken.lexeme).getMethod(m.getName()).getOffset());
+                    else m.setOffset(lastMethodOffset++);
+                }
+                methodsLabelByOffset.put(m.getOffset(), m.getLabel());
+            }
+        }
+    }
+
+    private boolean methodIsRedefined(Method method) {return symbolTable.getClass(extendsClassToken.lexeme).isMethod(method.getName());}
 
     // Setters
 

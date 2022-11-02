@@ -21,4 +21,5 @@ public interface Unit {
 
     String getLabel();
     void generateCode();
+    void setParametersOffsets();
 }

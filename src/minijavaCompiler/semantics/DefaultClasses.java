@@ -102,7 +102,7 @@ public class DefaultClasses {
         symbolTable.saveCurrentClass();
     }
 
-    public static void generateDefaultsMethodsCode(){
+    public static void generateDefaultMethodsCode(){
         translateObjectMethods();
         translateSystemMethods();
     }

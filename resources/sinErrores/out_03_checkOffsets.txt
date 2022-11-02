@@ -1,0 +1,205 @@
+# Llamada a main
+.code
+    PUSH simple_heap_init
+    CALL ; Inicializa heap
+    PUSH A_main ; Pushea label del main
+    CALL ; Llama a main
+    HALT ; Finaliza la ejecucion del programa
+
+# Metodos default
+simple_heap_init:
+    RET 0 ; Init de heap
+
+simple_malloc:
+    LOADFP ; Init unidad
+    LOADSP
+    STOREFP ; Fin de init
+    LOADHL
+    DUP
+    PUSH 1 ; Principio de bloque sigue al final del heap
+    ADD
+    STORE 4 ; Puntero a principio de bloque
+    LOAD 3 ; Cantidad de celdas a alojar
+    ADD
+    STOREHL ; Actualiza heap size
+    STOREFP
+    RET 1 ; Retorna, liberando parametro
+
+Object_debugPrint:
+    LOADFP
+    LOADSP
+    STOREFP
+    STOREFP
+    RET 1
+
+System_read:
+    LOADFP
+    LOADSP
+    STOREFP
+    READ ; Lee tope de la pila
+    STORE 3 ; Guarda en retorno el tope
+    STOREFP
+    RET 0
+
+System_printB:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    BPRINT ; Imprime el tope de la pila
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printC:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    CPRINT ; Imprime el tope de la pila
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printI:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    IPRINT ; Imprime el tope de la pila
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printS:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    SPRINT ; Imprime el tope de la pila
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_println:
+    LOADFP
+    LOADSP
+    STOREFP
+    PRNLN
+    STOREFP
+    RET 0
+
+System_printBln:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    BPRINT ; Imprime el tope de la pila
+    PRNLN
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printCln:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    CPRINT ; Imprime el tope de la pila
+    PRNLN
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printIln:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    IPRINT ; Imprime el tope de la pila
+    PRNLN
+    STOREFP
+    RET 1 ; Libera el parametro
+
+System_printSln:
+    LOADFP
+    LOADSP
+    STOREFP
+    LOAD 3 ; Pone en el tope la pila el parametro
+    SPRINT ; Imprime el tope de la pila
+    PRNLN
+    STOREFP
+    RET 1 ; Libera el parametro
+
+# Programa
+.data
+VT_A:
+    DW C_m1,B_m2,A_m3,A_m4 ; Etiquetas de metodo de A
+
+.code
+A_m3:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.code
+A_m4:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.code
+A_main:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 0 ; Libera los parametros y retorna de la unidad
+
+.data
+VT_B:
+    DW C_m1,B_m2,B_m3 ; Etiquetas de metodo de B
+
+.code
+B_m2:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.code
+B_m3:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.data
+VT_C:
+    DW C_m1,C_m2 ; Etiquetas de metodo de C
+
+.code
+C_m1:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.code
+C_m2:
+    LOADFP ; Guarda ED
+    LOADSP ; Guarda SP
+    STOREFP ; Corre FP al SP
+    STOREFP ; Usa ED para volver a RA llamador
+    RET 1 ; Libera los parametros y retorna de la unidad
+
+.data
+VT_Object:
+
+.data
+VT_String:
+
+.data
+VT_System:
+

@@ -6,7 +6,6 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -39,4 +38,7 @@ public interface ClassEntry {
     Set<String> getInheritanceSet();
 
     void generateCode();
+    void setOffsets();
+    int getLastAttributeOffset();
+    int getLastMethodOffset();
 }

@@ -14,6 +14,8 @@ public class Attribute implements Variable {
     private Type attributeType;
     private boolean isPublic;
 
+    private int offset;
+
     public Attribute(boolean isPublic, Type type, Token id) {
         this.attributeToken = id;
         this.attributeType = type;
@@ -36,6 +38,13 @@ public class Attribute implements Variable {
     public void correctlyDeclared() throws SemanticException {
         if (!attributeType.isPrimitive() && !symbolTable.classExists(attributeType.getTypeName())) // Tipo clase con clase no existente
             throw new SemanticException("No se puede declarar un atributo de tipo "+ attributeType.getTypeName()+", la clase no existe", attributeType.getTypeName(), attributeType.getLine());
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    public int getOffset(){
+        return offset;
     }
 
 }

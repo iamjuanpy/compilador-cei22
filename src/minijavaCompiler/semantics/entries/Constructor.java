@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class Constructor implements Unit {
 
     private Token constructorToken;
@@ -55,7 +57,25 @@ public class Constructor implements Unit {
     }
 
     public void generateCode(){
+//        int memToFree = parameterList.size() + 1; // Tiene this
+//
+//        symbolTable.ceiASM_instructionList.add(".code");
+//        symbolTable.ceiASM_instructionList.add(label+":");
+//        symbolTable.ceiASM_instructionList.add("    LOADFP ; Guarda ED");
+//        symbolTable.ceiASM_instructionList.add("    LOADSP ; Guarda SP");
+//        symbolTable.ceiASM_instructionList.add("    STOREFP ; Corre FP al SP");
+//
+//        block.generateCode();
+//
+//        symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
+//        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+    }
 
+    public void setParametersOffsets(){
+        int i = parameterList.size() + 3; // n parametros + 1 ED + 1 PR + 1 THIS
+        for (Parameter p : parameterList){
+            p.setOffset(i--);
+        }
     }
 
 }

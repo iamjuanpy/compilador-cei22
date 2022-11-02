@@ -48,6 +48,8 @@ public class Interface implements ClassEntry {
         return inheritanceSet;
     }
 
+    public int getLastAttributeOffset() {return 0;}
+    public int getLastMethodOffset() {return 0;}
 
     // Chequeo declaraciones
 
@@ -140,6 +142,10 @@ public class Interface implements ClassEntry {
     // Generación de código
 
     public void generateCode(){
+
+    }
+
+    public void setOffsets() {
 
     }
 

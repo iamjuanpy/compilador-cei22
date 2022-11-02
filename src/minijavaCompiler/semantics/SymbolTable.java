@@ -29,7 +29,8 @@ public class SymbolTable {
     public void checkDeclarations() throws SemanticException {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
-        if (mainMethod == null)                                                 // Paso 3: Ver que exista un metodo main
+        for (ClassEntry c : classesHashMap.values()) c.setOffsets();            // Paso 3: Setteo offsets para generar codigo CeIASM
+        if (mainMethod == null)                                                 // Paso 4: Ver que exista un metodo main
             throw new SemanticException("No se encontró clase con metodo main", eofToken.lexeme, eofToken.lineNumber);
     }
 
@@ -44,7 +45,7 @@ public class SymbolTable {
     public void generateCode() {
         generateMainCall();
         generateHeapAllocCall();
-        DefaultClasses.generateDefaultsMethodsCode();
+        DefaultClasses.generateDefaultMethodsCode();
         for (ClassEntry c : classesHashMap.values()) c.generateCode();
     }
 

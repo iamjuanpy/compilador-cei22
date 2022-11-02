@@ -24,6 +24,7 @@ public class Method implements Unit {
     private NodeBlock block;
 
     private String label;
+    private int offset;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
         this.classDeclared = symbolTable.currentClass;
@@ -108,6 +109,21 @@ public class Method implements Unit {
 
         symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
         symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+    }
+
+    public void setParametersOffsets(){
+        int i = isStatic ? parameterList.size() + 2 : parameterList.size() + 3; // Si es estatico PR + ED, si es dinamico this + PR + ED
+        for (Parameter p : parameterList){
+            p.setOffset(i--);
+        }
+    }
+
+    public void setOffset(int offset){
+        this.offset = offset;
+    }
+
+    public int getOffset(){
+        return offset;
     }
 
 }
