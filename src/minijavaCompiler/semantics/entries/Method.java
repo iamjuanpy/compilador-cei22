@@ -111,7 +111,7 @@ public class Method implements Unit {
         symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
     }
 
-    public void setParametersOffsets(){ // TODO Hago esto o los puedo insertar al reves?
+    public void setParametersOffsets(){
         int i = isStatic ? parameterList.size() + 2 : parameterList.size() + 3; // Si es estatico PR + ED, si es dinamico this + PR + ED
         for (Parameter p : parameterList){
             p.setOffset(i--);

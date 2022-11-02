@@ -240,7 +240,7 @@ public class ConcreteClass implements ClassEntry {
     }
 
     private void generateVT() {
-        if (methodsLabelByOffset.size() != 0){ // TODO Esta bien directamente no hacer la VT?
+        if (methodsLabelByOffset.size() != 0){
             symbolTable.ceiASM_instructionList.add(".data");
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
             String methodsLabels = "";
@@ -251,6 +251,10 @@ public class ConcreteClass implements ClassEntry {
             }
             symbolTable.ceiASM_instructionList.add("    DW " + methodsLabels + " ; Etiquetas de metodo de " + classToken.lexeme);
             symbolTable.ceiASM_instructionList.add("");
+        } else {
+            symbolTable.ceiASM_instructionList.add(".data");
+            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
+            symbolTable.ceiASM_instructionList.add("    NOP");
         }
     }
 

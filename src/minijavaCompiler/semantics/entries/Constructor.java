@@ -57,21 +57,21 @@ public class Constructor implements Unit {
     }
 
     public void generateCode(){
-//        int memToFree = parameterList.size() + 1; // TODO Tiene this? Los malloc se hacen afuera por la referencia?
-//
-//        symbolTable.ceiASM_instructionList.add(".code");
-//        symbolTable.ceiASM_instructionList.add(label+":");
-//        symbolTable.ceiASM_instructionList.add("    LOADFP ; Guarda ED");
-//        symbolTable.ceiASM_instructionList.add("    LOADSP ; Guarda SP");
-//        symbolTable.ceiASM_instructionList.add("    STOREFP ; Corre FP al SP");
-//
-//        block.generateCode();
-//
-//        symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
-//        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+        int memToFree = parameterList.size() + 1; // Tiene this
+
+        symbolTable.ceiASM_instructionList.add(".code");
+        symbolTable.ceiASM_instructionList.add(label+":");
+        symbolTable.ceiASM_instructionList.add("    LOADFP ; Guarda ED");
+        symbolTable.ceiASM_instructionList.add("    LOADSP ; Guarda SP");
+        symbolTable.ceiASM_instructionList.add("    STOREFP ; Corre FP al SP");
+
+        block.generateCode();
+
+        symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
+        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
     }
 
-    public void setParametersOffsets(){ // TODO Hago esto o los puedo insertar al reves?
+    public void setParametersOffsets(){
         int i = parameterList.size() + 3; // n parametros + 1 ED + 1 PR + 1 THIS
         for (Parameter p : parameterList){
             p.setOffset(i--);

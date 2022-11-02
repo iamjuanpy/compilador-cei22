@@ -113,6 +113,8 @@ public class DefaultClasses {
         symbolTable.ceiASM_instructionList.add("    LOADFP");
         symbolTable.ceiASM_instructionList.add("    LOADSP");
         symbolTable.ceiASM_instructionList.add("    STOREFP");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Lee i");
+        symbolTable.ceiASM_instructionList.add("    IPRINT ; Imprime i");
         symbolTable.ceiASM_instructionList.add("    STOREFP");
         symbolTable.ceiASM_instructionList.add("    RET 1");
         symbolTable.ceiASM_instructionList.add("");

@@ -91,7 +91,7 @@ public class NodeBlock implements NodeSentence {
 
     public boolean isVariableDeclaration() {return false;}
 
-    public void generateCode() { // TODO Dudas variables locales
+    public void generateCode() { // TODO Terminar variables locales
         if (nestingIn != null)
             lastVariableOffset = nestingIn.lastVariableOffset;
 

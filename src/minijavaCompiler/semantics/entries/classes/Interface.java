@@ -141,15 +141,13 @@ public class Interface implements ClassEntry {
 
     // Generación de código
 
-    public void generateCode(){ // TODO ???????????????
-
+    public void generateCode(){ // No tiene codigo
     }
 
     public void setOffsets() { // TODO Puedo settear offsets o como busco los metodos?
-
     }
 
-    public String getVTableLabel() {return "VT_"+interfaceToken.lexeme;}
+    public String getVTableLabel() {return null;} // NO LLEGA
 
     // Setters
 

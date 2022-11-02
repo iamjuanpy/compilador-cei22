@@ -4,8 +4,10 @@ import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
+import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
 import minijavaCompiler.semantics.types.Type;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 
 import java.util.Iterator;
 import java.util.List;
@@ -91,7 +93,11 @@ public class NodeStaticMethodCall implements NodeAccess{
     }
 
     public void generateCode() {
-        String methodLabel = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getLabel();
+        Method methodCalled = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme);
+        String methodLabel = methodCalled.getLabel();
+        if (!methodCalled.getReturnType().equals(new VoidType())){
+            symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
+        }
         for (NodeExpression p : actualParameters)
             p.generateCode();
         symbolTable.ceiASM_instructionList.add("    PUSH "+methodLabel+" ; Direccion del metodo en tope de la pila");
