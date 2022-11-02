@@ -4,7 +4,7 @@ class A {
         //System.printSln("juan");
         System.printIln(15092000);
         System.printCln('J');
-        System.printCln('\u2149');
+        System.printCln('j');
         System.printBln(true);
     }
 

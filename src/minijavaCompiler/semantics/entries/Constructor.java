@@ -57,7 +57,7 @@ public class Constructor implements Unit {
     }
 
     public void generateCode(){
-//        int memToFree = parameterList.size() + 1; // Tiene this
+//        int memToFree = parameterList.size() + 1; // TODO Tiene this? Los malloc se hacen afuera por la referencia?
 //
 //        symbolTable.ceiASM_instructionList.add(".code");
 //        symbolTable.ceiASM_instructionList.add(label+":");
@@ -71,7 +71,7 @@ public class Constructor implements Unit {
 //        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
     }
 
-    public void setParametersOffsets(){
+    public void setParametersOffsets(){ // TODO Hago esto o los puedo insertar al reves?
         int i = parameterList.size() + 3; // n parametros + 1 ED + 1 PR + 1 THIS
         for (Parameter p : parameterList){
             p.setOffset(i--);

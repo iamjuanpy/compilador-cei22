@@ -18,7 +18,7 @@ public class NodeString implements NodeLiteral {
     public Type check(){return new ReferenceType(new Token(TokenType.classID, "String", 0));}
 
     public void generateCode() {
-        //symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme+",0"); TODO VER
+        //symbolTable.ceiASM_instructionList.add("    DW "+token.lexeme+",0"); TODO Los objetos string no tienen atributos, y podes declarar "objetos" implicitamente
     }
 
 }

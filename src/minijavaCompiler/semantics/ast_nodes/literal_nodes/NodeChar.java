@@ -16,11 +16,7 @@ public class NodeChar implements NodeLiteral{
 
     public Type check(){return new CharType(); }
 
-    //if (token.lexeme.length() != 8) TODO ver
-    //    c = token.lexeme.charAt(1);
-    //else c = Integer.parseInt(token.lexeme.substring(3, 7),16);
     public void generateCode() {
-        int c = token.lexeme.charAt(1);
-        symbolTable.ceiASM_instructionList.add("    PUSH "+c);
+        symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme);
     }
 }

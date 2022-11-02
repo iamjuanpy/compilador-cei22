@@ -238,7 +238,7 @@ public class ConcreteClass implements ClassEntry {
     }
 
     private void generateVT() {
-        if (methodsLabelByOffset.size() != 0){
+        if (methodsLabelByOffset.size() != 0){ // TODO Esta bien directamente no hacer la VT?
             symbolTable.ceiASM_instructionList.add(".data");
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
             String methodsLabels = "";

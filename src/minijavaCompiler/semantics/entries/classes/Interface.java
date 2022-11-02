@@ -141,11 +141,11 @@ public class Interface implements ClassEntry {
 
     // Generación de código
 
-    public void generateCode(){
+    public void generateCode(){ // TODO ???????????????
 
     }
 
-    public void setOffsets() {
+    public void setOffsets() { // TODO Puedo settear offsets o como busco los metodos?
 
     }
 

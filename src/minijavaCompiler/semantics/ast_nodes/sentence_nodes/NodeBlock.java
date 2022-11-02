@@ -90,7 +90,7 @@ public class NodeBlock implements NodeSentence {
     public boolean isVariableDeclaration() {return false;}
 
     public void generateCode() {
-        // TODO completar con variables y preguntar lo de bloques
+        // TODO Si adentro tengo un bloque anidado, las variables van expandiendose para abajo?
         for (NodeSentence s : sentencesList)
             s.generateCode();
     }
