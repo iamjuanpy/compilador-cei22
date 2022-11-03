@@ -20,7 +20,9 @@ public class NodeStaticMethodCall implements NodeAccess{
     private Token methodToken;
     private List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+
     private boolean isLeftSideOfAssign;
+    private Method methodCalled;
 
     public NodeStaticMethodCall(Token classID, Token methodID){
         this.classToken = classID;
@@ -52,9 +54,10 @@ public class NodeStaticMethodCall implements NodeAccess{
             checkNotCallingInterface();
 
             if (methodExists()) {
-                if (methodIsStatic())
+                if (methodIsStatic()) {
+                    methodCalled = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme);
                     checkParameters();
-                else throw new SemanticException("El metodo "+methodToken.lexeme+" no es estático", methodToken.lexeme, methodToken.lineNumber);
+                } else throw new SemanticException("El metodo "+methodToken.lexeme+" no es estático", methodToken.lexeme, methodToken.lineNumber);
             } else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+classToken.lexeme, methodToken.lexeme, methodToken.lineNumber);
 
             Type methodType = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getReturnType();
@@ -76,7 +79,7 @@ public class NodeStaticMethodCall implements NodeAccess{
     }
 
     private void checkParameters() throws SemanticException {
-        List<Parameter> formalParameters = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme).getParametersList();
+        List<Parameter> formalParameters = methodCalled.getParametersList();
 
         if (formalParameters.size() != actualParameters.size())
             throw new SemanticException("La llamada a metodo estático "+methodToken.lexeme+" no se realizo con la cantidad de parametros correctos", methodToken.lexeme, methodToken.lineNumber);
@@ -93,7 +96,6 @@ public class NodeStaticMethodCall implements NodeAccess{
     }
 
     public void generateCode() {
-        Method methodCalled = symbolTable.getClass(classToken.lexeme).getMethod(methodToken.lexeme);
         String methodLabel = methodCalled.getLabel();
         if (!methodCalled.getReturnType().equals(new VoidType())){
             symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");

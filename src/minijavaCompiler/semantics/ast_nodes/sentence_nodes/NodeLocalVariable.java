@@ -79,9 +79,9 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public boolean isVariableDeclaration() {return true;}
 
     public void generateCode() {
-        if (value != null) {
+        if (value != null) { // Si var x = exp o Tipo v1 = exp
             value.generateCode();
-            symbolTable.ceiASM_instructionList.add("    LOAD "+offset+" ; Guardo variable local");
+            symbolTable.ceiASM_instructionList.add("    STORE "+offset+" ; Guardo variable local");
         }
     }
 

@@ -5,6 +5,8 @@ import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.types.primitives.BoolType;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class NodeWhile implements NodeSentence {
 
     private Token whileToken;
@@ -31,6 +33,13 @@ public class NodeWhile implements NodeSentence {
     public boolean isVariableDeclaration() {return false;}
 
     public void generateCode() {
-
+        String conditionLabel = symbolTable.getUniqueLabel();
+        String outOfWhileLabel = symbolTable.getUniqueLabel();
+        symbolTable.ceiASM_instructionList.add(conditionLabel+": NOP ; Condicion de while");
+        condition.generateCode(); // Codigo evaluar condicion
+        symbolTable.ceiASM_instructionList.add("    BF "+outOfWhileLabel+" ; Si no cumple, sale");
+        sentence.generateCode(); // Codigo a repetir
+        symbolTable.ceiASM_instructionList.add("    JUMP "+conditionLabel+" ; Prueba condicion de nuevo");
+        symbolTable.ceiASM_instructionList.add(outOfWhileLabel+": NOP ; Fin de while");
     }
 }

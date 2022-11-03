@@ -5,6 +5,8 @@ import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.types.primitives.BoolType;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class NodeIf implements NodeSentence{
 
     private Token ifToken;
@@ -51,6 +53,28 @@ public class NodeIf implements NodeSentence{
     public boolean isVariableDeclaration() {return false;}
 
     public void generateCode() {
+        if (elseSentence == null)
+            generateIfCode();
+        else generateIfElseCode();
+    }
 
+    private void generateIfCode() {
+        String outIfLabel = symbolTable.getUniqueLabel();
+        condition.generateCode();
+        symbolTable.ceiASM_instructionList.add("    BF "+outIfLabel+" ; Si es falso, salta el then");
+        thenSentence.generateCode();
+        symbolTable.ceiASM_instructionList.add(outIfLabel+": NOP ; Final del then");
+    }
+
+    private void generateIfElseCode() {
+        String elseLabel = symbolTable.getUniqueLabel();
+        String outIfLabel = symbolTable.getUniqueLabel();
+        condition.generateCode();
+        symbolTable.ceiASM_instructionList.add("    BF "+elseLabel+" ; Si es falso, va a else, sino sigue then");
+        thenSentence.generateCode();
+        symbolTable.ceiASM_instructionList.add("    JUMP "+outIfLabel+" ; Termina then, salta el else");
+        symbolTable.ceiASM_instructionList.add(elseLabel+": NOP ; Arranca else");
+        elseSentence.generateCode();
+        symbolTable.ceiASM_instructionList.add(outIfLabel+": NOP ; Final del if");
     }
 }

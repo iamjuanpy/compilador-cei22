@@ -91,20 +91,20 @@ public class NodeBlock implements NodeSentence {
 
     public boolean isVariableDeclaration() {return false;}
 
-    public void generateCode() { // TODO Terminar variables locales
+    public void generateCode() {
         if (nestingIn != null)
             lastVariableOffset = nestingIn.lastVariableOffset;
-
-        symbolTable.ceiASM_instructionList.add("    RMEM "+variableHashMap.size()+" ; Reservo espacio variables locales");
 
         for (NodeSentence s : sentencesList) {
             if (s.isVariableDeclaration()) {
                 ((NodeLocalVariable) s).setOffset(lastVariableOffset--);
+                symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo espacio para variable local");
                 s.generateCode();
             } else s.generateCode();
         }
 
-        symbolTable.ceiASM_instructionList.add("    FMEM "+variableHashMap.size()+" ; Libera variables locales");
+        if (variableHashMap.size() != 0)
+            symbolTable.ceiASM_instructionList.add("    FMEM "+variableHashMap.size()+" ; Libera variables locales");
     }
 
 }

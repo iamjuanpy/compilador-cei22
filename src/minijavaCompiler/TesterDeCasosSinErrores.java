@@ -45,7 +45,8 @@ public class TesterDeCasosSinErrores {
         File folder = new File(testFilesDirectoryPath);
         ArrayList<String> names = new ArrayList();
         for(File f: folder.listFiles()){
-            names.add(f.getName());
+            if (!f.getName().startsWith("out_"))
+                names.add(f.getName());
         }
         names.sort(String::compareTo);
         return names;

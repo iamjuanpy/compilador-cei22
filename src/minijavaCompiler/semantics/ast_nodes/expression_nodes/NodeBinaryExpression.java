@@ -81,9 +81,9 @@ public class NodeBinaryExpression implements NodeExpression {
 
     public void generateCode() {
         // De momento no hago logro de coercion
+        leftSide.generateCode();
         rightSide.generateCode();
-        leftSide.generateCode(); // Genero los valores al reves
-        generateOperatorCode(); // M[sp+1] op M[sp]
+        generateOperatorCode();
     }
 
     private void generateOperatorCode() {

@@ -1,0 +1,14 @@
+
+class A {
+
+    static void main(){
+        int i = 0;
+
+        while (i<10) {
+            System.printIln(i);
+            i += 1;
+        }
+
+    }
+
+}

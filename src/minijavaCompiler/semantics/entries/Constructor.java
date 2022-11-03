@@ -57,7 +57,7 @@ public class Constructor implements Unit {
     }
 
     public void generateCode(){
-        int memToFree = parameterList.size() + 1; // Tiene this
+        int memToFree = parameterList.size() + 1; // Tiene this, como antes de llamar se hace el malloc, el metodo retorna void
 
         symbolTable.ceiASM_instructionList.add(".code");
         symbolTable.ceiASM_instructionList.add(label+":");

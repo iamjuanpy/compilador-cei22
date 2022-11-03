@@ -51,11 +51,11 @@ public class NodeMethodCall implements NodeAccess {
         if (methodCalledExistsInClass()) {
             if (methodCalledIsDynamic())
                 checkNotCalledInStaticMethod();
+            methodCalled = symbolTable.currentClass.getMethod(methodToken.lexeme);
             checkParameters();
         }
         else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe en "+symbolTable.currentClass.getName(), methodToken.lexeme, methodToken.lineNumber);
 
-        methodCalled = symbolTable.currentClass.getMethod(methodToken.lexeme);
         Type methodType = methodCalled.getReturnType();
 
         if (optChaining == null) {

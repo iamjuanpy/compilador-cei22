@@ -2,6 +2,8 @@ package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
 import minijavaCompiler.lexical.Token;
 
+import static minijavaCompiler.Main.symbolTable;
+
 public class NodeEmptySentence implements NodeSentence{
 
     private Token token;
@@ -15,6 +17,8 @@ public class NodeEmptySentence implements NodeSentence{
     public boolean isReturn(){return false;}
     public boolean isVariableDeclaration() {return false;}
 
-    public void generateCode() {} // Nada
+    public void generateCode() {
+        symbolTable.ceiASM_instructionList.add("    NOP");
+    }
 
 }
