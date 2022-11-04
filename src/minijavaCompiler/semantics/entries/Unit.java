@@ -4,6 +4,8 @@ import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.sentence_nodes.NodeBlock;
 import minijavaCompiler.semantics.types.Type;
 
+import java.util.List;
+
 public interface Unit {
     void addParameter(Parameter parameter) throws SemanticException;
     void addBlock(NodeBlock block);
@@ -13,6 +15,7 @@ public interface Unit {
 
     boolean isParameter(String identifier);
     Parameter getParameter(String identifier);
+    List<Parameter> getParametersList();
 
     void checkSentences() throws SemanticException;
 

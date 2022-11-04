@@ -1,6 +1,5 @@
 package minijavaCompiler.semantics.ast_nodes.sentence_nodes;
 
-import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.entries.Unit;
 import minijavaCompiler.semantics.entries.classes.ClassEntry;
@@ -105,6 +104,10 @@ public class NodeBlock implements NodeSentence {
 
         if (variableHashMap.size() != 0)
             symbolTable.ceiASM_instructionList.add("    FMEM "+variableHashMap.size()+" ; Libera variables locales");
+    }
+
+    public int getAmountOfVariablesInMemory(){
+        return -1*(lastVariableOffset); // Offset arranca en 0, y es negativo
     }
 
 }

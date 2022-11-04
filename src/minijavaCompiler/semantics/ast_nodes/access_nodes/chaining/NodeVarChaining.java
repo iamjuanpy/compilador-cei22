@@ -2,6 +2,7 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes.chaining;
 
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
+import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.types.Type;
 
 import static minijavaCompiler.Main.symbolTable;
@@ -10,6 +11,8 @@ public class NodeVarChaining implements NodeChaining {
 
     private Token variableToken;
     private NodeChaining optChaining;
+
+    private Attribute attribute;
     private boolean isLeftSideOfAssign;
 
     public NodeVarChaining(Token id){
@@ -37,7 +40,8 @@ public class NodeVarChaining implements NodeChaining {
         checkNotChainingPrimitiveType(previousAccessType);
 
         if (attributeExistsInClass(className) && (attributeIsPublic(className) || attributeIsDeclaredInCurrentClass(className))) {
-            Type variableType = symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getType();
+            attribute = symbolTable.getClass(className).getAtrribute(variableToken.lexeme);
+            Type variableType = attribute.getType();
             if (optChaining == null)
                 return variableType;
             else return optChaining.check(variableType);
@@ -55,7 +59,12 @@ public class NodeVarChaining implements NodeChaining {
     private boolean attributeIsDeclaredInCurrentClass(String className) {return symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
 
     public void generateCode() {
-
+        if (!isLeftSideOfAssign || optChaining != null){
+            symbolTable.ceiASM_instructionList.add("    LOADREF "+attribute.getOffset());
+        } else {
+            symbolTable.ceiASM_instructionList.add("    SWAP");
+            symbolTable.ceiASM_instructionList.add("    STOREREF "+attribute.getOffset());
+        }
     }
 
     public void setIsLeftSideOfAssign(){

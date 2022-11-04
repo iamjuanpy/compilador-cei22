@@ -242,20 +242,19 @@ public class ConcreteClass implements ClassEntry {
     private void generateVT() {
         if (methodsLabelByOffset.size() != 0){
             symbolTable.ceiASM_instructionList.add(".data");
-            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
             String methodsLabels = "";
             for (int i = 0; i < methodsLabelByOffset.size(); i++) {
                 methodsLabels += methodsLabelByOffset.get(i);
                 if (i != methodsLabelByOffset.size()-1)
                     methodsLabels += ",";
             }
-            symbolTable.ceiASM_instructionList.add("    DW " + methodsLabels + " ; Etiquetas de metodo de " + classToken.lexeme);
+            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": DW "+methodsLabels+" ; Etiquetas de metodo de " + classToken.lexeme);
             symbolTable.ceiASM_instructionList.add("");
         } else {
             symbolTable.ceiASM_instructionList.add(".data");
-            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+":");
-            symbolTable.ceiASM_instructionList.add("    NOP");
+            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": NOP");
         }
+        symbolTable.ceiASM_instructionList.add("");
     }
 
     private void generateConstructorAndMethodsCode() {

@@ -108,7 +108,7 @@ public class Method implements Unit {
         block.generateCode();
 
         symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
-        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+        symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad"); // TODO VER NODERETURN Y NODEBLOCK
     }
 
     public void setParametersOffsets(){

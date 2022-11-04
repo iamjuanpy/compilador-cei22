@@ -3,6 +3,7 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes.chaining;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
+import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
 import minijavaCompiler.semantics.types.Type;
 
@@ -16,6 +17,8 @@ public class NodeMethodChaining implements NodeChaining{
     private Token methodToken;
     public List<NodeExpression> actualParameters;
     private NodeChaining optChaining;
+
+    private Method methodCalled;
     private boolean isLeftSideOfAssign;
 
     public NodeMethodChaining(Token id){
@@ -83,7 +86,11 @@ public class NodeMethodChaining implements NodeChaining{
     }
 
     public void generateCode() {
+        if (methodCalled.isStatic()){
 
+        } else {
+
+        }
     }
 
     public void setIsLeftSideOfAssign(){
