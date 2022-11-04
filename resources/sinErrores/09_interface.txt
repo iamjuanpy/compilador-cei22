@@ -1,0 +1,33 @@
+interface C {
+
+    void m1();
+
+}
+
+class A implements C{
+
+    static void main(){
+        C c;
+        c = new A();
+        c.m1();
+        c = new B();
+        c.m1();
+    }
+
+    void m1(){
+        System.printCln('a');
+    }
+
+}
+
+class B implements C {
+
+    void m0(){
+        System.printSln("no deberia");
+    }
+
+    void m1(){
+        System.printCln('b');
+    }
+
+}

@@ -7,9 +7,7 @@ import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Constructor;
 import minijavaCompiler.semantics.entries.Method;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static minijavaCompiler.Main.symbolTable;
 import static minijavaCompiler.lexical.TokenType.classID;
@@ -243,9 +241,12 @@ public class ConcreteClass implements ClassEntry {
         if (methodsLabelByOffset.size() != 0){
             symbolTable.ceiASM_instructionList.add(".data");
             String methodsLabels = "";
-            for (int i = 0; i < methodsLabelByOffset.size(); i++) {
-                methodsLabels += methodsLabelByOffset.get(i);
-                if (i != methodsLabelByOffset.size()-1)
+            int cantOff =  Collections.max(methodsLabelByOffset.keySet());
+            for (int i = 0; i < lastMethodOffset; i++) {
+                if (methodsLabelByOffset.get(i) != null)
+                    methodsLabels += methodsLabelByOffset.get(i);
+                else methodsLabels += "0";
+                if (i != lastMethodOffset - 1)
                     methodsLabels += ",";
             }
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": DW "+methodsLabels+" ; Etiquetas de metodo de " + classToken.lexeme);

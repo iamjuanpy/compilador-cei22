@@ -19,6 +19,9 @@ public class Interface implements ClassEntry {
     private HashMap<String, Token> interfaceExtendsHashMap;
     private boolean consolidated;
 
+    private boolean offsetsSet;
+    private int lastMethodOffset;
+
     public Interface(Token token){
         this.interfaceToken = token;
         methodHashMap = new HashMap<>();
@@ -145,6 +148,10 @@ public class Interface implements ClassEntry {
     }
 
     public void setOffsets() { // TODO Puedo settear offsets o como busco los metodos?
+        if (!offsetsSet){
+            
+        }
+        offsetsSet = true;
     }
 
     public String getVTableLabel() {return null;} // NO LLEGA
