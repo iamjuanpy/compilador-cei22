@@ -60,11 +60,14 @@ public class NodeVarChaining implements NodeChaining {
 
     public void generateCode() {
         if (!isLeftSideOfAssign || optChaining != null){
-            symbolTable.ceiASM_instructionList.add("    LOADREF "+attribute.getOffset());
+            symbolTable.ceiASM_instructionList.add("    LOADREF "+attribute.getOffset()+" ; Cargo direccion de atributo");
         } else {
             symbolTable.ceiASM_instructionList.add("    SWAP");
-            symbolTable.ceiASM_instructionList.add("    STOREREF "+attribute.getOffset());
+            symbolTable.ceiASM_instructionList.add("    STOREREF "+attribute.getOffset()+" ; Guardo en la direccion del atributo");
         }
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

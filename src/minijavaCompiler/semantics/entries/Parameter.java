@@ -17,13 +17,10 @@ public class Parameter implements Variable {
         parameterType = type;
     }
 
-    public String getName() {
-        return parameterToken.lexeme;
-    }
-    public int getLine() {
-        return parameterToken.lineNumber;
-    }
+    public String getName() {return parameterToken.lexeme;}
+    public int getLine() {return parameterToken.lineNumber;}
     public Type getType() {return parameterType;}
+    public boolean isAttribute() {return false;}
 
     public void correctlyDeclared() throws SemanticException {
         if (!parameterType.isPrimitive() && !symbolTable.classExists(parameterType.getTypeName())) // Tipo clase con clase no existente

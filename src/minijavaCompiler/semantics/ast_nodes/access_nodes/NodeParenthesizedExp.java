@@ -41,6 +41,9 @@ public class NodeParenthesizedExp implements NodeAccess{
 
     public void generateCode() {
         expression.generateCode();
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

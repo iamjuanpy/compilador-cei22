@@ -18,7 +18,7 @@ public class NodeEmptySentence implements NodeSentence{
     public boolean isVariableDeclaration() {return false;}
 
     public void generateCode() {
-        symbolTable.ceiASM_instructionList.add("    NOP");
+        symbolTable.ceiASM_instructionList.add("    NOP ; Instruccion vacia");
     }
 
 }

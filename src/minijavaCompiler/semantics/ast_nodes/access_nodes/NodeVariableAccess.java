@@ -3,6 +3,7 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
+import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Variable;
 import minijavaCompiler.semantics.types.Type;
@@ -15,7 +16,9 @@ public class NodeVariableAccess implements NodeAccess {
     private NodeChaining optChaining;
 
     private boolean isLeftSideOfAssign;
+    private boolean accessIsAttribute;
     private Variable variable;
+
 
     public NodeVariableAccess(Token id){
         this.variableToken = id;
@@ -66,18 +69,18 @@ public class NodeVariableAccess implements NodeAccess {
     private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}
 
     public void generateCode() {
-        if (accessIsAttribute()){
-            symbolTable.ceiASM_instructionList.add("    LOAD 3");
+        if (variable.isAttribute()){
+            symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Cargo this para acceder a atributo");
             if (!isLeftSideOfAssign || optChaining != null){
-                symbolTable.ceiASM_instructionList.add("    LOADREF "+variable.getOffset());
+                symbolTable.ceiASM_instructionList.add("    LOADREF "+variable.getOffset()+" ; Cargo direccion de atributo");
             } else {
                 symbolTable.ceiASM_instructionList.add("    SWAP");
-                symbolTable.ceiASM_instructionList.add("    STOREREF "+variable.getOffset());
+                symbolTable.ceiASM_instructionList.add("    STOREREF "+variable.getOffset()+" ; Guardo en la direccion del atributo");
             }
         } else {
             if (!isLeftSideOfAssign || optChaining != null)
-                symbolTable.ceiASM_instructionList.add("    LOAD "+variable.getOffset());
-            else symbolTable.ceiASM_instructionList.add("    STORE "+variable.getOffset());
+                symbolTable.ceiASM_instructionList.add("    LOAD "+variable.getOffset()+" ; Cargo la direccion de parametro/var local");
+            else symbolTable.ceiASM_instructionList.add("    STORE "+variable.getOffset()+" ; Guardo en la direccion de parametro/var local");
         }
 
         if (optChaining != null)

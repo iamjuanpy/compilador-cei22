@@ -56,7 +56,7 @@ public class NodeReturn implements NodeSentence{
         if (expression != null) {
             generateStoreCode(); // Return tiene valor, lo guarda donde debe
         }
-        generateReturnCode();
+        generateReturnCode(); // Libera parametros, var locales y vuelve de la unidad
     }
 
     private void generateStoreCode() {
@@ -68,7 +68,7 @@ public class NodeReturn implements NodeSentence{
 
     private void generateReturnCode() {
         int localVariablesToFree,memToFree;
-        memToFree = !unit.isMethod() || ((Method) unit).isStatic() ? parameterCount : parameterCount + 1; // Si es dinamico, tiene que borrar el this
+        memToFree = unit.isMethod() && ((Method) unit).isStatic() ? parameterCount : parameterCount + 1; // Si es dinamico o constructor, tiene que borrar el this
         localVariablesToFree = block.getAmountOfVariablesInMemory();
         symbolTable.ceiASM_instructionList.add("    FMEM "+localVariablesToFree+" ; Borra variables locales hasta ahora");
         symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");

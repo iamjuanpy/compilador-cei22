@@ -6,6 +6,7 @@ import minijavaCompiler.semantics.ast_nodes.expression_nodes.NodeExpression;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Parameter;
 import minijavaCompiler.semantics.types.Type;
+import minijavaCompiler.semantics.types.primitives.VoidType;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,8 +51,10 @@ public class NodeMethodChaining implements NodeChaining{
 
         checkNotChainingPrimitiveType(previousAccessType);
 
-        if (methodExistsInClass(className))
+        if (methodExistsInClass(className)) {
+            methodCalled = symbolTable.getClass(className).getMethod(methodToken.lexeme);
             checkParameters(className);
+        }
         else throw new SemanticException("El metodo "+methodToken.lexeme+" no existe para "+className, methodToken.lexeme, methodToken.lineNumber);
 
         Type methodType = symbolTable.getClass(className).getMethod(methodToken.lexeme).getReturnType();
@@ -87,10 +90,32 @@ public class NodeMethodChaining implements NodeChaining{
 
     public void generateCode() {
         if (methodCalled.isStatic()){
-
+            symbolTable.ceiASM_instructionList.add("    POP ; Borro la referencia al objeto");
+            if (!methodCalled.getReturnType().equals(new VoidType())){
+                symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
+            }
+            for (NodeExpression p : actualParameters){ // Genero codigo de los parametros
+                p.generateCode();
+            }
+            symbolTable.ceiASM_instructionList.add("    PUSH "+methodCalled.getLabel()+" ; Cargo la direccion estatica");
+            symbolTable.ceiASM_instructionList.add("    CALL ; Llamo metodo");
         } else {
-
+            if (!methodCalled.getReturnType().equals(new VoidType())){
+                symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
+                symbolTable.ceiASM_instructionList.add("    SWAP");
+            }
+            for (NodeExpression p : actualParameters){ // Genero codigo de los parametros, corriendo el this
+                p.generateCode();
+                symbolTable.ceiASM_instructionList.add("    SWAP");
+            }
+            symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this");
+            symbolTable.ceiASM_instructionList.add("    LOADREF 0 ; Cargo VT");
+            symbolTable.ceiASM_instructionList.add("    LOADREF "+methodCalled.getOffset()+" ; Cargo metodo");
+            symbolTable.ceiASM_instructionList.add("    CALL ; Llamo metodo");
         }
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

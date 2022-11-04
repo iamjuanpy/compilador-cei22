@@ -104,6 +104,9 @@ public class NodeStaticMethodCall implements NodeAccess{
             p.generateCode();
         symbolTable.ceiASM_instructionList.add("    PUSH "+methodLabel+" ; Direccion del metodo en tope de la pila");
         symbolTable.ceiASM_instructionList.add("    CALL ; Llama al metodo");
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

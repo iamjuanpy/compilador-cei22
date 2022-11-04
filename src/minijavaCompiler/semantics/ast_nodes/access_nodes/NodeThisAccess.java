@@ -55,7 +55,10 @@ public class NodeThisAccess implements NodeAccess {
     }
 
     public void generateCode() {
-        symbolTable.ceiASM_instructionList.add("    LOAD 3");
+        symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Cargo this");
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

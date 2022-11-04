@@ -96,10 +96,15 @@ public class NodeConstructorCall implements NodeAccess{
         symbolTable.ceiASM_instructionList.add("    STOREREF 0 ; Guardo VT en CIR");
         symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this, para metodo de constructor");
         // Ejecuta metodo de constructor (ya esta la referencia al CIR en el retorno)
-        for (NodeExpression p : actualParameters)
+        for (NodeExpression p : actualParameters) {
             p.generateCode();
+            symbolTable.ceiASM_instructionList.add("    SWAP"); // Tiene this
+        }
         symbolTable.ceiASM_instructionList.add("    PUSH "+constructor.getLabel()+" ; Direccion del constructor");
         symbolTable.ceiASM_instructionList.add("    CALL ; Llama al metodo");
+
+        if (optChaining != null)
+            optChaining.generateCode();
     }
 
     public void setIsLeftSideOfAssign(){

@@ -34,6 +34,7 @@ public class Attribute implements Variable {
     public boolean isPublic(){
         return isPublic;
     }
+    public boolean isAttribute() {return true;}
 
     public void correctlyDeclared() throws SemanticException {
         if (!attributeType.isPrimitive() && !symbolTable.classExists(attributeType.getTypeName())) // Tipo clase con clase no existente

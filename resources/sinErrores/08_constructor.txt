@@ -1,0 +1,34 @@
+
+class A {
+
+    public int i;
+    public boolean b;
+
+    A(int i, boolean b) {
+        this.i = i;
+        this.b = b;
+    }
+
+    static void main(){
+        A a = new A(m1(), A.m2());
+        var x = a.i;
+        var y = a.b;
+        System.printIln(x);
+        System.printBln(y);
+    }
+
+    static int m1(){
+        return (15+15-21-21*1);
+    }
+
+    static boolean m2(){
+        if (1>2)
+            return false;
+        else {
+            if (0<1)
+                return true;
+            else return false;
+        }
+    }
+
+}

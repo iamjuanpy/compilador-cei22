@@ -36,6 +36,7 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public String getName() { return token.lexeme;}
     public int getLine() { return token.lineNumber;}
     public Type getType(){ return type;}
+    public boolean isAttribute() {return false;}
 
     public void check() throws SemanticException {
         if (classicDeclaration())
@@ -81,7 +82,7 @@ public class NodeLocalVariable implements NodeSentence, Variable {
     public void generateCode() {
         if (value != null) { // Si var x = exp o Tipo v1 = exp
             value.generateCode();
-            symbolTable.ceiASM_instructionList.add("    STORE "+offset+" ; Guardo variable local");
+            symbolTable.ceiASM_instructionList.add("    STORE "+offset+" ; Guardo valor inicial de variable local");
         }
     }
 
