@@ -38,7 +38,11 @@ public interface ClassEntry {
     Set<String> getInheritanceSet();
 
     void generateCode();
-    void setOffsets();
+
+    void setAttributesOffsets();
+    void setMethodsOffsets();
+    void fixMethodsOffsets();
+
     int getLastAttributeOffset();
     int getLastMethodOffset();
 

@@ -1,0 +1,23 @@
+
+interface B {
+
+    void m1();
+
+}
+
+
+class C implements B {
+
+    static void main(){}
+    void a1(){}
+    void a0(){}
+    void m1(){}
+
+}
+
+class A implements B {
+
+    void m0(){}
+    void m1(){}
+
+}

@@ -22,8 +22,9 @@ public class ConcreteClass implements ClassEntry {
     private HashMap<String,Token> interfacesHashMap;
     private boolean consolidated;
 
-    private HashMap<Integer, String> methodsLabelByOffset;
-    private boolean offsetsSet;
+    private boolean methodsOffsetSet;
+    private boolean attributesOffsetSet;
+
     private int lastAttributeOffset;
     private int lastMethodOffset;
 
@@ -34,7 +35,7 @@ public class ConcreteClass implements ClassEntry {
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
         consolidated = false;
-        methodsLabelByOffset = new HashMap<>();
+
     }
 
     public String getName() {return classToken.lexeme;}
@@ -62,9 +63,6 @@ public class ConcreteClass implements ClassEntry {
         }
         return inheritanceSet;
     }
-
-    public int getLastAttributeOffset() {return lastAttributeOffset;}
-    public int getLastMethodOffset() {return lastMethodOffset;}
 
     public String getVTableLabel() {return "VT_"+classToken.lexeme;}
 
@@ -211,8 +209,11 @@ public class ConcreteClass implements ClassEntry {
             for (Method method : symbolTable.getClass(extendsClassToken.lexeme).getMethodHashMap().values()) {
                 if (methodHashMap.get(method.getName()) == null) {
                     methodHashMap.put(method.getName(), method);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                     throw new SemanticException("El método heredado "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
+                else {
+                    methodHashMap.get(method.getName()).setRedefining(method);
+                    method.addRedefinedBy(methodHashMap.get(method.getName()));
                 }
             }
         }
@@ -223,9 +224,9 @@ public class ConcreteClass implements ClassEntry {
             for (Method method : symbolTable.getClass(intface.lexeme).getMethodHashMap().values()){
                 if (methodHashMap.get(method.getName()) == null) {
                     throw new SemanticException("Falta implementar el metodo "+method.getName()+" de la interface "+intface.lexeme, intface.lexeme, intface.lineNumber);
-                } else if (!method.hasSameSignature(methodHashMap.get(method.getName()))) {
+                } else if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                     throw new SemanticException("El metodo "+method.getName()+" de la interface "+intface.lexeme+" está mal implementado", intface.lexeme, intface.lineNumber);
-                }
+                method.addImplementation(methodHashMap.get(method.getName()));
             }
         }
     }
@@ -238,19 +239,23 @@ public class ConcreteClass implements ClassEntry {
     }
 
     private void generateVT() {
+        HashMap<Integer, String> methodsLabelByOffset = new HashMap<>();
+        for (Method m : methodHashMap.values()) {
+            if (!m.isStatic())
+                methodsLabelByOffset.put(m.getOffset(), m.getLabel());
+        }
+
         if (methodsLabelByOffset.size() != 0){
             symbolTable.ceiASM_instructionList.add(".data");
             String methodsLabels = "";
-            int cantOff =  Collections.max(methodsLabelByOffset.keySet());
-            for (int i = 0; i < lastMethodOffset; i++) {
+            for (int i = 0; i < getLastMethodOffset(); i++) {
                 if (methodsLabelByOffset.get(i) != null)
                     methodsLabels += methodsLabelByOffset.get(i);
                 else methodsLabels += "0";
-                if (i != lastMethodOffset - 1)
+                if (i != getLastMethodOffset()-1)
                     methodsLabels += ",";
             }
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": DW "+methodsLabels+" ; Etiquetas de metodo de " + classToken.lexeme);
-            symbolTable.ceiASM_instructionList.add("");
         } else {
             symbolTable.ceiASM_instructionList.add(".data");
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": NOP");
@@ -260,6 +265,7 @@ public class ConcreteClass implements ClassEntry {
 
     private void generateConstructorAndMethodsCode() {
         constructor.generateCode();
+        symbolTable.ceiASM_instructionList.add("");
         if (notDefaultClass()) // El codigo de los metodos de las clases default ya esta creado
             for (Method m : methodHashMap.values()) {
                 if (m.getClassDeclared().equals(this)) { // Solo genera código para los métodos en su declaracion/redefinicion
@@ -269,46 +275,69 @@ public class ConcreteClass implements ClassEntry {
             }
     }
 
-    private boolean notDefaultClass(){
-        return !(classToken.lexeme.equals("String") || classToken.lexeme.equals("Object") || classToken.lexeme.equals("System"));
-    }
+    private boolean notDefaultClass(){return !(classToken.lexeme.equals("String") || classToken.lexeme.equals("Object") || classToken.lexeme.equals("System"));}
 
-    public void setOffsets() {
-        if (!offsetsSet){
+    // Offsets
+
+    public void setMethodsOffsets() {
+        if (!methodsOffsetSet){
+            constructor.setParametersOffsets();
             if (notObjectClass()){
                 ClassEntry fatherClass = symbolTable.getClass(extendsClassToken.lexeme);
-                fatherClass.setOffsets();
-                lastAttributeOffset = fatherClass.getLastAttributeOffset(); // Cualquier otra clase arranca de los offsets del ancestro
+                fatherClass.setMethodsOffsets();
                 lastMethodOffset = fatherClass.getLastMethodOffset();
-            } // Object arranca de 0/1 a settear offsets
-            setAttributeOffsets();
-            setMethodsOffsets();
-            constructor.setParametersOffsets();
-            offsetsSet = true;
-        }
-    }
-
-    private void setAttributeOffsets() {
-        for (Attribute a : attributeHashMap.values())
-            if (a.getClassDeclared().equals(this))
-                a.setOffset(++lastAttributeOffset);
-    }
-
-    private void setMethodsOffsets() {
-        for (Method m : methodHashMap.values()) {
-            m.setParametersOffsets();
-            if (!m.isStatic()) {
-                if (m.getClassDeclared().equals(this)) {
-                    if (methodIsRedefined(m))
-                        m.setOffset(symbolTable.getClass(extendsClassToken.lexeme).getMethod(m.getName()).getOffset());
-                    else m.setOffset(lastMethodOffset++);
+            } else lastMethodOffset = 0;
+            for (Method method : methodHashMap.values()) {
+                method.setParametersOffsets();
+                if (!method.isStatic()) { // Si es estatico no pertenece a la VT
+                    if (method.getClassDeclared().equals(this)) {
+                        if (methodIsRedefined(method))
+                            method.setOffset(symbolTable.getClass(extendsClassToken.lexeme).getMethod(method.getName()).getOffset());
+                        else method.setOffset(lastMethodOffset++);
+                    }
                 }
-                methodsLabelByOffset.put(m.getOffset(), m.getLabel());
             }
+            methodsOffsetSet = true;
         }
     }
 
     private boolean methodIsRedefined(Method method) {return symbolTable.getClass(extendsClassToken.lexeme).isMethod(method.getName());}
+
+    public void fixMethodsOffsets() {}
+
+    public int getLastMethodOffset() {
+        int maxOffset = 0;
+        boolean atLeastOneDynamicMethod = false;
+        for (Method m : methodHashMap.values()) {
+            if (!m.isStatic() && m.getOffset() > maxOffset) {
+                maxOffset = m.getOffset();
+                atLeastOneDynamicMethod = true;
+            }
+        }
+        if (atLeastOneDynamicMethod)
+            return maxOffset+1;
+        else return 0;
+    }
+
+    // Offsets de atributos
+
+    public void setAttributesOffsets() {
+        if (!attributesOffsetSet) {
+            if (notObjectClass()) {
+                ClassEntry fatherClass = symbolTable.getClass(extendsClassToken.lexeme);
+                fatherClass.setAttributesOffsets();
+                lastAttributeOffset = fatherClass.getLastAttributeOffset();
+            } else lastAttributeOffset = 1; // Los atributos arranca en 1 en el CIR, la direccion a la VT esta en 0
+
+            for (Attribute a : attributeHashMap.values())
+                if (a.getClassDeclared().equals(this))
+                    a.setOffset(lastAttributeOffset++);
+
+            attributesOffsetSet = true;
+        }
+    }
+
+    public int getLastAttributeOffset() {return lastAttributeOffset;}
 
     // Setters
 

@@ -17,7 +17,7 @@ public class SymbolTable {
     public Unit mainMethod;
     public Token eofToken;
 
-    private HashMap<String, ClassEntry> classesHashMap;
+    public HashMap<String, ClassEntry> classesHashMap;
 
     public List<String> ceiASM_instructionList;
     private int uniqueLabelNumber;
@@ -30,8 +30,10 @@ public class SymbolTable {
     public void checkDeclarations() throws SemanticException {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
-        for (ClassEntry c : classesHashMap.values()) c.setOffsets();            // Paso 3: Setteo offsets para generar codigo CeIASM
-        if (mainMethod == null)                                                 // Paso 4: Ver que exista un metodo main
+        for (ClassEntry c : classesHashMap.values()) c.setAttributesOffsets();  // Paso 3: offsets de atributos
+        for (ClassEntry c : classesHashMap.values()) c.setMethodsOffsets();     // Paso 4: offsets de metodos
+        for (ClassEntry c : classesHashMap.values()) c.fixMethodsOffsets();     // Paso 6: corregir offsets de metodos
+        if (mainMethod == null)                                                 // Paso 7: Ver que exista un metodo main
             throw new SemanticException("No se encontró clase con metodo main", eofToken.lexeme, eofToken.lineNumber);
     }
 
@@ -95,12 +97,8 @@ public class SymbolTable {
         } else currentClass = classEntry;
     }
 
-    public void saveCurrentClass() {
-        classesHashMap.put(currentClass.getName(), currentClass);
-    }
+    public void saveCurrentClass() {classesHashMap.put(currentClass.getName(), currentClass);}
 
-    public String getUniqueLabel(){
-        return "E"+(uniqueLabelNumber++);
-    }
+    public String getUniqueLabel(){return "E"+(uniqueLabelNumber++);}
 
 }

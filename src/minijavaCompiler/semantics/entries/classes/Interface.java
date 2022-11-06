@@ -8,6 +8,7 @@ import minijavaCompiler.semantics.entries.Method;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static minijavaCompiler.Main.symbolTable;
@@ -18,9 +19,6 @@ public class Interface implements ClassEntry {
     private HashMap<String, Method> methodHashMap;
     private HashMap<String, Token> interfaceExtendsHashMap;
     private boolean consolidated;
-
-    private boolean offsetsSet;
-    private int lastMethodOffset;
 
     public Interface(Token token){
         this.interfaceToken = token;
@@ -42,6 +40,7 @@ public class Interface implements ClassEntry {
     public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
 
     public Constructor getConstructor() {return null;} // no llega
+    public String getVTableLabel() {return null;} // NO LLEGA
 
     public Set<String> getInheritanceSet() {
         HashSet<String> inheritanceSet = new HashSet<>();
@@ -51,8 +50,8 @@ public class Interface implements ClassEntry {
         return inheritanceSet;
     }
 
-    public int getLastAttributeOffset() {return 0;}
-    public int getLastMethodOffset() {return 0;}
+    public int getLastAttributeOffset() {return 0;} // No llega
+    public int getLastMethodOffset() {return 0;} // No llega
 
     // Chequeo declaraciones
 
@@ -138,23 +137,50 @@ public class Interface implements ClassEntry {
                 if (methodHashMap.get(method.getName()) != null) {
                     if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                         throw new SemanticException("No se puede extender una interface teniendo un metodo redefinido con distintos parametros/retorno", interfaceExtend.lexeme, interfaceExtend.lineNumber);
-                } else methodHashMap.put(method.getName(), method);
+                    methodHashMap.put(method.getName(), method);
+                }
             }
     }
 
     // Generación de código
 
-    public void generateCode(){ // No tiene codigo
-    }
+    public void generateCode(){} // No tiene codigo
 
-    public void setOffsets() { // TODO Puedo settear offsets o como busco los metodos?
-        if (!offsetsSet){
-            
+    public void setAttributesOffsets(){} // No tiene atributos
+    public void setMethodsOffsets() {} // No hace la primera pasada
+
+    public void fixMethodsOffsets() {
+        for (Method interfaceMethod : methodHashMap.values()) { // Por cada metodo a implementar
+            List<Method> implementationList = interfaceMethod.getImplementationList();
+            if (implementedOffsetsAreConflicted(implementationList)) { // Si los offsets de las implementaciones no coinciden
+                setAllOffsetsWithMaxAvailable(implementationList); // Setteo con el maximo
+            }
         }
-        offsetsSet = true;
     }
 
-    public String getVTableLabel() {return null;} // NO LLEGA
+    private boolean implementedOffsetsAreConflicted(List<Method> implementationList) {
+        int offset = 0;
+        boolean conflict = false, first = true;
+        for (Method implementation : implementationList) {
+            if (first) {
+                offset = implementation.getOffset();
+                first = false;
+            } else {
+                conflict = offset != implementation.getOffset();
+                break;
+            }
+        }
+        return conflict;
+    }
+
+    private void setAllOffsetsWithMaxAvailable(List<Method> implementationList) {
+        int maxOffset = 0;
+        for (Method implementation : implementationList)
+            if (implementation.getOffset() > maxOffset)
+                maxOffset = implementation.getOffset();
+        for (Method implementation : implementationList)
+            implementation.setOffset(maxOffset);
+    }
 
     // Setters
 

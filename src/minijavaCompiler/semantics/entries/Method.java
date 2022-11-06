@@ -24,6 +24,11 @@ public class Method implements Unit {
     private NodeBlock block;
 
     private String label;
+
+    // Referencias
+    private Method redefining; // Metodo que redefine
+    private List<Method> isRedefinedBy; // Metodos que lo redefinen
+    private List<Method> implementationList; // Metodos que implementa (solo usado por los headers de las interfaces, metodos concretos lo tienen vacio
     private int offset;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
@@ -33,7 +38,9 @@ public class Method implements Unit {
         this.returnType = type;
         parameterHashMap = new HashMap<>();
         parameterList = new ArrayList<>();
-        label = classDeclared.getName()+"_"+methodToken.lexeme; // A_m1
+        label = classDeclared.getName() + "_" + methodToken.lexeme; // A_m1
+        implementationList = new ArrayList<>();
+        isRedefinedBy = new ArrayList<>();
     }
 
     public String getName() {return methodToken.lexeme;}
@@ -96,6 +103,8 @@ public class Method implements Unit {
         block.check();
     }
 
+    // Generacion de codigo
+
     public void generateCode(){
         int memToFree = isStatic ? parameterList.size() : parameterList.size() + 1; // Si es dinamico, tiene que borrar el this
 
@@ -111,6 +120,8 @@ public class Method implements Unit {
         symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad"); // TODO VER NODERETURN Y NODEBLOCK
     }
 
+    // Offsets
+
     public void setParametersOffsets(){
         int i = isStatic ? parameterList.size() + 2 : parameterList.size() + 3; // Si es estatico PR + ED, si es dinamico this + PR + ED
         for (Parameter p : parameterList){
@@ -118,9 +129,22 @@ public class Method implements Unit {
         }
     }
 
-    public void setOffset(int offset){this.offset = offset;}
-    public int getOffset(){
-        return offset;
+    public void setOffset(int offset){
+        this.offset = offset;
+        if (redefining != null) { // Expando si es necesario el offset corregido
+            if (redefining.getOffset() != offset)
+                redefining.setOffset(offset);
+        }
+        for (Method redefinedBy : isRedefinedBy) {
+            if (redefinedBy.getOffset() != offset)
+                redefinedBy.setOffset(offset);
+        }
     }
+    public int getOffset(){return offset;}
 
+    public void setRedefining(Method method) {redefining = method;}
+    public void addRedefinedBy(Method method) {isRedefinedBy.add(method);}
+
+    public void addImplementation(Method m){implementationList.add(m);}
+    public List<Method> getImplementationList(){return implementationList;}
 }
