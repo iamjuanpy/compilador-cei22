@@ -47,7 +47,7 @@ public class NodeUnaryExpression implements NodeExpression {
 
     public void generateCode() {
         expression.generateCode();
-        generateOperatorCode(); // M[sp+1] op M[sp]
+        generateOperatorCode();
     }
 
     private void generateOperatorCode() {
@@ -55,7 +55,7 @@ public class NodeUnaryExpression implements NodeExpression {
             case addOP:
                 break;
             case subOP:
-                symbolTable.ceiASM_instructionList.add("    NEG");
+                symbolTable.ceiASM_instructionList.add("    NEG ; Negativo");
                 break;
             case not:
                 symbolTable.ceiASM_instructionList.add("    NOT");

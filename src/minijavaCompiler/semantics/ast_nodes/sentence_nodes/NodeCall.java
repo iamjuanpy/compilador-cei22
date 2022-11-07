@@ -31,7 +31,7 @@ public class NodeCall implements NodeSentence{
     public void generateCode() {
         access.generateCode();
         if (!returnType.equals(new VoidType())){ // Si la llamada reservo lugar para retorno y no se utiliza lo pierdo
-            symbolTable.ceiASM_instructionList.add("    POP ; Borro retorno, que no me sirve");
+            symbolTable.ceiASM_instructionList.add("    POP ; Borro retorno, no lo asigno a nada");
         }
     }
 

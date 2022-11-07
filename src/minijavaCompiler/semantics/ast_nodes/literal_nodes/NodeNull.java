@@ -17,7 +17,7 @@ public class NodeNull implements NodeLiteral{
     public Type check(){return new NullType();}
 
     public void generateCode() {
-        symbolTable.ceiASM_instructionList.add("    PUSH 0");
+        symbolTable.ceiASM_instructionList.add("    PUSH 0 ; NULL");
     }
 
 }

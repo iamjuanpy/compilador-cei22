@@ -70,7 +70,7 @@ public class NodeReturn implements NodeSentence{
         int localVariablesToFree,memToFree;
         memToFree = unit.isMethod() && ((Method) unit).isStatic() ? parameterCount : parameterCount + 1; // Si es dinamico o constructor, tiene que borrar el this
         localVariablesToFree = block.getAmountOfVariablesInMemory();
-        symbolTable.ceiASM_instructionList.add("    FMEM "+localVariablesToFree+" ; Borra variables locales hasta ahora");
+        symbolTable.ceiASM_instructionList.add("    FMEM "+localVariablesToFree+" ; Borra variables locales reservadas");
         symbolTable.ceiASM_instructionList.add("    STOREFP ; Usa ED para volver a RA llamador");
         symbolTable.ceiASM_instructionList.add("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
     }

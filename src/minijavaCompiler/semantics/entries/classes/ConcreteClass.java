@@ -257,7 +257,7 @@ public class ConcreteClass implements ClassEntry {
             symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": DW "+methodsLabels+" ; Etiquetas de metodo de " + classToken.lexeme);
         } else {
             symbolTable.ceiASM_instructionList.add(".data");
-            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": NOP");
+            symbolTable.ceiASM_instructionList.add("VT_"+classToken.lexeme+": NOP ; Clase sin metodos dinamicos");
         }
         symbolTable.ceiASM_instructionList.add("");
     }

@@ -1,0 +1,28 @@
+
+class A {
+
+    static void main(){
+        var c = 'c';
+        B.imprChar(c);
+        System.printCln(c);
+
+        var x = B.imprChar('j');
+
+        System.printCln(x);
+        x = 'f';
+        System.printCln(x);
+    }
+
+
+}
+
+class B{
+
+    static char imprChar(char c){
+        System.printCln(c);
+        c = 'm';
+        return c;
+    }
+
+
+}

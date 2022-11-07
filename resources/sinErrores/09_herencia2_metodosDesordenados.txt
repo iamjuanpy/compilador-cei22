@@ -1,0 +1,81 @@
+
+interface B {
+
+    void m100();
+
+}
+
+
+class C implements B { // Nombres de metodos desordenados a proposito
+
+    public B intB;
+    public C claseC;
+    public A claseA;
+    public D claseD;
+
+    static void main(){
+        new C().test();
+    }
+    void test() {
+        System.printSln("Test interface B");
+        intB = new C();
+        intB.m100();
+        System.println();
+        intB = new A();
+        intB.m100();
+        System.println();
+        intB = new D();
+        intB.m100();
+        System.println(); System.println();
+
+        System.printSln("Test Clase C");
+        claseC = new C();
+        claseC.m1500();
+        claseC.m1000();
+        claseC.m100();
+        System.println(); System.println();
+
+        System.printSln("Test Clase A");
+        claseA = new A();
+        claseA.z10000();
+        claseA.z2();
+        claseA.m100();
+        System.println();
+        claseA = new D();
+        claseA.z10000();
+        claseA.z2();
+        claseA.m100();
+        System.println(); System.println();
+
+        System.printSln("Test Clase D");
+        claseD = new D();
+        claseD.z10000();
+        claseD.z2();
+        claseD.m100();
+        claseD.a3();
+        claseD.a4();
+        claseD.a5();
+
+    }
+    void m1500(){ System.printSln("1500 C");}
+    void m1000(){ System.printSln("1000 C");}
+    void m100(){ System.printSln("100 C");}
+
+}
+
+class A implements B {
+
+    void z10000(){ System.printSln("10000 A");}
+    void z2(){ System.printSln("Z2 A");}
+    void m100(){ System.printSln("100 A");}
+
+}
+
+class D extends A {
+
+    void a3(){ System.printSln("A3 D");}
+    void a4(){ System.printSln("A4 D");}
+    void a5(){ System.printSln("A5 D");}
+    void z2() {System.printSln("Z2 D");}
+
+}

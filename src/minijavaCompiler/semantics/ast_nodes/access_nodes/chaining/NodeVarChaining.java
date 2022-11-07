@@ -62,8 +62,8 @@ public class NodeVarChaining implements NodeChaining {
         if (!isLeftSideOfAssign || optChaining != null){
             symbolTable.ceiASM_instructionList.add("    LOADREF "+attribute.getOffset()+" ; Cargo direccion de atributo");
         } else {
-            symbolTable.ceiASM_instructionList.add("    SWAP");
-            symbolTable.ceiASM_instructionList.add("    STOREREF "+attribute.getOffset()+" ; Guardo en la direccion del atributo");
+            symbolTable.ceiASM_instructionList.add("    SWAP ; Pongo this en SP - 1");
+            symbolTable.ceiASM_instructionList.add("    STOREREF "+attribute.getOffset()+" ; Guardo valor en la direccion del atributo");
         }
 
         if (optChaining != null)

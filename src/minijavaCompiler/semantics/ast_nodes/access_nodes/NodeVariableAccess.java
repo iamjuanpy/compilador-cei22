@@ -74,13 +74,13 @@ public class NodeVariableAccess implements NodeAccess {
             if (!isLeftSideOfAssign || optChaining != null){
                 symbolTable.ceiASM_instructionList.add("    LOADREF "+variable.getOffset()+" ; Cargo direccion de atributo");
             } else {
-                symbolTable.ceiASM_instructionList.add("    SWAP");
-                symbolTable.ceiASM_instructionList.add("    STOREREF "+variable.getOffset()+" ; Guardo en la direccion del atributo");
+                symbolTable.ceiASM_instructionList.add("    SWAP ; Muevo this a SP - 1");
+                symbolTable.ceiASM_instructionList.add("    STOREREF "+variable.getOffset()+" ; Guardo valor en la direccion del atributo");
             }
         } else {
             if (!isLeftSideOfAssign || optChaining != null)
                 symbolTable.ceiASM_instructionList.add("    LOAD "+variable.getOffset()+" ; Cargo la direccion de parametro/var local");
-            else symbolTable.ceiASM_instructionList.add("    STORE "+variable.getOffset()+" ; Guardo en la direccion de parametro/var local");
+            else symbolTable.ceiASM_instructionList.add("    STORE "+variable.getOffset()+" ; Guardo valor en la direccion de parametro/var local");
         }
 
         if (optChaining != null)

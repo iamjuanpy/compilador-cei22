@@ -89,16 +89,16 @@ public class NodeConstructorCall implements NodeAccess{
     public void generateCode() {
         symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo puntero malloc");
         symbolTable.ceiASM_instructionList.add("    PUSH "+classBuilding.getLastAttributeOffset()+" ; Cantidad de atributos + VT Ref");
-        symbolTable.ceiASM_instructionList.add("    PUSH simple_malloc");
-        symbolTable.ceiASM_instructionList.add("    CALL ; malloc()");
-        symbolTable.ceiASM_instructionList.add("    DUP");
-        symbolTable.ceiASM_instructionList.add("    PUSH "+classBuilding.getVTableLabel());
-        symbolTable.ceiASM_instructionList.add("    STOREREF 0 ; Guardo VT en CIR");
+        symbolTable.ceiASM_instructionList.add("    PUSH simple_malloc ; Push direccion de metodo para reservar heap");
+        symbolTable.ceiASM_instructionList.add("    CALL ; Me retorna una referencia del CIR");
+        symbolTable.ceiASM_instructionList.add("    DUP ; Duplico la referencia al objeto");
+        symbolTable.ceiASM_instructionList.add("    PUSH "+classBuilding.getVTableLabel()+" ; Etiqueta de la VT");
+        symbolTable.ceiASM_instructionList.add("    STOREREF 0 ; Guardo VT en CIR, consumiendo una de las referencias");
         symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this, para metodo de constructor");
         // Ejecuta metodo de constructor (ya esta la referencia al CIR en el retorno)
         for (NodeExpression p : actualParameters) {
             p.generateCode();
-            symbolTable.ceiASM_instructionList.add("    SWAP"); // Tiene this
+            symbolTable.ceiASM_instructionList.add("    SWAP ; Muevo this"); // Tiene this
         }
         symbolTable.ceiASM_instructionList.add("    PUSH "+constructor.getLabel()+" ; Direccion del constructor");
         symbolTable.ceiASM_instructionList.add("    CALL ; Llama al metodo");

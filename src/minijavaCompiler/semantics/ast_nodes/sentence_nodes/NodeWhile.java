@@ -37,9 +37,9 @@ public class NodeWhile implements NodeSentence {
         String outOfWhileLabel = symbolTable.getUniqueLabel();
         symbolTable.ceiASM_instructionList.add(conditionLabel+": NOP ; Condicion de while");
         condition.generateCode(); // Codigo evaluar condicion
-        symbolTable.ceiASM_instructionList.add("    BF "+outOfWhileLabel+" ; Si no cumple, sale");
+        symbolTable.ceiASM_instructionList.add("    BF "+outOfWhileLabel+" ; Si no cumple salta al fin de while, sino ejecuta la sentencia");
         sentence.generateCode(); // Codigo a repetir
-        symbolTable.ceiASM_instructionList.add("    JUMP "+conditionLabel+" ; Prueba condicion de nuevo");
+        symbolTable.ceiASM_instructionList.add("    JUMP "+conditionLabel+" ; Salto a probar la condicion de nuevo");
         symbolTable.ceiASM_instructionList.add(outOfWhileLabel+": NOP ; Fin de while");
     }
 }

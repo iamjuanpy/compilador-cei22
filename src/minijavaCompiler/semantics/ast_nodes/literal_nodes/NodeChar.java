@@ -17,6 +17,6 @@ public class NodeChar implements NodeLiteral{
     public Type check(){return new CharType(); }
 
     public void generateCode() {
-        symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme);
+        symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme+" ; Valor de char");
     }
 }

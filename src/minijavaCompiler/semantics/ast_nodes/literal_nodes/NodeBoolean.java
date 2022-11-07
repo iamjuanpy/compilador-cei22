@@ -19,7 +19,7 @@ public class NodeBoolean implements NodeLiteral{
 
     public void generateCode() {
         if (literal.tokenType == TokenType.r_true)
-            symbolTable.ceiASM_instructionList.add("    PUSH 1");
-        else symbolTable.ceiASM_instructionList.add("    PUSH 0");
+            symbolTable.ceiASM_instructionList.add("    PUSH 1 ; True");
+        else symbolTable.ceiASM_instructionList.add("    PUSH 0 ; False");
     }
 }

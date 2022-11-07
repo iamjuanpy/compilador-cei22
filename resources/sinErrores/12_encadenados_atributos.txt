@@ -1,0 +1,37 @@
+
+class A {
+
+    static void main(){
+        var objA = new A();
+        var res = objA.getC().setB().b.setNum().s; // A.C.C.B.B.int
+        System.printIln(res);
+    }
+
+    C getC(){
+        return new C();
+    }
+
+}
+
+class B {
+
+    public int s;
+
+    B setNum(){
+        s = 15;
+        return this;
+    }
+
+}
+
+class C{
+
+    public String s;
+    public B b;
+
+    C setB(){
+       b = new B();
+       return this;
+    }
+
+}

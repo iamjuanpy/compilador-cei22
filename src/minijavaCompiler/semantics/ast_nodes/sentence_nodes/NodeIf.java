@@ -61,7 +61,7 @@ public class NodeIf implements NodeSentence{
     private void generateIfCode() {
         String outIfLabel = symbolTable.getUniqueLabel();
         condition.generateCode();
-        symbolTable.ceiASM_instructionList.add("    BF "+outIfLabel+" ; Si es falso, salta el then");
+        symbolTable.ceiASM_instructionList.add("    BF "+outIfLabel+" ; Si es falso, salto al final de then, sino ejecuto then");
         thenSentence.generateCode();
         symbolTable.ceiASM_instructionList.add(outIfLabel+": NOP ; Final del then");
     }
@@ -70,10 +70,10 @@ public class NodeIf implements NodeSentence{
         String elseLabel = symbolTable.getUniqueLabel();
         String outIfLabel = symbolTable.getUniqueLabel();
         condition.generateCode();
-        symbolTable.ceiASM_instructionList.add("    BF "+elseLabel+" ; Si es falso, va a else, sino sigue then");
+        symbolTable.ceiASM_instructionList.add("    BF "+elseLabel+" ; Si es falso, salta a else, sino ejecuto then");
         thenSentence.generateCode();
-        symbolTable.ceiASM_instructionList.add("    JUMP "+outIfLabel+" ; Termina then, salta el else");
-        symbolTable.ceiASM_instructionList.add(elseLabel+": NOP ; Arranca else");
+        symbolTable.ceiASM_instructionList.add("    JUMP "+outIfLabel+" ; Termina de ejecutar then, salta a final de if");
+        symbolTable.ceiASM_instructionList.add(elseLabel+": NOP ; Principio de else");
         elseSentence.generateCode();
         symbolTable.ceiASM_instructionList.add(outIfLabel+": NOP ; Final del if");
     }

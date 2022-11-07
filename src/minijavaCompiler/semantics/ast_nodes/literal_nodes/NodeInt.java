@@ -17,6 +17,6 @@ public class NodeInt implements NodeLiteral{
     public Type check(){return new IntType();}
 
     public void generateCode() {
-        symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme);
+        symbolTable.ceiASM_instructionList.add("    PUSH "+token.lexeme+" ; Entero");
     }
 }

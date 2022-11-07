@@ -65,8 +65,8 @@ public class NodeAssign implements NodeSentence{
             access.generateCode();
             expression.generateCode();
             if (assignType.tokenType == addAssign)
-                symbolTable.ceiASM_instructionList.add("    ADD");
-            else symbolTable.ceiASM_instructionList.add("    SUB");
+                symbolTable.ceiASM_instructionList.add("    ADD ; Suma");
+            else symbolTable.ceiASM_instructionList.add("    SUB ; Resta");
             access.setIsLeftSideOfAssign();
             access.generateCode();
         }

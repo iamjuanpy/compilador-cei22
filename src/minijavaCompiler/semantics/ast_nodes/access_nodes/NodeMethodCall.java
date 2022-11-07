@@ -105,14 +105,14 @@ public class NodeMethodCall implements NodeAccess {
             symbolTable.ceiASM_instructionList.add("    PUSH "+methodCalled.getLabel()+" ; Cargo la direccion estatica");
             symbolTable.ceiASM_instructionList.add("    CALL ; Llamo metodo");
         } else {
-            symbolTable.ceiASM_instructionList.add("    LOAD 3");
+            symbolTable.ceiASM_instructionList.add("    LOAD 3 ; Cargo this");
             if (!methodCalled.getReturnType().equals(new VoidType())){
                 symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo lugar para el retorno");
-                symbolTable.ceiASM_instructionList.add("    SWAP");
+                symbolTable.ceiASM_instructionList.add("    SWAP ; Muevo this");
             }
             for (NodeExpression p : actualParameters){ // Genero codigo de los parametros, corriendo el this
                 p.generateCode();
-                symbolTable.ceiASM_instructionList.add("    SWAP");
+                symbolTable.ceiASM_instructionList.add("    SWAP ; Muevo this");
             }
             symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this");
             symbolTable.ceiASM_instructionList.add("    LOADREF 0 ; Cargo VT");

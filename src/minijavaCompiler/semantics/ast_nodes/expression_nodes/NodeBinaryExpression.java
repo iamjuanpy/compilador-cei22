@@ -90,24 +90,24 @@ public class NodeBinaryExpression implements NodeExpression {
         switch (operator.tokenType) {
 
             case addOP:
-                symbolTable.ceiASM_instructionList.add("    ADD"); break;
+                symbolTable.ceiASM_instructionList.add("    ADD ; Suma"); break;
             case subOP:
-                symbolTable.ceiASM_instructionList.add("    SUB"); break;
+                symbolTable.ceiASM_instructionList.add("    SUB ; Resta"); break;
             case multOP:
-                symbolTable.ceiASM_instructionList.add("    MUL"); break;
+                symbolTable.ceiASM_instructionList.add("    MUL ; Multiplicacion"); break;
             case divOP:
-                symbolTable.ceiASM_instructionList.add("    DIV"); break;
+                symbolTable.ceiASM_instructionList.add("    DIV ; Division"); break;
             case modOP:
-                symbolTable.ceiASM_instructionList.add("    MOD"); break;
+                symbolTable.ceiASM_instructionList.add("    MOD ; Modulo"); break;
 
             case greater:
-                symbolTable.ceiASM_instructionList.add("    GT"); break;
+                symbolTable.ceiASM_instructionList.add("    GT ; Mayor que"); break;
             case greaterOrEquals:
-                symbolTable.ceiASM_instructionList.add("    GE"); break;
+                symbolTable.ceiASM_instructionList.add("    GE ; Mayor o igual que"); break;
             case less:
-                symbolTable.ceiASM_instructionList.add("    LT"); break;
+                symbolTable.ceiASM_instructionList.add("    LT ; Menor que"); break;
             case lessOrEquals:
-                symbolTable.ceiASM_instructionList.add("    LE"); break;
+                symbolTable.ceiASM_instructionList.add("    LE ; Menor o igual que"); break;
 
             case andOP:
                 symbolTable.ceiASM_instructionList.add("    AND"); break;
@@ -115,9 +115,9 @@ public class NodeBinaryExpression implements NodeExpression {
                 symbolTable.ceiASM_instructionList.add("    OR"); break;
 
             case equals:
-                symbolTable.ceiASM_instructionList.add("    EQ"); break;
+                symbolTable.ceiASM_instructionList.add("    EQ ; Equals"); break;
             case notEquals:
-                symbolTable.ceiASM_instructionList.add("    NE"); break;
+                symbolTable.ceiASM_instructionList.add("    NE ; Not equals"); break;
         }
     }
 }
