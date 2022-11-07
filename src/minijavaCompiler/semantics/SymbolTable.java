@@ -30,10 +30,7 @@ public class SymbolTable {
     public void checkDeclarations() throws SemanticException {
         for (ClassEntry c : classesHashMap.values()) c.correctlyDeclared();     // Paso 1: esta bien declarado
         for (ClassEntry c : classesHashMap.values()) c.consolidate();           // Paso 2: consolidar clases/interfaces
-        for (ClassEntry c : classesHashMap.values()) c.setAttributesOffsets();  // Paso 3: offsets de atributos
-        for (ClassEntry c : classesHashMap.values()) c.setMethodsOffsets();     // Paso 4: offsets de metodos
-        for (ClassEntry c : classesHashMap.values()) c.fixMethodsOffsets();     // Paso 6: corregir offsets de metodos
-        if (mainMethod == null)                                                 // Paso 7: Ver que exista un metodo main
+        if (mainMethod == null)                                                 // Paso 3: Ver que exista un metodo main
             throw new SemanticException("No se encontró clase con metodo main", eofToken.lexeme, eofToken.lineNumber);
     }
 
@@ -43,6 +40,12 @@ public class SymbolTable {
                 c.checkSentences();
             }
         }
+    }
+
+    public void setOffsets() {
+        for (ClassEntry c : classesHashMap.values()) c.setAttributesOffsets();  // Paso 1: offsets de atributos
+        for (ClassEntry c : classesHashMap.values()) c.setMethodsOffsets(); // Paso 2: offsets de metodos de CLASES CONCRETAS
+        for (ClassEntry c : classesHashMap.values()) c.fixConflictingMethodOffsets(); // Paso 3: corregir offsets de metodos a partir de INTERFACES
     }
 
     public void generateCode() {

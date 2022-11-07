@@ -41,7 +41,7 @@ public interface ClassEntry {
 
     void setAttributesOffsets();
     void setMethodsOffsets();
-    void fixMethodsOffsets();
+    void fixConflictingMethodOffsets();
 
     int getLastAttributeOffset();
     int getLastMethodOffset();

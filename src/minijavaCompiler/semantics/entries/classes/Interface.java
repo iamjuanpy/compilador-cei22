@@ -145,40 +145,46 @@ public class Interface implements ClassEntry {
     // Generación de código
 
     public void generateCode(){} // No tiene codigo
-
     public void setAttributesOffsets(){} // No tiene atributos
     public void setMethodsOffsets() {} // No hace la primera pasada
 
-    public void fixMethodsOffsets() {
+    public void fixConflictingMethodOffsets() {
         for (Method interfaceMethod : methodHashMap.values()) { // Por cada metodo a implementar
             List<Method> implementationList = interfaceMethod.getImplementationList();
             if (implementedOffsetsAreConflicted(implementationList)) { // Si los offsets de las implementaciones no coinciden
                 setAllOffsetsWithMaxAvailable(implementationList); // Setteo con el maximo
             }
+            interfaceMethod.setOffset(implementationList.get(0).getOffset()); // Setteo el del metodo de la interface
         }
     }
 
     private boolean implementedOffsetsAreConflicted(List<Method> implementationList) {
         int offset = 0;
-        boolean conflict = false, first = true;
+        boolean conflict, first = true;
         for (Method implementation : implementationList) {
             if (first) {
                 offset = implementation.getOffset();
                 first = false;
             } else {
                 conflict = offset != implementation.getOffset();
-                break;
+                if (conflict)
+                    return true;
             }
         }
-        return conflict;
+        return false;
     }
 
     private void setAllOffsetsWithMaxAvailable(List<Method> implementationList) {
         int maxOffset = 0;
-        for (Method implementation : implementationList)
-            if (implementation.getOffset() > maxOffset)
-                maxOffset = implementation.getOffset();
-        for (Method implementation : implementationList)
+        for (Method implementation : implementationList) { // Para cada redefinicion del metodo
+            // Obtengo el maximo offset disponible en las VTable en las que aparece el metodo
+            if (implementation.getOffset() > maxOffset) // Primero miro la clase en la que esta declarado esta definicion del metodo
+                maxOffset = implementation.getClassDeclared().getLastMethodOffset();
+            for (ClassEntry classThatInherited : implementation.getInheritedInClassList()) // Luego las clases en las que esta hereadado
+                if (classThatInherited.getLastMethodOffset() > maxOffset)
+                    maxOffset = classThatInherited.getLastMethodOffset();
+        }
+        for (Method implementation : implementationList) // Lo asigno a todas las apariciones de ese metodo
             implementation.setOffset(maxOffset);
     }
 

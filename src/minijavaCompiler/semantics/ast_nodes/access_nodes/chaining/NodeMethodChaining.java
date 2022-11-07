@@ -110,7 +110,7 @@ public class NodeMethodChaining implements NodeChaining{
             }
             symbolTable.ceiASM_instructionList.add("    DUP ; Duplico this");
             symbolTable.ceiASM_instructionList.add("    LOADREF 0 ; Cargo VT");
-            symbolTable.ceiASM_instructionList.add("    LOADREF "+methodCalled.getOffset()+" ; Cargo metodo");
+            symbolTable.ceiASM_instructionList.add("    LOADREF "+methodCalled.getOffset()+" ; Cargo metodo "+methodCalled.getName());
             symbolTable.ceiASM_instructionList.add("    CALL ; Llamo metodo");
         }
 

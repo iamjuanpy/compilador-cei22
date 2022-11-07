@@ -26,7 +26,6 @@ public class ConcreteClass implements ClassEntry {
     private boolean attributesOffsetSet;
 
     private int lastAttributeOffset;
-    private int lastMethodOffset;
 
     public ConcreteClass(Token token){
         this.classToken = token;
@@ -35,7 +34,6 @@ public class ConcreteClass implements ClassEntry {
         interfacesHashMap = new HashMap<>();
         extendsClassToken = new Token(classID, "Object", token.lineNumber); // default: idClase extends Object {}
         consolidated = false;
-
     }
 
     public String getName() {return classToken.lexeme;}
@@ -209,6 +207,7 @@ public class ConcreteClass implements ClassEntry {
             for (Method method : symbolTable.getClass(extendsClassToken.lexeme).getMethodHashMap().values()) {
                 if (methodHashMap.get(method.getName()) == null) {
                     methodHashMap.put(method.getName(), method);
+                    method.addInheritedIn(this);
                 } else if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                     throw new SemanticException("El método heredado "+method.getName()+" está mal redefinido", method.getName(), methodHashMap.get(method.getName()).getLine());
                 else {
@@ -277,46 +276,48 @@ public class ConcreteClass implements ClassEntry {
 
     private boolean notDefaultClass(){return !(classToken.lexeme.equals("String") || classToken.lexeme.equals("Object") || classToken.lexeme.equals("System"));}
 
-    // Offsets
+    // Offsets de metodos
 
     public void setMethodsOffsets() {
         if (!methodsOffsetSet){
             constructor.setParametersOffsets();
+
+            int lastMethodOffset;
             if (notObjectClass()){
                 ClassEntry fatherClass = symbolTable.getClass(extendsClassToken.lexeme);
                 fatherClass.setMethodsOffsets();
                 lastMethodOffset = fatherClass.getLastMethodOffset();
             } else lastMethodOffset = 0;
+
             for (Method method : methodHashMap.values()) {
-                method.setParametersOffsets();
+                method.setParametersOffsets(); // Los offsets de los parametros
                 if (!method.isStatic()) { // Si es estatico no pertenece a la VT
-                    if (method.getClassDeclared().equals(this)) {
-                        if (methodIsRedefined(method))
+                    if (methodIsNotInherited(method)) {
+                        if (methodIsARedefinition(method))
                             method.setOffset(symbolTable.getClass(extendsClassToken.lexeme).getMethod(method.getName()).getOffset());
                         else method.setOffset(lastMethodOffset++);
                     }
                 }
             }
+
             methodsOffsetSet = true;
         }
     }
 
-    private boolean methodIsRedefined(Method method) {return symbolTable.getClass(extendsClassToken.lexeme).isMethod(method.getName());}
+    private boolean methodIsNotInherited(Method method) {return method.getClassDeclared().equals(this);}
+    private boolean methodIsARedefinition(Method method) {return symbolTable.getClass(extendsClassToken.lexeme).isMethod(method.getName());}
 
-    public void fixMethodsOffsets() {}
+    public void fixConflictingMethodOffsets() {}
 
     public int getLastMethodOffset() {
-        int maxOffset = 0;
-        boolean atLeastOneDynamicMethod = false;
+        int maxOffset = -1;
         for (Method m : methodHashMap.values()) {
-            if (!m.isStatic() && m.getOffset() > maxOffset) {
-                maxOffset = m.getOffset();
-                atLeastOneDynamicMethod = true;
+            if (!m.isStatic()) {
+                if (m.getOffset() > maxOffset)
+                    maxOffset = m.getOffset();
             }
         }
-        if (atLeastOneDynamicMethod)
-            return maxOffset+1;
-        else return 0;
+        return maxOffset + 1;
     }
 
     // Offsets de atributos

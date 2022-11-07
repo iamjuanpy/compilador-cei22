@@ -25,10 +25,11 @@ public class Method implements Unit {
 
     private String label;
 
-    // Referencias
+    // Referencias para corregir los offsets
     private Method redefining; // Metodo que redefine
-    private List<Method> isRedefinedBy; // Metodos que lo redefinen
+    private List<Method> isRedefinedByList; // Metodos que lo redefinen
     private List<Method> implementationList; // Metodos que implementa (solo usado por los headers de las interfaces, metodos concretos lo tienen vacio
+    private List<ClassEntry> inheritedInClassList; // Clases en las que aparece el mismo metodo copiado
     private int offset;
 
     public Method(boolean isStatic, Type type, Token methodToken) {
@@ -40,7 +41,8 @@ public class Method implements Unit {
         parameterList = new ArrayList<>();
         label = classDeclared.getName() + "_" + methodToken.lexeme; // A_m1
         implementationList = new ArrayList<>();
-        isRedefinedBy = new ArrayList<>();
+        isRedefinedByList = new ArrayList<>();
+        inheritedInClassList = new ArrayList<>();
     }
 
     public String getName() {return methodToken.lexeme;}
@@ -131,20 +133,23 @@ public class Method implements Unit {
 
     public void setOffset(int offset){
         this.offset = offset;
-        if (redefining != null) { // Expando si es necesario el offset corregido
+        // Expando si es necesario el offset corregido a las redefiniciones/ancestros
+        if (redefining != null)
             if (redefining.getOffset() != offset)
                 redefining.setOffset(offset);
-        }
-        for (Method redefinedBy : isRedefinedBy) {
+        for (Method redefinedBy : isRedefinedByList)
             if (redefinedBy.getOffset() != offset)
                 redefinedBy.setOffset(offset);
-        }
     }
     public int getOffset(){return offset;}
 
+    // Solo usado por clases concretas
     public void setRedefining(Method method) {redefining = method;}
-    public void addRedefinedBy(Method method) {isRedefinedBy.add(method);}
+    public void addRedefinedBy(Method method) {isRedefinedByList.add(method);}
+    public void addInheritedIn(ClassEntry classEntry) {inheritedInClassList.add(classEntry);}
+    public List<ClassEntry> getInheritedInClassList(){return inheritedInClassList;}
 
+    // No usado por clases concretas
     public void addImplementation(Method m){implementationList.add(m);}
     public List<Method> getImplementationList(){return implementationList;}
 }

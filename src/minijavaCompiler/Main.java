@@ -39,6 +39,8 @@ public class Main {
                 syntaxParser.startParse();                                  // Etapa 2/3/4
                 symbolTable.checkDeclarations();                            // Etapa 3
                 symbolTable.checkSentences();                               // Etapa 4
+
+                symbolTable.setOffsets();                                   // Etapa 5
                 symbolTable.generateCode();                                 // Etapa 5
 
                 outputFileWriter.writeCodeToFile();

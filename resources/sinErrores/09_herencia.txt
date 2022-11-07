@@ -1,0 +1,215 @@
+interface A {
+
+    void m1();
+
+}
+
+interface B extends A {
+
+    void m2();
+    void m1();
+
+}
+
+
+interface C extends A,B {
+
+    void m3();
+    void m1();
+    void m2();
+
+}
+
+interface D {
+
+    void m5();
+
+}
+
+class ClaseB implements B{
+
+    int met(){
+        System.printSln("MET CLASE B");
+    }
+    void m1() {
+        System.printSln("M1 CLASE B");
+    }
+    static int test() {
+    }
+    static int test2() {
+    }
+    void m2() {
+        System.printSln("M2 CLASE B");
+    }
+    void m3() {
+        System.printSln("M3 CLASE B");
+    }
+
+}
+
+class ClaseA extends ClaseB implements C, D{
+
+    boolean met2(){
+        System.printSln("MET2 CLASE A");
+    }
+    void m1() {
+        System.printSln("M1 CLASE A");
+    }
+    void m2() {
+        System.printSln("M2 CLASE A");
+    }
+    void m5() {
+        System.printSln("M5 CLASE A");
+    }
+
+}
+
+class ClaseC implements D {
+
+    static void main(){
+        // Requiere declaracion clasica para probarlo asi
+        A intA;
+        B intB;
+        C intC;
+        D intD;
+        //
+
+        System.printSln("Probamos todas las imp de A");
+        System.printSln("ClaseA");
+        intA = new ClaseA();
+        intA.m1();
+        System.printSln("ClaseB");
+        intA = new ClaseB();
+        intA.m1();
+
+        System.println();
+
+        System.printSln("Probamos todas las imp de B");
+        System.printSln("ClaseA");
+        intB = new ClaseA();
+        intB.m1();
+        intB.m2();
+        System.printSln("ClaseB");
+        intB = new ClaseB();
+        intB.m1();
+        intB.m2();
+
+        System.println();
+
+        System.printSln("Probamos todas las imp de C");
+        System.printSln("ClaseA");
+        intC = new ClaseA();
+        intC.m1();
+        intC.m2();
+        intC.m3();
+
+        System.println();
+
+        System.printSln("Probamos todas las imp de D");
+        System.printSln("ClaseA");
+        intD = new ClaseA();
+        intD.m5();
+        System.printSln("ClaseC");
+        intD = new ClaseC();
+        intD.m5();
+
+        System.println();
+
+        System.printSln("Probamos ClaseA Y ClaseD");
+        var x = new ClaseA();
+        x.m1();
+        x.m2();
+        x.m3();
+        x.m5();
+        x.met();
+        x.met2();
+
+        System.println();
+
+        x = new ClaseD();
+                x.m1();
+                x.m2();
+                x.m3();
+                x.m5();
+                x.met();
+                x.met2();
+
+                System.println();
+
+        System.printSln("Probamos ClaseB y su extension ClaseA Y D");
+        var b = new ClaseB();
+        b.m1();
+        b.m2();
+        b.met();
+
+        System.println();
+
+        b = new ClaseA();
+        b.m1();
+        b.m2();
+        b.met();
+
+        System.println();
+
+        b = new ClaseD();
+                b.m1();
+                b.m2();
+                b.met();
+
+                System.println();
+
+        System.printSln("Probamos ClaseC");
+        var c = new ClaseC();
+        c.m5();
+
+        System.println();
+
+        System.printSln("Probamos ClaseD");
+        var d = new ClaseD();
+        d.m1();
+        d.m2();
+        d.m3();
+        d.m5();
+        d.met();
+        d.met2();
+
+        System.println();
+
+        System.printSln("Probamos ClaseE");
+        d = new ClaseE();
+        d.m1();
+        d.m2();
+        d.m3();
+        d.m5();
+        d.met();
+        d.met2();
+
+        var e = new ClaseE();
+        e.nuevo();
+    }
+
+
+    void m5(){
+        System.printSln("M5 CLASE C");
+    }
+
+}
+
+class ClaseD extends ClaseA {
+
+    void m2(){
+        System.printSln("M2 CLASE D");
+    }
+
+}
+
+class ClaseE extends ClaseD{
+
+    void nuevo(){
+        System.printSln("NUEVO CLASE E");
+    }
+        void nuevo2(){
+            System.printSln("NUEVO CLASE E");
+        }
+
+}

@@ -88,7 +88,7 @@ public class NodeConstructorCall implements NodeAccess{
 
     public void generateCode() {
         symbolTable.ceiASM_instructionList.add("    RMEM 1 ; Reservo puntero malloc");
-        symbolTable.ceiASM_instructionList.add("    PUSH "+(classBuilding.getLastAttributeOffset()+1)+" ; Cantidad de atributos + VT Ref");
+        symbolTable.ceiASM_instructionList.add("    PUSH "+classBuilding.getLastAttributeOffset()+" ; Cantidad de atributos + VT Ref");
         symbolTable.ceiASM_instructionList.add("    PUSH simple_malloc");
         symbolTable.ceiASM_instructionList.add("    CALL ; malloc()");
         symbolTable.ceiASM_instructionList.add("    DUP");
