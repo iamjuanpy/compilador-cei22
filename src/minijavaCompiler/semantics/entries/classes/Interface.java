@@ -137,8 +137,8 @@ public class Interface implements ClassEntry {
                 if (methodHashMap.get(method.getName()) != null) {
                     if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                         throw new SemanticException("No se puede extender una interface teniendo un metodo redefinido con distintos parametros/retorno", interfaceExtend.lexeme, interfaceExtend.lineNumber);
-                    methodHashMap.put(method.getName(), method);
                 }
+                methodHashMap.put(method.getName(), method);
             }
     }
 
@@ -154,7 +154,8 @@ public class Interface implements ClassEntry {
             if (implementedOffsetsAreConflicted(implementationList)) { // Si los offsets de las implementaciones no coinciden
                 setAllOffsetsWithMaxAvailable(implementationList); // Setteo con el maximo
             }
-            interfaceMethod.setOffset(implementationList.get(0).getOffset()); // Setteo el del metodo de la interface
+            if (implementationList.size() >= 1)
+                interfaceMethod.setOffset(implementationList.get(0).getOffset()); // Setteo el del metodo de la interface
         }
     }
 

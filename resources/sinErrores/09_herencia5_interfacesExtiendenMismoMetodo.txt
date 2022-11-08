@@ -1,0 +1,30 @@
+interface C{
+
+    void a0();
+    void m1();
+
+}
+
+
+interface B{
+
+    void m1();
+
+}
+
+interface A extends B,C{
+
+    void m0();
+
+}
+
+class Test implements A {
+
+    static void main(){
+
+    }
+    void a0(){}
+    void m0(){}
+    void m1(){}
+
+}

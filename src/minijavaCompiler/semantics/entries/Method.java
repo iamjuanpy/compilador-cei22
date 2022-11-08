@@ -143,7 +143,6 @@ public class Method implements Unit {
     }
     public int getOffset(){return offset;}
 
-    // Solo usado por clases concretas
     public void setRedefining(Method method) {redefining = method;}
     public void addRedefinedBy(Method method) {isRedefinedByList.add(method);}
     public void addInheritedIn(ClassEntry classEntry) {inheritedInClassList.add(classEntry);}
