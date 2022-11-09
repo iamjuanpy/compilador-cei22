@@ -30,7 +30,10 @@ public class Method implements Unit {
     private List<Method> isRedefinedByList; // Metodos que lo redefinen
     private List<Method> implementationList; // Metodos que implementa (solo usado por los headers de las interfaces, metodos concretos lo tienen vacio
     private List<ClassEntry> inheritedInClassList; // Clases en las que aparece el mismo metodo copiado
+
+    private List<Method> interfaceMethodRedeclarationList;
     private int offset;
+
 
     public Method(boolean isStatic, Type type, Token methodToken) {
         this.classDeclared = symbolTable.currentClass;
@@ -43,6 +46,7 @@ public class Method implements Unit {
         implementationList = new ArrayList<>();
         isRedefinedByList = new ArrayList<>();
         inheritedInClassList = new ArrayList<>();
+        interfaceMethodRedeclarationList = new ArrayList<>();
     }
 
     public String getName() {return methodToken.lexeme;}
@@ -140,6 +144,9 @@ public class Method implements Unit {
         for (Method redefinedBy : isRedefinedByList)
             if (redefinedBy.getOffset() != offset)
                 redefinedBy.setOffset(offset);
+        for (Method sameSignature : interfaceMethodRedeclarationList)
+            if (sameSignature.getOffset() != offset)
+                sameSignature.setOffset(offset);
     }
     public int getOffset(){return offset;}
 
@@ -149,6 +156,8 @@ public class Method implements Unit {
     public List<ClassEntry> getInheritedInClassList(){return inheritedInClassList;}
 
     // No usado por clases concretas
+    public void addInterfaceMethodSameDeclaration(Method m) {interfaceMethodRedeclarationList.add(m);}
+    public List<Method> getInterfaceMethodSameDeclarationList() {return interfaceMethodRedeclarationList;}
     public void addImplementation(Method m){implementationList.add(m);}
     public List<Method> getImplementationList(){return implementationList;}
 }

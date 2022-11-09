@@ -137,8 +137,14 @@ public class Interface implements ClassEntry {
                 if (methodHashMap.get(method.getName()) != null) {
                     if (!method.hasSameSignature(methodHashMap.get(method.getName())))
                         throw new SemanticException("No se puede extender una interface teniendo un metodo redefinido con distintos parametros/retorno", interfaceExtend.lexeme, interfaceExtend.lineNumber);
-                }
-                methodHashMap.put(method.getName(), method);
+
+                    // Cada metodo redeclarado conoce a todos los metodos extend previos y posteriores en su linea de herencia
+                    for (Method sameSignature : method.getInterfaceMethodSameDeclarationList()) {
+                        sameSignature.addInterfaceMethodSameDeclaration(method);
+                        methodHashMap.get(method.getName()).addInterfaceMethodSameDeclaration(sameSignature);
+                    }
+                    methodHashMap.get(method.getName()).addInterfaceMethodSameDeclaration(method);
+                } else methodHashMap.put(method.getName(), method);
             }
     }
 
@@ -150,7 +156,9 @@ public class Interface implements ClassEntry {
 
     public void fixConflictingMethodOffsets() {
         for (Method interfaceMethod : methodHashMap.values()) { // Por cada metodo a implementar
-            List<Method> implementationList = interfaceMethod.getImplementationList();
+            List<Method> implementationList = interfaceMethod.getImplementationList(); // Tomo sus implementaciones
+            for (Method extending : interfaceMethod.getInterfaceMethodSameDeclarationList()) // Y las implementaciones de todos los que lo extendian o los que esta extendiendo
+                implementationList.addAll(extending.getImplementationList());
             if (implementedOffsetsAreConflicted(implementationList)) { // Si los offsets de las implementaciones no coinciden
                 setAllOffsetsWithMaxAvailable(implementationList); // Setteo con el maximo
             }

@@ -1,0 +1,85 @@
+interface C{
+
+    void a0();
+    void m1();
+
+}
+
+interface D{
+
+    void m1();
+
+}
+
+interface B extends D{
+
+}
+
+interface A extends B,C{
+
+    void m0();
+
+}
+
+class Aa implements D {
+
+    void m1(){System.printSln("m1 Aa de D");}
+
+}
+
+class Ac implements C {
+
+    void a0(){System.printSln("a0 Ac de C");}
+    void m1(){System.printSln("m1 Ac de C");}
+
+}
+
+class Ab implements B {
+
+    void a(){System.printSln("a Ab");}
+    void m1(){System.printSln("m1 Ab de B");}
+
+}
+
+class Test implements A {
+
+    static void main(){
+        A intA;
+        B intB;
+        C intC;
+
+        intA = new Test();
+        intA.a0();
+        intA.m0();
+        intA.m1();
+
+        System.println();
+
+        intB = new Test();
+        intB.m1();
+        intB = new Ab();
+        intB.m1();
+
+        System.println();
+
+        intC = new Test();
+        intC.a0();
+        intC.m1();
+        intC = new Ac();
+        intC.a0();
+        intC.m1();
+
+        System.println();
+
+        D intD = new Aa();
+        intD.m1();
+        intD = new Ab();
+                intD.m1();
+        intD = new Test();
+        intD.m1();
+    }
+    void a0(){System.printSln("a0 test de C");}
+    void m0(){System.printSln("m0 test de A");}
+    void m1(){System.printSln("m1 test de B/C");}
+
+}
