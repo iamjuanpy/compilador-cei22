@@ -1,0 +1,45 @@
+
+class Main {
+
+    static void main(){
+        var claseA = A.getNewA();
+        var claseB = new B(21);
+        claseA.getRef().numero += claseB.getNewB().numero; // getNewB retorna uno con 30 por mas que se lo pida al 21*2
+        System.printIln(B.getNewB().numero); // 30
+        System.printIln(claseA.getRef().numero); // 31
+        System.printIln(claseA.numero); // 31
+    }
+
+}
+
+class A {
+
+    public int numero;
+
+    static A getNewA() {
+        var nA = new A();
+        nA.numero = 1;
+        return nA;
+    }
+
+    A getRef(){
+        return this;
+    }
+
+}
+
+
+class B {
+
+    public int numero;
+
+    B (int n){
+        this.numero = n * 2;
+    }
+
+    static B getNewB(){
+        return new B(15);
+    }
+
+
+}

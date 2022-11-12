@@ -4,17 +4,17 @@ class A {
     int a;
 
     static void main(){
-        m1(1,new A().boolRet(),'j');
+        new A().m1(1,new A().boolRet(),'j');
     }
 
-    static void m1(int a, boolean b, char c){
-        a += 1;
+     void m1(int a, boolean b, char c){
+        a -= 1;
         System.printI(a);
         System.printB(b);
         System.printC(c);
     }
 
-    static boolean boolRet(){
+    boolean boolRet(){
         return true;
     }
 

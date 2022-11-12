@@ -1,0 +1,69 @@
+class Main{
+
+    static void main(){
+        var a = new A();
+        System.printIln(a.a);
+        a.a=5;
+        System.printIln(a.a);
+        a = new B();
+        System.printIln(a.a);
+        a.a=5;
+        System.printIln(a.a);
+        a = new C();
+        System.printIln(a.a);
+        a.a=5;
+        System.printIln(a.a);
+
+        System.println();
+
+        var b = new B();
+        System.printIln(b.a);
+        b.a=5;
+        System.printIln(b.a);
+        b.m1();
+        b = new C();
+        System.printIln(b.a);
+        b.a=5;
+        System.printIln(b.a);
+        b.m1();
+
+        System.println();
+        var c = new C();
+        c.a = 5;
+        c.m1();
+        c.m0();
+        System.printSln(c.c);
+
+    }
+
+}
+
+
+class A {
+
+    public int a;
+    private boolean privA;
+
+}
+
+class B extends A{
+
+    private int b;
+    private B privb;
+
+    void m1(){
+        b = b + a;
+        System.printIln(b);
+    }
+
+}
+
+class C extends B{
+
+    public String c;
+
+    void m0() {
+        this.c = "prueba clase C";
+    }
+
+}

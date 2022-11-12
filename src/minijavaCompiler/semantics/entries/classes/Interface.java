@@ -162,7 +162,7 @@ public class Interface implements ClassEntry {
             if (implementedOffsetsAreConflicted(implementationList)) { // Si los offsets de las implementaciones no coinciden
                 setAllOffsetsWithMaxAvailable(implementationList); // Setteo con el maximo
             }
-            if (implementationList.size() >= 1)
+            if (implementationList.size() >= 1) // Podria tener una interface que no la implementa ninguna clase
                 interfaceMethod.setOffset(implementationList.get(0).getOffset()); // Setteo el del metodo de la interface
         }
     }

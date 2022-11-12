@@ -22,7 +22,7 @@ class B {
         return a;
     }
 
-    B m2() { // No entra aca porque m1 retorna un objeto C que redefine metodo y m2
+    B m2() { // No entra aca porque m1 retorna un objeto B que efectivamente es C que redefine metodo y m2
         return null;
     }
 
