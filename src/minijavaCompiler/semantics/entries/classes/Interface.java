@@ -187,7 +187,7 @@ public class Interface implements ClassEntry {
         int maxOffset = 0;
         for (Method implementation : implementationList) { // Para cada redefinicion del metodo
             // Obtengo el maximo offset disponible en las VTable en las que aparece el metodo
-            if (implementation.getOffset() > maxOffset) // Primero miro la clase en la que esta declarado esta definicion del metodo
+            if (implementation.getClassDeclared().getLastMethodOffset() > maxOffset) // Primero miro la clase en la que esta declarado esta definicion del metodo
                 maxOffset = implementation.getClassDeclared().getLastMethodOffset();
             for (ClassEntry classThatInherited : implementation.getInheritedInClassList()) // Luego las clases en las que esta hereadado
                 if (classThatInherited.getLastMethodOffset() > maxOffset)

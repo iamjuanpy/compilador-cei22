@@ -75,7 +75,7 @@ class Test implements A {
         C intC = new Aa();
         intC.m1();
         intC = new Ab();
-                intD.m1();
+                intC.m1();
         intC = new Test();
         intC.m1();
     }
