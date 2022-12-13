@@ -44,7 +44,7 @@ public class ConcreteClass implements ClassEntry {
     private boolean notObjectClass() {return extendsClassToken != null;}
 
     public boolean isAttribute(String identifier) {return attributeHashMap.get(identifier) != null;}
-    public Attribute getAtrribute(String identifier) { return attributeHashMap.get(identifier);}
+    public Attribute getAttribute(String identifier) { return attributeHashMap.get(identifier);}
 
     public boolean isMethod(String identifier) {return methodHashMap.get(identifier) != null;}
     public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
@@ -344,7 +344,7 @@ public class ConcreteClass implements ClassEntry {
 
     public void setAncestorClass(Token classToken){this.extendsClassToken = classToken;}
 
-    public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
+    public void addMultipleInheritance(Token interfaceToken) throws SemanticException {
         if (interfacesHashMap.get(interfaceToken.lexeme) != null) {
             throw new SemanticException("Una clase no puede implementar dos veces una interface ("+ interfaceToken.lexeme+")", interfaceToken.lexeme, interfaceToken.lineNumber);
         } else interfacesHashMap.put(interfaceToken.lexeme, interfaceToken);

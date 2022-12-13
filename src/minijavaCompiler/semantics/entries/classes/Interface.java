@@ -34,7 +34,7 @@ public class Interface implements ClassEntry {
     public boolean isConcreteClass() { return false;}
 
     public boolean isAttribute(String identifier) {return false;}
-    public Attribute getAtrribute(String identifier) { return null;} // NO LLEGA
+    public Attribute getAttribute(String identifier) { return null;} // NO LLEGA
 
     public boolean isMethod(String identifier) {return methodHashMap.get(identifier) != null;}
     public Method getMethod(String identifier) {return methodHashMap.get(identifier);}
@@ -201,7 +201,7 @@ public class Interface implements ClassEntry {
 
     public void setAncestorClass(Token classToken) {} // NO LLEGA
 
-    public void addMultipleInheritence(Token interfaceToken) throws SemanticException {
+    public void addMultipleInheritance(Token interfaceToken) throws SemanticException {
         if (interfaceExtendsHashMap.get(interfaceToken.lexeme) == null)
             interfaceExtendsHashMap.put(interfaceToken.lexeme, interfaceToken);
         else throw new SemanticException("Una interface no puede extender dos veces la misma interface ("+interfaceToken.lexeme+")",interfaceToken.lexeme, interfaceToken.lineNumber);

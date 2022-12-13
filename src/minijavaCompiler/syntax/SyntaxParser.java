@@ -146,7 +146,7 @@ public class SyntaxParser {
     private void listaTipoReferencia() throws LexicalException, FileManagerException, SyntacticException, SemanticException {
         Token classOrInterfaceToken = currentToken;
         match(classID);
-        symbolTable.currentClass.addMultipleInheritence(classOrInterfaceToken);
+        symbolTable.currentClass.addMultipleInheritance(classOrInterfaceToken);
         listaTipoReferenciaFactorizada();
     }
 

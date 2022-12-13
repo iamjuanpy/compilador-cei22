@@ -21,7 +21,7 @@ public interface ClassEntry {
     boolean isConcreteClass();
 
     boolean isAttribute(String identifier);
-    Attribute getAtrribute(String identifier);
+    Attribute getAttribute(String identifier);
     boolean isMethod(String identifier);
     Method getMethod(String identifier);
     Constructor getConstructor();
@@ -33,7 +33,7 @@ public interface ClassEntry {
     void addMethod(Method method) throws SemanticException;
 
     void setAncestorClass(Token classToken);
-    void addMultipleInheritence(Token interfaceToken) throws SemanticException;
+    void addMultipleInheritance(Token interfaceToken) throws SemanticException;
 
     Set<String> getInheritanceSet();
 

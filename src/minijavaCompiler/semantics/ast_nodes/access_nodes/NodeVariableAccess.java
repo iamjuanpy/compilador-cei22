@@ -3,7 +3,6 @@ package minijavaCompiler.semantics.ast_nodes.access_nodes;
 import minijavaCompiler.lexical.Token;
 import minijavaCompiler.semantics.SemanticException;
 import minijavaCompiler.semantics.ast_nodes.access_nodes.chaining.NodeChaining;
-import minijavaCompiler.semantics.entries.Attribute;
 import minijavaCompiler.semantics.entries.Method;
 import minijavaCompiler.semantics.entries.Variable;
 import minijavaCompiler.semantics.types.Type;
@@ -48,7 +47,7 @@ public class NodeVariableAccess implements NodeAccess {
         else if (accessIsAttribute()) {
             if (currentUnitIsConstructor() || currentUnitIsDynamicMethod()) {
                 if (attributeIsPublic() || attributeIsDeclaredInCurrentClass())
-                    variable = symbolTable.currentClass.getAtrribute(variableToken.lexeme);
+                    variable = symbolTable.currentClass.getAttribute(variableToken.lexeme);
                 else throw new SemanticException("La variable de instancia "+variableToken.lexeme+" no es accesible", variableToken.lexeme, variableToken.lineNumber);
             } else throw new SemanticException("No se puede acceder a variable de instancia "+variableToken.lexeme+" desde un metodo estático", variableToken.lexeme, variableToken.lineNumber);
         } else throw new SemanticException("No se encuentra variable/parámetro "+variableToken.lexeme+" en el ambiente de referenciamiento", variableToken.lexeme, variableToken.lineNumber);
@@ -62,8 +61,8 @@ public class NodeVariableAccess implements NodeAccess {
     private boolean accessIsLocalVariable() {return symbolTable.currentBlock.isLocalVariable(variableToken.lexeme);}
     private boolean accessIsParameter() {return symbolTable.currentUnit.isParameter(variableToken.lexeme);}
 
-    private boolean attributeIsDeclaredInCurrentClass() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAtrribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
-    private boolean attributeIsPublic() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAtrribute(variableToken.lexeme).isPublic();}
+    private boolean attributeIsDeclaredInCurrentClass() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAttribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
+    private boolean attributeIsPublic() {return symbolTable.getClass(symbolTable.currentClass.getName()).getAttribute(variableToken.lexeme).isPublic();}
 
     private boolean currentUnitIsConstructor() {return !symbolTable.currentUnit.isMethod();}
     private boolean currentUnitIsDynamicMethod() {return !((Method) symbolTable.currentUnit).isStatic();}

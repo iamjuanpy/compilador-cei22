@@ -40,7 +40,7 @@ public class NodeVarChaining implements NodeChaining {
         checkNotChainingPrimitiveType(previousAccessType);
 
         if (attributeExistsInClass(className) && (attributeIsPublic(className) || attributeIsDeclaredInCurrentClass(className))) {
-            attribute = symbolTable.getClass(className).getAtrribute(variableToken.lexeme);
+            attribute = symbolTable.getClass(className).getAttribute(variableToken.lexeme);
             Type variableType = attribute.getType();
             if (optChaining == null)
                 return variableType;
@@ -55,8 +55,8 @@ public class NodeVarChaining implements NodeChaining {
 
     private boolean attributeExistsInClass(String className) {return symbolTable.getClass(className).isAttribute(variableToken.lexeme);}
 
-    private boolean attributeIsPublic(String className) {return symbolTable.getClass(className).getAtrribute(variableToken.lexeme).isPublic();}
-    private boolean attributeIsDeclaredInCurrentClass(String className) {return symbolTable.getClass(className).getAtrribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
+    private boolean attributeIsPublic(String className) {return symbolTable.getClass(className).getAttribute(variableToken.lexeme).isPublic();}
+    private boolean attributeIsDeclaredInCurrentClass(String className) {return symbolTable.getClass(className).getAttribute(variableToken.lexeme).getClassDeclared().equals(symbolTable.currentClass);}
 
     public void generateCode() {
         if (!isLeftSideOfAssign || optChaining != null){
